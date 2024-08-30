@@ -4,6 +4,7 @@ import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Images from "@/constants/images";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface LoginFormProps {
@@ -11,6 +12,7 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ t }: LoginFormProps) => {
+  const router = useRouter();
   const [passwordValue, setPasswordValue] = useState<string>("");
   const [emailValue, setEmailValue] = useState<string>("");
 
@@ -50,7 +52,12 @@ const LoginForm = ({ t }: LoginFormProps) => {
               }}
             />
             <div className="mt-16" />
-            <PrimaryButton label={t.label.login} onClick={() => {}} />
+            <PrimaryButton
+              label={t.label.login}
+              onClick={() => {
+                router.push("/dashboard");
+              }}
+            />
           </div>
         </div>
       </div>
