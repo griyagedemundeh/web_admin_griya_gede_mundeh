@@ -2,9 +2,27 @@
     "title": {
         "griya": "Griya Gede Mundeh"
     },
+    "navigation": {
+        "dashboard": "",
+        "transaction": "transaksi",
+        "consultation": "konsultasi",
+        "ceremonySchedule": "jadwal-upacara",
+        "article": "artikel",
+        "manager": "pengelola",
+        "user": "pengguna",
+        "ceremony": "upacara"
+    },
     "label": {
         "emailorPhone": "Email/No.Handphone",
         "password": "Kata Sandi",
-        "login": "Masuk"
+        "login": "Masuk",
+        "dashboard": "Dasbor",
+        "transaction": "Transaksi",
+        "consultation": "Konsultasi",
+        "ceremonySchedule": "Jadwal Upacara",
+        "article": "Artikel",
+        "manager": "Pengelola",
+        "user": "Pengguna",
+        "ceremony": "Upacara Agama"
     }
 }

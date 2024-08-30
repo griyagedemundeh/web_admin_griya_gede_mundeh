@@ -11,34 +11,7 @@ import {
 import MobileBarDialog from "./MobileBarDialog";
 import SideBar from "./SideBar";
 import Header from "./Header";
-
-const navigation = [
-  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
-  { name: "Transaksi", href: "#", icon: BanknotesIcon, current: false },
-  {
-    name: "Konsultasi",
-    href: "#",
-    icon: ChatBubbleLeftRightIcon,
-    current: false,
-  },
-  { name: "Jadwal Upacara", href: "#", icon: CalendarDaysIcon, current: false },
-  { name: "Artikel", href: "#", icon: NewspaperIcon, current: false },
-];
-const teams = [
-  { id: 1, name: "Pengelola", href: "#", initial: "P", current: false },
-  {
-    id: 2,
-    name: "Pemedek/Pengguna Layanan",
-    href: "#",
-    initial: "PP",
-    current: false,
-  },
-  { id: 3, name: "Upacara Agama", href: "#", initial: "UA", current: false },
-];
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+import getInitials from "@/utils/getinitial";
 
 interface MainTemplateProps {
   t: any;
@@ -47,6 +20,66 @@ interface MainTemplateProps {
 
 const MainTemplate = ({ t, children }: MainTemplateProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navigation = [
+    {
+      name: t.label.dashboard,
+      href: `/${t.navigation.dashboard}`,
+      icon: HomeIcon,
+      current: true,
+    },
+    {
+      name: t.label.transaction,
+      href: `/${t.navigation.transaction}`,
+      icon: BanknotesIcon,
+      current: false,
+    },
+    {
+      name: t.label.consultation,
+      href: `/${t.navigation.consultation}`,
+      icon: ChatBubbleLeftRightIcon,
+      current: false,
+    },
+    {
+      name: t.label.ceremonySchedule,
+      href: `/${t.navigation.ceremonySchedule}`,
+      icon: CalendarDaysIcon,
+      current: false,
+    },
+    {
+      name: t.label.article,
+      href: `/${t.navigation.article}`,
+      icon: NewspaperIcon,
+      current: false,
+    },
+  ];
+  const teams = [
+    {
+      id: 1,
+      name: t.label.manager,
+      href: `/${t.navigation.manager}`,
+      initial: getInitials(t.label.manager),
+      current: false,
+    },
+    {
+      id: 2,
+      name: t.label.user,
+      href: `/${t.navigation.user}`,
+      initial: getInitials(t.label.user),
+      current: false,
+    },
+    {
+      id: 3,
+      name: t.label.ceremony,
+      href: `/${t.navigation.ceremony}`,
+      initial: getInitials(t.label.ceremony),
+      current: false,
+    },
+  ];
+  const userNavigation = [
+    { name: "Your profile", href: "#" },
+    { name: "Sign out", href: "#" },
+  ];
 
   return (
     <div>

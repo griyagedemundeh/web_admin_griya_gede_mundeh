@@ -2,9 +2,27 @@
     "title": {
         "griya": "Griya Gede Mundeh"
     },
+    "navigation": {
+        "dashboard": "",
+        "transaction": "transaction",
+        "consultation": "consultation",
+        "ceremonySchedule": "ceremony-schedule",
+        "article": "article",
+        "manager": "manager",
+        "user": "user",
+        "ceremony": "ceremony"
+    },
     "label": {
         "emailorPhone": "Email/Phone Number",
         "password": "Password",
-        "login": "Login"
+        "login": "Login",
+        "dashboard": "Dashboard",
+        "transaction": "Transaction",
+        "consultation": "Consultation",
+        "ceremonySchedule": "Ceremony Schedule",
+        "article": "Article",
+        "manager": "Manager",
+        "user": "User",
+        "ceremony": "Religion Ceremony"
     }
 }
