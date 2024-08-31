@@ -14,10 +14,13 @@
     "@heroicons/react": "^2.1.5",
     "@tailwindcss/forms": "^0.5.8",
     "@types/negotiator": "^0.6.3",
+    "highcharts": "^11.4.8",
+    "highcharts-react-official": "^3.2.1",
     "negotiator": "^0.6.3",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "tailwind-scrollbar": "^3.1.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

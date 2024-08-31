@@ -11,7 +11,7 @@ import {
 import MobileBarDialog from "./MobileBarDialog";
 import SideBar from "./SideBar";
 import Header from "./Header";
-import getInitials from "@/utils/getinitial";
+import getInitials from "@/utils/getInitial";
 
 interface MainTemplateProps {
   t: any;
@@ -95,7 +95,7 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       {/* Static sidebar for desktop */}
       <SideBar navigationAdmin={teams} navigations={navigation} t={t} />
 
-      <div className="lg:pl-72">
+      <div className="lg:pl-72 bg-gray-50 h-screen">
         <Header navigations={userNavigation} onClose={setSidebarOpen} t={t} />
 
         <main className="py-10">
