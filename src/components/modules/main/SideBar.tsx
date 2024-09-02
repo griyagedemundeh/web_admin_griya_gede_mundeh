@@ -28,7 +28,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                     <a
                       href={item.href}
                       className={classNames(
-                        pathName.includes(item.name.toLocaleLowerCase())
+                        pathName.includes(item.href.toLocaleLowerCase())
                           ? "bg-yellow-50 text-primary1  border-l-primary1 border-l-4"
                           : "text-gray-700 hover:bg-yellow-50 hover:text-primary1",
                         "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
@@ -37,7 +37,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                       <item.icon
                         aria-hidden="true"
                         className={classNames(
-                          pathName.includes(item.name.toLocaleLowerCase())
+                          pathName.includes(item.href.toLocaleLowerCase())
                             ? "text-primary1"
                             : "text-gray-400 group-hover:text-primary1",
                           "h-6 w-6 shrink-0"
@@ -59,7 +59,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                     <a
                       href={item.href}
                       className={classNames(
-                        pathName.includes(item.name.toLocaleLowerCase())
+                        pathName.includes(item.href.toLocaleLowerCase())
                           ? "bg-yellow-50 text-primary1 border-l-primary1 border-l-4"
                           : "text-gray-700 hover:bg-yellow-50 hover:text-primary1",
                         "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
@@ -67,7 +67,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                     >
                       <span
                         className={classNames(
-                          pathName.includes(item.name.toLocaleLowerCase())
+                          pathName.includes(item.href.toLocaleLowerCase())
                             ? "border-primary1 text-primary1"
                             : "border-gray-200 text-gray-400 group-hover:border-primary1 group-hover:text-primary1",
                           "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"

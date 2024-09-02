@@ -3,7 +3,7 @@
         "griya": "Griya Gede Mundeh"
     },
     "navigation": {
-        "dashboard": "",
+        "dashboard": "dashboard",
         "transaction": "transaction",
         "consultation": "consultation",
         "ceremonySchedule": "ceremony-schedule",

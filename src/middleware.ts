@@ -28,6 +28,16 @@ export function middleware(request: NextRequest) {
   if (pathnameHasLocale) return;
   // Redirect if there is no locale
   const locale = getLocale(request);
+
+  const cookies = request.cookies;
+  const isLogin = cookies.get("isLogin");
+
+  // if (isLogin === undefined) {
+  //   request.nextUrl.pathname = `/${locale}/login`;
+  //   request.cookies.set("isLogin", "true");
+  //   return NextResponse.redirect(request.nextUrl);
+  // }
+
   request.nextUrl.pathname = `/${locale}${pathname}`;
   return NextResponse.redirect(request.nextUrl);
 }

@@ -16,6 +16,14 @@ const LoginForm = ({ t }: LoginFormProps) => {
   const [passwordValue, setPasswordValue] = useState<string>("");
   const [emailValue, setEmailValue] = useState<string>("");
 
+  const login = () => {
+    document.cookie = "isLogin=true; max-age=36000";
+
+    setTimeout(() => {}, 1000);
+
+    router.push("/dashboard");
+  };
+
   return (
     <main className="h-screen w-screen flex flex-row p-16 justify-between space-x-6">
       <div className="p-8 bg-primary1 flex justify-center items-center rounded-3xl w-1/2">
@@ -55,7 +63,7 @@ const LoginForm = ({ t }: LoginFormProps) => {
             <PrimaryButton
               label={t.label.login}
               onClick={() => {
-                router.push("/dashboard");
+                login();
               }}
             />
           </div>
