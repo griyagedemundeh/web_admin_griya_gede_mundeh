@@ -1,4 +1,4 @@
-import "server-only";
+// import "server-only";
 
 // Import your dictionary files
 import en from "./dictionaries/en.json";
