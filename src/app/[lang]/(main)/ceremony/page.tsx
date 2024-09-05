@@ -2,8 +2,8 @@
 
 import {
   CheckCircleIcon,
+  ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
-  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
@@ -21,10 +21,6 @@ import {
   DialogPanel,
   Field,
   Label,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
   Switch,
 } from "@headlessui/react";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
@@ -37,6 +33,23 @@ import SecondaryWithIconButton from "@/components/button/SecondaryWithIconButton
 import IconButton from "@/components/button/IconButton";
 import DropdownInput from "@/components/dropdown/DropdownInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
+import {
+  ClassicEditor,
+  Bold,
+  Essentials,
+  Heading,
+  Indent,
+  IndentBlock,
+  Italic,
+  Link,
+  List,
+  Paragraph,
+  Undo,
+} from "ckeditor5";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import "ckeditor5/ckeditor5.css";
+import CurrencyInput from "react-currency-input-field";
+import BigFileInput from "@/components/input/BigFileInput";
 
 type Ceremony = {
   title: string;
@@ -44,6 +57,13 @@ type Ceremony = {
   kategori: string;
   thumbnailUrl: string;
   status: boolean;
+};
+
+type CeremonyPackage = {
+  id: string;
+  title: string;
+  price: string;
+  description: string;
 };
 
 const categories: DropdownFilterItemProps[] = [
@@ -153,6 +173,10 @@ export default function Ceremony({
       throw new Error("Function not implemented.");
     },
   });
+
+  const [ceremonyPackages, setCeremonyPackages] = useState<CeremonyPackage[]>([
+    { id: "1", title: "", price: "0", description: "" },
+  ]);
 
   return (
     <>
@@ -345,8 +369,8 @@ export default function Ceremony({
                       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                         <div>
                           <p className="text-sm text-gray-400">
-                            Showing <span className="font-medium">1</span> to{" "}
-                            <span className="font-medium">10</span> of{" "}
+                            Showing <span className="font-medium">1</span> to
+                            <span className="font-medium">10</span> of
                             <span className="font-medium">97</span> results
                           </p>
                         </div>
@@ -463,7 +487,7 @@ export default function Ceremony({
                             : "text-center text-xs"
                         }
                       >
-                        Dokumentasi
+                        Gambar Sampul
                       </div>
                       <div
                         className={
@@ -484,32 +508,165 @@ export default function Ceremony({
                   </div>
                 </div>
 
-                <div className="px-6 my-6 flex flex-col space-y-4">
-                  <PrimaryInput
-                    name="Nama Upacara"
-                    value={""}
-                    onChange={(e) => {}}
-                    placeholder="Masukkan nama upacara"
-                  />
+                <div className="px-6 my-6 ">
+                  {progress < 50 ? (
+                    <div className="flex flex-col space-y-4">
+                      <PrimaryInput
+                        name="Nama Upacara"
+                        value={""}
+                        onChange={(e) => {}}
+                        placeholder="Masukkan nama upacara"
+                      />
 
-                  <DropdownInput
-                    items={categories}
-                    label="Kategori Upacara"
-                    placeholder="Pilih Kategori Upacara"
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                  />
+                      <DropdownInput
+                        items={categories}
+                        label="Kategori Upacara"
+                        placeholder="Pilih Kategori Upacara"
+                        selectedItem={selectedItem}
+                        setSelectedItem={setSelectedItem}
+                      />
 
-                  <PrimaryTextArea
-                    value={""}
-                    onChange={(e) => {}}
-                    name="Deskripsi Upacara"
-                    placeholder="Masukkan deskripsi singkat upacaramu disini"
-                  />
+                      <PrimaryTextArea
+                        value={""}
+                        onChange={(e) => {}}
+                        name="Deskripsi Upacara"
+                        placeholder="Masukkan deskripsi singkat upacaramu disini"
+                      />
+                    </div>
+                  ) : null}
+                  {progress > 50 && progress < 90 ? (
+                    <BigFileInput onChange={(e) => {}} value={""} />
+                  ) : null}
+
+                  {progress > 90 ? (
+                    <div className="flex flex-col">
+                      {ceremonyPackages.map((ceremonyPackage, index) => (
+                        <div key={index.toString()}>
+                          <p className="capitalize font-bold mb-4">
+                            Paket {index + 1}
+                          </p>
+                          <div className="flex flex-col space-y-4">
+                            <PrimaryInput
+                              name="Nama Paket"
+                              value={ceremonyPackage.title}
+                              onChange={(e) => {}}
+                              placeholder="Masukkan nama paket"
+                            />
+
+                            <div>
+                              <label
+                                htmlFor="price"
+                                className="block text-sm font-medium leading-6 text-gray-900"
+                              >
+                                Harga Paket
+                              </label>
+                              <CurrencyInput
+                                id="input-example"
+                                name="input-name"
+                                placeholder="Masukkan harga paket"
+                                defaultValue={parseInt(
+                                  ceremonyPackage.price,
+                                  10
+                                )}
+                                prefix="Rp"
+                                className="block w-full mt-2 rounded-md border-0 py-1.5 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 placeholder:text-xs bg-gray-50"
+                                decimalsLimit={2}
+                                onValueChange={(value, name, values) =>
+                                  console.log(value, name, values)
+                                }
+                              />
+                            </div>
+
+                            <div className="col-span-full">
+                              <label
+                                htmlFor="cover-photo"
+                                className="block text-sm font-medium leading-6 text-gray-900 mb-2"
+                              >
+                                Deskripsi Paket
+                              </label>
+                              <div className="h-40 overflow-y-scroll scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white">
+                                <CKEditor
+                                  data={ceremonyPackage.description}
+                                  editor={ClassicEditor}
+                                  config={{
+                                    toolbar: [
+                                      "undo",
+                                      "redo",
+                                      "|",
+                                      "heading",
+                                      "|",
+                                      "bold",
+                                      "italic",
+                                      "|",
+                                      "link",
+                                      "insertTable",
+                                      "|",
+                                      "bulletedList",
+                                      "numberedList",
+                                      "indent",
+                                      "outdent",
+                                    ],
+                                    plugins: [
+                                      Bold,
+                                      Essentials,
+                                      Heading,
+                                      Indent,
+                                      IndentBlock,
+                                      Italic,
+                                      Link,
+                                      List,
+                                      Paragraph,
+                                      Undo,
+                                    ],
+
+                                    placeholder:
+                                      "Masukkan deskripsi paketmu disini",
+                                    initialData: "",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            {ceremonyPackages[ceremonyPackages.length - 1] ===
+                            ceremonyPackage ? (
+                              <button
+                                onClick={() => {
+                                  setCeremonyPackages(
+                                    ceremonyPackages.concat([
+                                      {
+                                        id: `${ceremonyPackages.length}`,
+                                        title: "",
+                                        description: "",
+                                        price: "0",
+                                      },
+                                    ])
+                                  );
+                                }}
+                                className="py-1 bg-slate-50 w-full border-2 border-gray-300 flex flex-row justify-center items-center rounded-lg space-x-2"
+                              >
+                                <PlusIcon className="h-5 w-5" color="gray" />
+                                <p className="text-gray-500 text-xs">
+                                  Klik disini untuk tambah jenis paket
+                                </p>
+                              </button>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
-              <div className="flex flex-row justify-end w-full px-6 pb-4">
+              <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
+                {progress > 50 ? (
+                  <SecondaryWithIconButton
+                    label="Kembali"
+                    onClick={() => {
+                      setProgress(progress - 33.33);
+                    }}
+                    icon={ChevronDoubleLeftIcon}
+                  />
+                ) : null}
                 <PrimaryWithIconButton
                   label="Selanjutnya"
                   onClick={() => {

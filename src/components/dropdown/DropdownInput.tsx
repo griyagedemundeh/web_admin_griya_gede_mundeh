@@ -26,8 +26,8 @@ const DropdownInput = ({
           <MenuButton
             className={
               selectedItem
-                ? "text-gray-900 inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                : "text-gray-400 inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-xs shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                ? "text-gray-900 inline-flex w-full justify-between gap-x-1.5 rounded-md bg-gray-50 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                : "text-gray-400 inline-flex w-full justify-between gap-x-1.5 rounded-md bg-gray-50 px-3 py-2 text-xs shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             }
           >
             {selectedItem?.title ?? placeholder}
@@ -40,7 +40,7 @@ const DropdownInput = ({
 
         <MenuItems
           transition
-          className="absolute right-0 z-50 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in h-32 overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white w-full"
+          className="absolute right-0 z-50 mt-2 origin-top-right rounded-md bg-gray-50 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in h-32 overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white w-full"
         >
           <div className="py-1">
             {items.map((item) => {
