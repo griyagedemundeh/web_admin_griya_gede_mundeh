@@ -10,6 +10,7 @@ interface PrimaryWithIconButtonProps {
   >;
   className?: string;
   classNameIcon?: string;
+  color?: string;
 }
 
 const IconButton = ({
@@ -17,18 +18,22 @@ const IconButton = ({
   onClick,
   className,
   classNameIcon,
+  color,
 }: PrimaryWithIconButtonProps) => {
   return (
     <button
       className={
-        className + " hover:cursor-pointer hover:bg-gray-200 rounded-full p-1"
+        className +
+        ` hover:cursor-pointer hover:bg-${
+          color ?? "gray"
+        }-200 rounded-full p-1 aspect-square`
       }
       onClick={onClick}
     >
       <Icon
         aria-hidden="true"
         className={classNameIcon ?? "h-5 w-5"}
-        color="gray"
+        color={color ?? "gray"}
       />
     </button>
   );

@@ -36,6 +36,7 @@ const BigFileInput = ({ onChange, value, label }: BigFileInputProps) => {
                 type="file"
                 className="sr-only"
                 value={value}
+                onChange={onChange}
               />
             </label>
             <p className="pl-1">atau seret dan lepas</p>
