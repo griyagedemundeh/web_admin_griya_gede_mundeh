@@ -23,6 +23,7 @@ import CurrencyInput from "react-currency-input-field";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import CeremonyPackage from "@/data/models/ceremonyPackage";
 import IconButton from "@/components/button/IconButton";
+import SecondaryThinButton from "@/components/button/SecondaryThinButton";
 
 interface AddCeremonyModalProps {
   progress: number;
@@ -206,7 +207,7 @@ const AddCeremonyModalContent = ({
                   </div>
                   {ceremonyPackages[ceremonyPackages.length - 1] ===
                   ceremonyPackage ? (
-                    <button
+                    <SecondaryThinButton
                       onClick={() => {
                         setCeremonyPackages(
                           ceremonyPackages.concat([
@@ -219,13 +220,9 @@ const AddCeremonyModalContent = ({
                           ])
                         );
                       }}
-                      className="py-1 bg-slate-50 w-full border-2 border-gray-300 flex flex-row justify-center items-center rounded-lg space-x-2"
-                    >
-                      <PlusIcon className="h-5 w-5" color="gray" />
-                      <p className="text-gray-500 text-xs">
-                        Klik disini untuk tambah jenis paket
-                      </p>
-                    </button>
+                      label="Klik disini untuk tambah jenis paket"
+                      icon={PlusIcon}
+                    />
                   ) : null}
                 </div>
               </div>

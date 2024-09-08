@@ -10,12 +10,21 @@ import {
 import { getDictionary } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationTriangleIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { Field, Label, Switch } from "@headlessui/react";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
-import { RowModel, Table, useReactTable } from "@tanstack/react-table";
+import {
+  createColumnHelper,
+  RowModel,
+  Table,
+  useReactTable,
+} from "@tanstack/react-table";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import Divider from "@/components/mini/Divider";
 import IconButton from "@/components/button/IconButton";
@@ -25,6 +34,9 @@ import AddCeremonyModal from "./components/AddCeremonyModal";
 import Ceremony from "@/data/models/ceremony";
 import { categories, ceremonies, status } from "@/utils/dummyData";
 import Pagination from "@/components/mini/Pagination";
+import DetailCeremonyModal from "./components/DetailCeremonyModal";
+import IconBackgroundButton from "@/components/button/IconBackgroundButton";
+import AlertModal from "@/components/modal/AlertModal";
 
 export default function CeremonyPage({
   params: { lang },
@@ -33,17 +45,37 @@ export default function CeremonyPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
   const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
     useState<DropdownFilterItemProps>();
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const columns = useMemo(() => [], ["Upacara", "Kategori", "Status", "Aksi"]);
+  const columnHelper = createColumnHelper<Ceremony>();
+  const columns = useMemo(
+    () => [],
+    [
+      columnHelper.accessor("title", {
+        cell: (info) => info.getValue(),
+      }),
+      ,
+      columnHelper.accessor("kategori", {
+        cell: (info) => info.getValue(),
+      }),
+      ,
+      columnHelper.accessor("status", {
+        cell: (info) => info.getValue(),
+      }),
+      ,
+      ,
+    ]
+  );
 
   const [data, setData] = useState(() => ceremonies);
   const [progress, setProgress] = useState<number>(33.33);
 
-  const tables = useReactTable({
+  const table = useReactTable({
     columns,
     data,
     getCoreRowModel: function (
@@ -222,20 +254,23 @@ export default function CeremonyPage({
                             </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               <div className="flex flex-row space-x-2">
-                                <button className="p-2 bg-emerald-100 rounded-lg hover:bg-emerald-200">
-                                  <PencilSquareIcon
-                                    color="green"
-                                    height={22}
-                                    width={22}
-                                  />
-                                </button>
-                                <button className="p-2 bg-rose-100 rounded-lg hover:bg-rose-200">
-                                  <TrashIcon
-                                    color="red"
-                                    height={22}
-                                    width={22}
-                                  />
-                                </button>
+                                <IconBackgroundButton
+                                  icon={PencilSquareIcon}
+                                  colorBackground="emerald"
+                                  colorIcon="green"
+                                  onClick={() => {
+                                    setOpenDetail(true);
+                                  }}
+                                />
+
+                                <IconBackgroundButton
+                                  icon={TrashIcon}
+                                  colorBackground="rose"
+                                  colorIcon="red"
+                                  onClick={() => {
+                                    setOpenDelete(true);
+                                  }}
+                                />
                               </div>
                             </td>
                           </tr>
@@ -263,6 +298,35 @@ export default function CeremonyPage({
         setProgress={setProgress}
         setSelectedCeremonyCategory={setSelectedCeremonyCategory}
         setSelectedCeremonyPackage={setSelectedCeremonyPackage}
+      />
+      {/* Dialog Detail Ceremony*/}
+      <DetailCeremonyModal
+        ceremonyCategories={ceremonyPackages}
+        ceremonyPackages={ceremonyPackages}
+        open={openDetail}
+        progress={progress}
+        selectedCeremonyCategory={selectedCeremonyCategory}
+        setCeremonyPackages={setCeremonyPackages}
+        setOpen={setOpenDetail}
+        setProgress={setProgress}
+        setSelectedCeremonyCategory={setSelectedCeremonyCategory}
+        setSelectedCeremonyPackage={setSelectedCeremonyPackage}
+      />
+
+      {/* Delete Dialog */}
+      <AlertModal
+        icon={ExclamationTriangleIcon}
+        onRightClick={() => {
+          setOpenDelete(false);
+        }}
+        open={openDelete}
+        setOpen={setOpenDelete}
+        title="Hapus"
+        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
+        rightButtonLabel="Lanjutkan"
+        leftButtonLabel="Batal"
+        headingIconColor="red"
+        rightButtonColor="red-500"
       />
     </>
   );
