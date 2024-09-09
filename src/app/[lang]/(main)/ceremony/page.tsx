@@ -20,6 +20,7 @@ import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
 import {
+  ColumnDef,
   createColumnHelper,
   RowModel,
   Table,
@@ -36,7 +37,8 @@ import { categories, ceremonies, status } from "@/utils/dummyData";
 import Pagination from "@/components/mini/Pagination";
 import DetailCeremonyModal from "./components/DetailCeremonyModal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertModal from "@/components/modal/AlertModal";
+import AlertDangerModal from "@/components/modal/AlertDangerModal";
+import PrimaryTable from "@/components/table/PrimaryTable";
 
 export default function CeremonyPage({
   params: { lang },
@@ -52,38 +54,97 @@ export default function CeremonyPage({
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const columnHelper = createColumnHelper<Ceremony>();
-  const columns = useMemo(
-    () => [],
-    [
-      columnHelper.accessor("title", {
-        cell: (info) => info.getValue(),
-      }),
-      ,
-      columnHelper.accessor("kategori", {
-        cell: (info) => info.getValue(),
-      }),
-      ,
-      columnHelper.accessor("status", {
-        cell: (info) => info.getValue(),
-      }),
-      ,
-      ,
-    ]
+  const columns = useMemo<ColumnDef<Ceremony>[]>(
+    () => [
+      {
+        header: "Upacara Agama",
+        cell: (info) => (
+          <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
+            <div className="flex flex-row space-x-4 items-center">
+              <Image
+                alt={info.row.original.title}
+                src={info.row.original.thumbnailUrl}
+                className="h-10 w-10 rounded-full bg-gray-50 object-cover"
+                height={40}
+                width={40}
+                objectFit="cover"
+              />
+              <div>
+                <p className="font-bold">{info.row.original.title}</p>
+                {/* <p className="text-xs text-gray-500 text-ellipsis line-clamp-1">
+                  {info.row.original.description}
+                </p> */}
+              </div>
+            </div>
+          </div>
+        ),
+      },
+      {
+        header: "Kategori",
+        cell: (info) => (
+          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {info.row.original.kategori}
+          </div>
+        ),
+      },
+      {
+        header: "Status",
+        cell: (info) => (
+          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <Field className="flex items-center bg-gray-100 p-2 rounded-full">
+              <Switch
+                checked={info.row.original.status}
+                className="group relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary1 focus:ring-offset-2 data-[checked]:bg-primary1"
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-5"
+                />
+              </Switch>
+              <Label as="span" className="ml-3 text-sm">
+                {info.row.original.status ? (
+                  <span className="font-medium text-gray-900">Aktif</span>
+                ) : (
+                  <span className="font-medium text-gray-400">Non-Aktif</span>
+                )}
+              </Label>
+            </Field>
+          </td>
+        ),
+      },
+      {
+        header: "Aksi",
+        cell: (info) => (
+          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <div className="flex flex-row space-x-2">
+              <IconBackgroundButton
+                icon={PencilSquareIcon}
+                colorBackground="emerald"
+                colorIcon="green"
+                onClick={() => {
+                  setOpenDetail(true);
+                }}
+              />
+
+              <IconBackgroundButton
+                icon={TrashIcon}
+                colorBackground="rose"
+                colorIcon="red"
+                onClick={() => {
+                  setOpenDelete(true);
+                }}
+              />
+            </div>
+          </td>
+        ),
+      },
+    ],
+    []
   );
 
   const [data, setData] = useState(() => ceremonies);
   const [progress, setProgress] = useState<number>(33.33);
-
-  const table = useReactTable({
-    columns,
-    data,
-    getCoreRowModel: function (
-      table: Table<Ceremony>
-    ): () => RowModel<Ceremony> {
-      throw new Error("Function not implemented.");
-    },
-  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [ceremonyPackages, setCeremonyPackages] = useState<CeremonyPackage[]>([
     { id: `${new Date()}`, title: "", price: "0", description: "" },
@@ -103,7 +164,56 @@ export default function CeremonyPage({
 
   return (
     <>
-      <div>
+      <h1 className="font-bold text-xl mb-8">Upacara Agama</h1>
+      <PrimaryTable
+        title="Upacara Agama"
+        mainActionTitle="Tambah Upacara Agama"
+        onFilterReset={() => {}}
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedCeremonyCategory}
+              setSelectedItem={setSelectedCeremonyCategory}
+              icon={<TagIcon height={16} width={16} color="gray" />}
+              items={categories}
+            />
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={<CheckCircleIcon height={16} width={16} color="gray" />}
+              items={status}
+            />
+
+            <PrimaryInput
+              onChange={(e) => {}}
+              value={""}
+              placeholder="Cari Upacara"
+              className="w-full"
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
+        mainActionOnClick={() => {
+          setOpen(true);
+        }}
+        columns={columns}
+        data={data ?? []}
+        isLoading={false}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPage={5}
+        limitPage={10}
+        isCommon={true}
+      />
+      {/* <div>
         <h1 className="font-bold text-xl mb-8">Upacara Agama</h1>
         <div
           className="bg-white rounded-xl  w-full"
@@ -284,7 +394,7 @@ export default function CeremonyPage({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Dialog Add Ceremony*/}
       <AddCeremonyModal
@@ -314,8 +424,7 @@ export default function CeremonyPage({
       />
 
       {/* Delete Dialog */}
-      <AlertModal
-        icon={ExclamationTriangleIcon}
+      <AlertDangerModal
         onRightClick={() => {
           setOpenDelete(false);
         }}
@@ -325,8 +434,6 @@ export default function CeremonyPage({
         description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-        headingIconColor="red"
-        rightButtonColor="red-500"
       />
     </>
   );

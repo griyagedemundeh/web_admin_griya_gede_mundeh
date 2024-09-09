@@ -4,19 +4,18 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import React, { ForwardRefExoticComponent } from "react";
 
-interface AlertModalProps {
+interface AlertDangerModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   onRightClick: () => void;
   title: string;
-  description: string;
+  description?: string;
   leftButtonLabel?: string;
   rightButtonLabel: string;
-  rightButtonColor?: string;
-  headingIconColor?: string;
-  icon: ForwardRefExoticComponent<
+  icon?: ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
       title?: string;
       titleId?: string;
@@ -24,7 +23,7 @@ interface AlertModalProps {
   >;
 }
 
-const AlertModal = ({
+const AlertDangerModal = ({
   open,
   setOpen,
   onRightClick,
@@ -32,12 +31,10 @@ const AlertModal = ({
   description,
   rightButtonLabel,
   leftButtonLabel,
-  rightButtonColor,
-  headingIconColor,
   icon: Icon,
-}: AlertModalProps) => {
+}: AlertDangerModalProps) => {
   return (
-    <Dialog open={open} onClose={setOpen} className="relative z-10">
+    <Dialog open={open} onClose={setOpen} className="relative z-50">
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
@@ -50,13 +47,19 @@ const AlertModal = ({
             className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
             <div>
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <Icon
-                  aria-hidden="true"
-                  color={headingIconColor ?? "green"}
-                  className={`h-6 w-6 text-red`}
-                />
-              </div>
+              {Icon ? (
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
+                  <Icon aria-hidden="true" className={`h-6 w-6 text-red`} />
+                </div>
+              ) : (
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
+                  <ExclamationTriangleIcon
+                    aria-hidden="true"
+                    className={`h-6 w-6 text-red`}
+                  />
+                </div>
+              )}
+
               <div className="mt-3 text-center sm:mt-5">
                 <DialogTitle
                   as="h3"
@@ -75,13 +78,7 @@ const AlertModal = ({
                 onClick={() => {
                   onRightClick();
                 }}
-                className={`inline-flex w-full justify-center rounded-md bg-${
-                  rightButtonColor ?? "primary1"
-                } px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-${
-                  rightButtonColor ?? "primary2"
-                } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-${
-                  rightButtonColor ?? "primary1"
-                } sm:col-start-2`}
+                className={`inline-flex w-full justify-center rounded-md bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 sm:col-start-2`}
               >
                 {rightButtonLabel}
               </button>
@@ -106,4 +103,4 @@ const AlertModal = ({
   );
 };
 
-export default AlertModal;
+export default AlertDangerModal;
