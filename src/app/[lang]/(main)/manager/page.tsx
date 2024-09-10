@@ -34,7 +34,7 @@ export default function ManagerPage({
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
-  const [openDetail, setOpenDetail] = useState(true);
+  const [openDetail, setOpenDetail] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
