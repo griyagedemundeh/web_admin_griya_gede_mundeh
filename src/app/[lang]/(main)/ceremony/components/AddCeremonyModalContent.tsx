@@ -1,19 +1,19 @@
 import React from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import {
-  ClassicEditor,
-  Bold,
-  Essentials,
-  Heading,
-  Indent,
-  IndentBlock,
-  Italic,
-  Link,
-  List,
-  Paragraph,
-  Undo,
-} from "ckeditor5";
+
+import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
+import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
+import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
+import Bold from "@ckeditor/ckeditor5-basic-styles/src/bold";
+import Heading from "@ckeditor/ckeditor5-heading/src/heading";
+import Italic from "@ckeditor/ckeditor5-basic-styles/src/italic";
+import Indent from "@ckeditor/ckeditor5-indent/src/indent";
+import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock";
+import Link from "@ckeditor/ckeditor5-link/src/link";
+import List from "@ckeditor/ckeditor5-list/src/list";
+import Undo from "@ckeditor/ckeditor5-undo/src/undo";
+
 import { PlusIcon } from "@heroicons/react/20/solid";
 import DropdownInput from "@/components/dropdown/DropdownInput";
 import BigFileInput from "@/components/input/BigFileInput";
@@ -196,8 +196,8 @@ const AddCeremonyModalContent = ({
                             Italic,
                             Link,
                             List,
-                            Paragraph,
                             Undo,
+                            Paragraph,
                           ],
                           placeholder: "Masukkan deskripsi paketmu disini",
                           initialData: "",

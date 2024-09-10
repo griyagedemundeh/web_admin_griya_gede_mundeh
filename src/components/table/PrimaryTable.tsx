@@ -127,7 +127,7 @@ const PrimaryTable = ({
                       <tr key={headerGroup.id}>
                         {headerGroup.headers.map((header) => (
                           <th
-                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-1/6"
+                            className="px-8 py-3.5 text-sm font-semibold text-gray-900 w-1/6"
                             key={header.id}
                             colSpan={header.colSpan}
                           >
@@ -166,7 +166,10 @@ const PrimaryTable = ({
                   ) : (
                     <tbody className="bg-white">
                       {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id} className="even:bg-gray-50">
+                        <tr
+                          key={row.id}
+                          className="even:bg-gray-50 hover:bg-gray-50"
+                        >
                           {row.getVisibleCells().map((cell) => (
                             <td
                               key={cell.id}
@@ -262,19 +265,21 @@ const PrimaryTable = ({
                             className="h-5 w-5"
                           />
                         </button>
-                        {Array.from({ length: totalPage ?? 0 }).map((item) => (
-                          <button
-                            key={item as number}
-                            aria-current="page"
-                            className={
-                              currentPage === item
-                                ? "bg-primary1 focus-visible:outline-primary2 text-white relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                                : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                            }
-                          >
-                            {item as number}
-                          </button>
-                        ))}
+                        {Array.from({ length: totalPage ?? 0 }).map(
+                          (item, index) => (
+                            <button
+                              key={item as number}
+                              aria-current="page"
+                              className={
+                                currentPage === index + 1
+                                  ? "bg-primary1 focus-visible:outline-primary2 text-white relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                  : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                              }
+                            >
+                              {`${index + 1}`}
+                            </button>
+                          )
+                        )}
 
                         <button
                           onClick={() => {
