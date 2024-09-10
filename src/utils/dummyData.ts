@@ -1,4 +1,5 @@
 import Ceremony from "@/data/models/ceremony";
+import User from "@/data/models/user";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 
 export const status: DropdownFilterItemProps[] = [
@@ -80,5 +81,31 @@ export const ceremonies: Ceremony[] = [
     thumbnailUrl:
       "https://awsimages.detik.net.id/community/media/visual/2024/05/05/potret-mahalini-dan-rizky-febian-gelar-upacara-adat-bali-jelang-pernikahan-6_169.jpeg?w=1200",
     status: false,
+  },
+];
+
+export const users: User[] = [
+  {
+    name: "Mahesa Widiana",
+    email: "kt.mahesa@gmail.com",
+    phone: "085858603320",
+    status: true,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  },
+  {
+    name: "Bimo Adnyana",
+    email: "bimo@gmail.com",
+    phone: "0824237646883",
+    status: true,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  },
+  {
+    name: "Rafika Wardah",
+    email: "fika@gmail.com",
+    phone: "081231232445",
+    status: false,
+    avatarUrl: null,
   },
 ];
