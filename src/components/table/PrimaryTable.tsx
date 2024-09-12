@@ -13,7 +13,6 @@ import React, {
   SetStateAction,
 } from "react";
 import PrimaryWithIconButton from "../button/PrimaryWithIconButton";
-import Divider from "../mini/Divider";
 import {
   ColumnDef,
   flexRender,
@@ -41,6 +40,7 @@ interface PrimaryTableProps {
   currentPage?: number;
   limitPage?: number;
   totalPage?: number;
+  className?: string;
 }
 
 const PrimaryTable = ({
@@ -60,6 +60,7 @@ const PrimaryTable = ({
   limitPage,
   isLoading,
   setIsLoading,
+  className,
 }: PrimaryTableProps) => {
   const table = useReactTable({
     columns,
@@ -76,10 +77,10 @@ const PrimaryTable = ({
 
   return (
     <div
-      className="bg-white rounded-xl  w-full"
+      className={className + " bg-white rounded-xl w-full"}
       style={{ boxShadow: "0 0px 5px rgba(209, 213, 219, 0.6)" }}
     >
-      <div className="px-8 py-6 flex flex-row justify-between w-full items-center">
+      <div className="px-8 py-6 flex flex-row justify-between w-full items-center border-b border-gray-300">
         <h2 className="font-bold text-primary1">{title}</h2>
 
         {actions ?? (
@@ -94,7 +95,6 @@ const PrimaryTable = ({
           />
         )}
       </div>
-      <Divider />
 
       <div className="py-8">
         <div>

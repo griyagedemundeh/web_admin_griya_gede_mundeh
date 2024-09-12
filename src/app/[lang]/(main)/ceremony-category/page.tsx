@@ -3,28 +3,30 @@
 import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
-  TagIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  CheckBadgeIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-
 import IconButton from "@/components/button/IconButton";
-
-import CeremonyPackage from "@/data/models/ceremonyPackage";
-import AddCeremonyModal from "./components/AddCeremonyModal";
 import Ceremony from "@/data/models/ceremony";
-import { categories, ceremonies, status } from "@/utils/dummyData";
-import DetailCeremonyModal from "./components/DetailCeremonyModal";
+import { ceremonies, status } from "@/utils/dummyData";
+
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import SwitchInput from "@/components/input/SwitchInput";
+import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
+import CeremonyCategoryModal from "./components/CeremonyCategoryModal";
+import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
 
 export default function CeremonyPage({
   params: { lang },
@@ -35,15 +37,16 @@ export default function CeremonyPage({
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
-  const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
-    useState<DropdownFilterItemProps>();
+  const [active, setActive] = useState<boolean>(true);
+  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
+
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const columns = useMemo<ColumnDef<Ceremony>[]>(
+  const columnsCategories = useMemo<ColumnDef<Ceremony>[]>(
     () => [
       {
-        header: "Upacara Agama",
+        header: "Kategori Upacara Agama",
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
@@ -57,22 +60,12 @@ export default function CeremonyPage({
               />
               <div>
                 <p className="font-bold">{info.row.original.title}</p>
-                {/* <p className="text-xs text-gray-500 text-ellipsis line-clamp-1">
-                  {info.row.original.description}
-                </p> */}
               </div>
             </div>
           </div>
         ),
       },
-      {
-        header: "Kategori",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.kategori}
-          </div>
-        ),
-      },
+
       {
         header: "Status",
         cell: (info) => (
@@ -121,41 +114,18 @@ export default function CeremonyPage({
   );
 
   const [data, setData] = useState(() => ceremonies);
-  const [progress, setProgress] = useState<number>(33.33);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const [ceremonyPackages, setCeremonyPackages] = useState<CeremonyPackage[]>([
-    { id: `${new Date()}`, title: "", price: "0", description: "" },
-  ]);
-  const [selectedCeremonyPackage, setSelectedCeremonyPackage] =
-    useState<CeremonyPackage>();
-
-  const removeCeremonyPackage = () => {
-    setCeremonyPackages(
-      ceremonyPackages.filter((item) => item.id !== selectedCeremonyPackage?.id)
-    );
-  };
-
-  useEffect(() => {
-    removeCeremonyPackage();
-  }, [selectedCeremonyPackage]);
 
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Upacara Agama</h1>
+      <h1 className="font-bold text-xl mb-8">Kategori Upacara Agama</h1>
+
       <PrimaryTable
-        title="Upacara Agama"
-        mainActionTitle="Tambah Upacara Agama"
+        title="Upacara Kategori Agama"
+        mainActionTitle="Tambah Kategori Upacara Agama"
         onFilterReset={() => {}}
         filters={
           <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-            <DropdownFilter
-              label="Kategori"
-              selectedItem={selectedCeremonyCategory}
-              setSelectedItem={setSelectedCeremonyCategory}
-              icon={<TagIcon height={16} width={16} color="gray" />}
-              items={categories}
-            />
             <DropdownFilter
               label="Status"
               selectedItem={selectedStatusItem}
@@ -167,7 +137,7 @@ export default function CeremonyPage({
             <PrimaryInput
               onChange={(e) => {}}
               value={""}
-              placeholder="Cari Upacara"
+              placeholder="Cari Kategori Upacara Agama"
               className="w-full"
               trailing={
                 <IconButton
@@ -182,7 +152,7 @@ export default function CeremonyPage({
         mainActionOnClick={() => {
           setOpen(true);
         }}
-        columns={columns}
+        columns={columnsCategories}
         data={data ?? []}
         isLoading={false}
         currentPage={currentPage}
@@ -192,31 +162,37 @@ export default function CeremonyPage({
         isCommon={true}
       />
 
-      {/* Dialog Add Ceremony*/}
-      <AddCeremonyModal
-        ceremonyCategories={ceremonyPackages}
-        ceremonyPackages={ceremonyPackages}
+      {/* Dialog Add Category */}
+      <CeremonyCategoryModal
         open={open}
-        progress={progress}
-        selectedCeremonyCategory={selectedCeremonyCategory}
-        setCeremonyPackages={setCeremonyPackages}
         setOpen={setOpen}
-        setProgress={setProgress}
-        setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-        setSelectedCeremonyPackage={setSelectedCeremonyPackage}
+        title="Tambah Kategori Upacara Agama"
+        bottomAction={
+          <PrimaryWithIconButton
+            label="Simpan"
+            onClick={() => {}}
+            icon={CheckBadgeIcon}
+          />
+        }
       />
-      {/* Dialog Detail Ceremony*/}
-      <DetailCeremonyModal
-        ceremonyCategories={ceremonyPackages}
-        ceremonyPackages={ceremonyPackages}
+
+      <CeremonyCategoryModal
         open={openDetail}
-        progress={progress}
-        selectedCeremonyCategory={selectedCeremonyCategory}
-        setCeremonyPackages={setCeremonyPackages}
         setOpen={setOpenDetail}
-        setProgress={setProgress}
-        setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-        setSelectedCeremonyPackage={setSelectedCeremonyPackage}
+        isForDetail={true}
+        title="Tambah Kategori Upacara Agama"
+        activeCeremonyCategory={active}
+        setActiveCeremonyCategory={(e) => {
+          setActive(e);
+          setOpenActiveConfirmation(true);
+        }}
+        bottomAction={
+          <PrimaryWithIconButton
+            label="Simpan"
+            onClick={() => {}}
+            icon={CheckBadgeIcon}
+          />
+        }
       />
 
       {/* Delete Dialog */}
@@ -228,6 +204,19 @@ export default function CeremonyPage({
         setOpen={setOpenDelete}
         title="Hapus"
         description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
+        rightButtonLabel="Lanjutkan"
+        leftButtonLabel="Batal"
+      />
+
+      {/* Confirmation Dialog */}
+      <AlertConfirmationModal
+        onRightClick={() => {
+          setOpenActiveConfirmation(false);
+        }}
+        open={openActiveConfirmation}
+        setOpen={setOpenActiveConfirmation}
+        title="Konfirmasi"
+        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
       />

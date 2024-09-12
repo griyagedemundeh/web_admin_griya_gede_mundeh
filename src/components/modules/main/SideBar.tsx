@@ -28,7 +28,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                     <a
                       href={item.href}
                       className={classNames(
-                        pathName.includes(item.href.toLocaleLowerCase())
+                        pathName.endsWith(item.href.toLocaleLowerCase())
                           ? "bg-yellow-50 text-primary1  border-l-primary1 border-l-4"
                           : "text-gray-700 hover:bg-yellow-50 hover:text-primary1",
                         "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
@@ -59,7 +59,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                     <a
                       href={item.href}
                       className={classNames(
-                        pathName.includes(item.href.toLocaleLowerCase())
+                        pathName.endsWith(item.href.toLocaleLowerCase())
                           ? "bg-yellow-50 text-primary1 border-l-primary1 border-l-4"
                           : "text-gray-700 hover:bg-yellow-50 hover:text-primary1",
                         "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"

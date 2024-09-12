@@ -70,6 +70,13 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
     },
     {
       id: 3,
+      name: t.label.ceremonyCategory,
+      href: `/ceremony-category`,
+      initial: getInitials(t.label.ceremonyCategory),
+      current: false,
+    },
+    {
+      id: 4,
       name: t.label.ceremony,
       href: `/ceremony`,
       initial: getInitials(t.label.ceremony),
