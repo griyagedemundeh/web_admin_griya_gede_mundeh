@@ -153,14 +153,14 @@ export default function CeremonyPage({
               label="Kategori"
               selectedItem={selectedCeremonyCategory}
               setSelectedItem={setSelectedCeremonyCategory}
-              icon={<TagIcon height={16} width={16} color="gray" />}
+              icon={TagIcon}
               items={categories}
             />
             <DropdownFilter
               label="Status"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
-              icon={<CheckCircleIcon height={16} width={16} color="gray" />}
+              icon={CheckCircleIcon}
               items={status}
             />
 

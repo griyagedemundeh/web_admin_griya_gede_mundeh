@@ -142,7 +142,7 @@ export default function UserPage({
               label="Status"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
-              icon={<CheckCircleIcon height={16} width={16} color="gray" />}
+              icon={CheckCircleIcon}
               items={status}
             />
 

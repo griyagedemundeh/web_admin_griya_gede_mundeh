@@ -3,32 +3,31 @@
 import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
+  PencilIcon,
+  TagIcon,
+  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import {
-  CheckBadgeIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import Ceremony from "@/data/models/ceremony";
-import { ceremonies, status } from "@/utils/dummyData";
-
+import { articles, status, users } from "@/utils/dummyData";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import SwitchInput from "@/components/input/SwitchInput";
+import User from "@/data/models/user";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import CeremonyCategoryModal from "./components/CeremonyCategoryModal";
+import SwitchInput from "@/components/input/SwitchInput";
 import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
+import UserModal from "./components/UserModal";
+import Article from "@/data/models/article";
 
-export default function CeremonyPage({
+export default function ArticlePage({
   params: { lang },
 }: {
   params: { lang: string };
@@ -36,36 +35,57 @@ export default function CeremonyPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-  const [active, setActive] = useState<boolean>(true);
   const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const columnsCategories = useMemo<ColumnDef<Ceremony>[]>(
+  const [data, setData] = useState(() => articles);
+  const [active, setActive] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const columns = useMemo<ColumnDef<Article>[]>(
     () => [
       {
-        header: "Kategori Upacara Agama",
+        header: "Judul Artikel",
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
                 alt={info.row.original.title}
-                src={info.row.original.thumbnailUrl}
-                className="h-10 w-10 rounded-full bg-gray-50 object-cover"
+                src={
+                  info.row.original.thumbnailString ??
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+                }
+                className="h-10 w-10 rounded-md bg-gray-50 object-cover"
                 height={40}
                 width={40}
                 objectFit="cover"
               />
-              <div>
-                <p className="font-bold">{info.row.original.title}</p>
-              </div>
+              <p className="text-gray-500 line-clamp-1 text-ellipsis pr-6">
+                {info.row.original.title}
+              </p>
             </div>
           </div>
         ),
       },
-
+      {
+        header: "Tanggal Posting",
+        cell: (info) => (
+          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {info.row.original.postedDate.toISOString()}
+          </div>
+        ),
+      },
+      {
+        header: "Kategori",
+        cell: (info) => (
+          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {info.row.original.kategori}
+          </div>
+        ),
+      },
       {
         header: "Status",
         cell: (info) => (
@@ -113,19 +133,65 @@ export default function CeremonyPage({
     []
   );
 
-  const [data, setData] = useState(() => ceremonies);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Kategori Upacara Agama</h1>
-
+      <h1 className="font-bold text-xl mb-8">Artikel</h1>
       <PrimaryTable
-        title="Upacara Kategori Agama"
-        mainActionTitle="Tambah Kategori Upacara Agama"
+        title="Artikel"
+        mainActionTitle="Tambah Artikel"
         onFilterReset={() => {}}
         filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
+            <div className="w-full">
+              <div
+                id="date-range-picker"
+                date-rangepicker
+                className="flex items-center w-full"
+              >
+                <div className="relative">
+                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="datepicker-range-start"
+                    name="start"
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary1 focus:border-primary1 block w-full ps-10 p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary1 dark:focus:border-primary1"
+                    placeholder="Select date start"
+                  />
+                </div>
+                <span className="mx-4 text-gray-500">to</span>
+                <div className="relative">
+                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="datepicker-range-end"
+                    name="end"
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary1 focus:border-primary1 block w-full ps-10 p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary1 dark:focus:border-primary1"
+                    placeholder="Select date end"
+                  />
+                </div>
+              </div>
+            </div>
+
             <DropdownFilter
               label="Status"
               selectedItem={selectedStatusItem}
@@ -134,10 +200,18 @@ export default function CeremonyPage({
               items={status}
             />
 
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={TagIcon}
+              items={status}
+            />
+
             <PrimaryInput
               onChange={(e) => {}}
               value={""}
-              placeholder="Cari Kategori Upacara Agama"
+              placeholder="Cari artikel"
               className="w-full"
               trailing={
                 <IconButton
@@ -152,7 +226,7 @@ export default function CeremonyPage({
         mainActionOnClick={() => {
           setOpen(true);
         }}
-        columns={columnsCategories}
+        columns={columns}
         data={data ?? []}
         isLoading={false}
         currentPage={currentPage}
@@ -162,35 +236,36 @@ export default function CeremonyPage({
         isCommon={true}
       />
 
-      {/* Dialog Add Category */}
-      <CeremonyCategoryModal
+      {/* Dialog Add User*/}
+      <UserModal
         open={open}
         setOpen={setOpen}
-        title="Tambah Kategori Upacara Agama"
+        title="Tambah Pengguna"
         bottomAction={
           <PrimaryWithIconButton
             label="Simpan"
             onClick={() => {}}
-            icon={CheckBadgeIcon}
+            icon={UserPlusIcon}
           />
         }
       />
 
-      <CeremonyCategoryModal
+      {/* Dialog Detail User*/}
+      <UserModal
         open={openDetail}
-        setOpen={setOpenDetail}
         isForDetail={true}
-        title="Tambah Kategori Upacara Agama"
-        activeCeremonyCategory={active}
-        setActiveCeremonyCategory={(e) => {
+        setOpen={setOpenDetail}
+        activeUser={active}
+        setActiveUser={(e) => {
           setActive(e);
           setOpenActiveConfirmation(true);
         }}
+        title="Detail Pengguna"
         bottomAction={
           <PrimaryWithIconButton
-            label="Simpan"
+            label="Perbarui"
             onClick={() => {}}
-            icon={CheckBadgeIcon}
+            icon={PencilIcon}
           />
         }
       />
@@ -207,7 +282,6 @@ export default function CeremonyPage({
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
       />
-
       {/* Confirmation Dialog */}
       <AlertConfirmationModal
         onRightClick={() => {
