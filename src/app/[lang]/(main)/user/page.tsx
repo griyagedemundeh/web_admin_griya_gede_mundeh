@@ -131,7 +131,7 @@ export default function UserPage({
 
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Pengelola</h1>
+      <h1 className="font-bold text-xl mb-8">Pengguna</h1>
       <PrimaryTable
         title="Daftar Pengguna"
         mainActionTitle="Tambah Pengguna"

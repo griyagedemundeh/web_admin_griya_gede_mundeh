@@ -121,7 +121,7 @@ export default function CeremonyPage({
       <h1 className="font-bold text-xl mb-8">Kategori Upacara Agama</h1>
 
       <PrimaryTable
-        title="Upacara Kategori Agama"
+        title="Kategori Upacara Agama"
         mainActionTitle="Tambah Kategori Upacara Agama"
         onFilterReset={() => {}}
         filters={
