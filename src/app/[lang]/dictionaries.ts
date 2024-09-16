@@ -4,13 +4,15 @@
 import en from "./dictionaries/en.json";
 import id from "./dictionaries/id.json";
 
+export type Locale = "en" | "id";
+
 // Create a dictionary object with imported language files
 const dictionaries = {
   en,
   id,
 };
 
-export const getDictionary = async (locale: any) => {
+export const getDictionary = async (locale: Locale) => {
   if (locale in dictionaries) {
     return dictionaries[locale];
   }
