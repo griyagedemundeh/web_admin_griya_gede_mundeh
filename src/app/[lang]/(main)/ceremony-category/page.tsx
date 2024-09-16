@@ -4,7 +4,7 @@ import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
-import { getDictionary } from "../../dictionaries";
+import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
 import {
@@ -31,7 +31,7 @@ import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
 export default function CeremonyPage({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);

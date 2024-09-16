@@ -5,7 +5,7 @@ import {
   MagnifyingGlassIcon,
   TagIcon,
 } from "@heroicons/react/20/solid";
-import { getDictionary } from "../../dictionaries";
+import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -29,7 +29,7 @@ import SwitchInput from "@/components/input/SwitchInput";
 export default function CeremonyPage({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);

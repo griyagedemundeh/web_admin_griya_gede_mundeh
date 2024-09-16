@@ -7,7 +7,7 @@ import {
   TagIcon,
   UserPlusIcon,
 } from "@heroicons/react/20/solid";
-import { getDictionary } from "../../dictionaries";
+import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -29,7 +29,7 @@ import Article from "@/data/models/article";
 export default function ArticlePage({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
