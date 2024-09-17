@@ -146,9 +146,9 @@ const PrimaryTable = ({
                   </thead>
                   {isLoading ? (
                     <tbody>
-                      {Array.from({ length: 10 }).map((_, index) => (
+                      {Array.from({ length: 10 }).map((item) => (
                         <tr
-                          key={index}
+                          key={item as any}
                           className="border border-1 border-zinc-300 border-x-0"
                         >
                           <td className="px-5 py-2  text-[16px] font-medium leading-normal">
@@ -265,10 +265,10 @@ const PrimaryTable = ({
                             className="h-5 w-5"
                           />
                         </button>
-                        {Array.from({ length: totalPage ?? 0 }).map(
+                        {Array.from({ length: totalPage as number }).map(
                           (item, index) => (
                             <button
-                              key={item as number}
+                              key={`${index}+${new Date()}`}
                               aria-current="page"
                               className={
                                 currentPage === index + 1
