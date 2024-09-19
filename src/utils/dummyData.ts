@@ -1,5 +1,6 @@
 import Article from "@/data/models/article";
 import Ceremony from "@/data/models/ceremony";
+import Transaction from "@/data/models/transaction";
 import User from "@/data/models/user";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 
@@ -161,5 +162,53 @@ export const articles: Article[] = [
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
     title:
       "Arti Mepamit, Upacara Adat Bali yang Dijalani Mahalini & Dinikahi Rizky Febian",
+  },
+];
+
+export const transactions: Transaction[] = [
+  {
+    id: "1",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "2",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "3",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "4",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "5",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
   },
 ];

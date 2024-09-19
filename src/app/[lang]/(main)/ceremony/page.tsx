@@ -194,7 +194,7 @@ export default function CeremonyPage({
 
       {/* Dialog Add Ceremony*/}
       <AddCeremonyModal
-        ceremonyCategories={ceremonyPackages}
+        ceremonyCategories={categories}
         ceremonyPackages={ceremonyPackages}
         open={open}
         progress={progress}
@@ -207,7 +207,7 @@ export default function CeremonyPage({
       />
       {/* Dialog Detail Ceremony*/}
       <DetailCeremonyModal
-        ceremonyCategories={ceremonyPackages}
+        ceremonyCategories={categories}
         ceremonyPackages={ceremonyPackages}
         open={openDetail}
         progress={progress}

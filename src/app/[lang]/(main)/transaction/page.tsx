@@ -2,6 +2,7 @@
 
 import {
   CheckCircleIcon,
+  CreditCardIcon,
   MagnifyingGlassIcon,
   PencilIcon,
   TagIcon,
@@ -9,22 +10,18 @@ import {
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
-import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import { articles, status } from "@/utils/dummyData";
+import { status, transactions } from "@/utils/dummyData";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SwitchInput from "@/components/input/SwitchInput";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-import UserModal from "./components/UserModal";
-import Article from "@/data/models/article";
+import Transaction from "@/data/models/transaction";
+import TransactionModal from "./components/TransactionModal";
 
 export default function TransactionPage({
   params: { lang },
@@ -40,29 +37,21 @@ export default function TransactionPage({
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const [data, setData] = useState(() => articles);
+  const [data, setData] = useState(() => transactions);
   const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns = useMemo<ColumnDef<Article>[]>(
+  const columns = useMemo<ColumnDef<Transaction>[]>(
     () => [
       {
-        header: "Judul Artikel",
+        header: "Detail Order",
         cell: (info) => (
-          <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
-            <div className="flex flex-row space-x-4 items-center">
-              <Image
-                alt={info.row.original.title}
-                src={
-                  info.row.original.thumbnailString ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                }
-                className="h-10 w-10 rounded-md bg-gray-50 object-cover"
-                height={40}
-                width={40}
-                objectFit="cover"
-              />
-              <p className="text-gray-500 line-clamp-1 text-ellipsis pr-6">
+          <div className="py-4 sm:pl-6 pr-3 text-sm font-medium text-gray-900">
+            <div className="flex flex-col space-y-2">
+              <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
+                {info.row.original.invoiceNumber}
+              </p>
+              <p className="text-gray-800 line-clamp-1 text-ellipsis">
                 {info.row.original.title}
               </p>
             </div>
@@ -70,35 +59,29 @@ export default function TransactionPage({
         ),
       },
       {
-        header: "Tanggal Posting",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.postedDate.toISOString()}
-          </div>
-        ),
-      },
-      {
-        header: "Kategori",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.kategori}
-          </div>
-        ),
-      },
-      {
         header: "Status",
         cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
+          <div className="w-1/2">
+            <div className="py-1 bg-emerald-100 border-green border-2 rounded-lg text-green w-auto text-center">
+              <p>{info.row.original.status}</p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        header: "Total Harga",
+        cell: (info) => (
+          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            Rp{info.row.original.totalPrice}
+          </div>
+        ),
+      },
+      {
+        header: "Tanggal Upacara",
+        cell: (info) => (
+          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {info.row.original.ceremonyDate.toISOString()}
+          </div>
         ),
       },
       {
@@ -107,21 +90,12 @@ export default function TransactionPage({
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
               <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
+                icon={InformationCircleIcon}
+                colorBackground="blue"
+                className="bg-blue-100"
+                colorIcon="blue"
                 onClick={() => {
                   setOpenDetail(true);
-                }}
-              />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
                 }}
               />
             </div>
@@ -200,17 +174,17 @@ export default function TransactionPage({
             />
 
             <DropdownFilter
-              label="Kategori"
+              label="Tipe Pembayaran"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
-              icon={TagIcon}
+              icon={CreditCardIcon}
               items={status}
             />
 
             <PrimaryInput
               onChange={(e) => {}}
               value={""}
-              placeholder="Cari artikel"
+              placeholder="Cari transaksi"
               className="w-full"
               trailing={
                 <IconButton
@@ -235,11 +209,11 @@ export default function TransactionPage({
         isCommon={true}
       />
 
-      {/* Dialog Add User*/}
-      <UserModal
+      {/* Dialog Add Transaction*/}
+      <TransactionModal
         open={open}
         setOpen={setOpen}
-        title="Tambah Pengguna"
+        title="Tambah Transaksi"
         bottomAction={
           <PrimaryWithIconButton
             label="Simpan"
@@ -249,8 +223,8 @@ export default function TransactionPage({
         }
       />
 
-      {/* Dialog Detail User*/}
-      <UserModal
+      {/* Dialog Detail Transaction*/}
+      {/* <UserModal
         open={openDetail}
         isForDetail={true}
         setOpen={setOpenDetail}
@@ -267,32 +241,7 @@ export default function TransactionPage({
             icon={PencilIcon}
           />
         }
-      />
-
-      {/* Delete Dialog */}
-      <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      />
-      {/* Confirmation Dialog */}
-      <AlertConfirmationModal
-        onRightClick={() => {
-          setOpenActiveConfirmation(false);
-        }}
-        open={openActiveConfirmation}
-        setOpen={setOpenActiveConfirmation}
-        title="Konfirmasi"
-        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      />
+      /> */}
     </>
   );
 }

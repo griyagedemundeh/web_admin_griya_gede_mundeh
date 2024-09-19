@@ -2,19 +2,19 @@
 
 import React from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+// import { CKEditor } from "@ckeditor/ckeditor5-react";
 
-import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
-import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
-import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
-import Bold from "@ckeditor/ckeditor5-basic-styles/src/bold";
-import Heading from "@ckeditor/ckeditor5-heading/src/heading";
-import Italic from "@ckeditor/ckeditor5-basic-styles/src/italic";
-import Indent from "@ckeditor/ckeditor5-indent/src/indent";
-import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock";
-import Link from "@ckeditor/ckeditor5-link/src/link";
-import List from "@ckeditor/ckeditor5-list/src/list";
-import Undo from "@ckeditor/ckeditor5-undo/src/undo";
+// import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
+// import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
+// import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
+// import Bold from "@ckeditor/ckeditor5-basic-styles/src/bold";
+// import Heading from "@ckeditor/ckeditor5-heading/src/heading";
+// import Italic from "@ckeditor/ckeditor5-basic-styles/src/italic";
+// import Indent from "@ckeditor/ckeditor5-indent/src/indent";
+// import IndentBlock from "@ckeditor/ckeditor5-indent/src/indentblock";
+// import Link from "@ckeditor/ckeditor5-link/src/link";
+// import List from "@ckeditor/ckeditor5-list/src/list";
+// import Undo from "@ckeditor/ckeditor5-undo/src/undo";
 
 import { PlusIcon } from "@heroicons/react/20/solid";
 import DropdownInput from "@/components/dropdown/DropdownInput";
@@ -26,16 +26,17 @@ import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import CeremonyPackage from "@/data/models/ceremonyPackage";
 import IconButton from "@/components/button/IconButton";
 import SecondaryThinButton from "@/components/button/SecondaryThinButton";
-import { Color } from "@tiptap/extension-color";
-import ListItem from "@tiptap/extension-list-item";
-import TextStyle from "@tiptap/extension-text-style";
-import {
-  EditorContent,
-  EditorProvider,
-  useCurrentEditor,
-  useEditor,
-} from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+// import SecondaryThinButton from "@/components/button/SecondaryThinButton";
+// import { Color } from "@tiptap/extension-color";
+// import ListItem from "@tiptap/extension-list-item";
+// import TextStyle from "@tiptap/extension-text-style";
+// import {
+//   EditorContent,
+//   EditorProvider,
+//   useCurrentEditor,
+//   useEditor,
+// } from "@tiptap/react";
+// import StarterKit from "@tiptap/starter-kit";
 
 interface AddCeremonyModalProps {
   progress: number;
@@ -77,58 +78,58 @@ const AddCeremonyModalContent = ({
   setSelectedCeremonyPackage,
   setCeremonyPackages,
 }: AddCeremonyModalProps) => {
-  const { editor } = useCurrentEditor();
+  // const { editor } = useCurrentEditor();
   // const editor = useEditor();
 
   // if (!editor) {
   //   return null;
   // }
 
-  const extensions = [
-    Color.configure({ types: [TextStyle.name, ListItem.name] }),
-    TextStyle.configure({ types: [ListItem.name] }),
-    StarterKit.configure({
-      bulletList: {
-        keepMarks: true,
-        keepAttributes: false,
-      },
-      orderedList: {
-        keepMarks: true,
-        keepAttributes: false,
-      },
-    }),
-  ];
+  // const extensions = [
+  //   Color.configure({ types: [TextStyle.name, ListItem.name] }),
+  //   TextStyle.configure({ types: [ListItem.name] }),
+  //   StarterKit.configure({
+  //     bulletList: {
+  //       keepMarks: true,
+  //       keepAttributes: false,
+  //     },
+  //     orderedList: {
+  //       keepMarks: true,
+  //       keepAttributes: false,
+  //     },
+  //   }),
+  // ];
 
-  const content = `
-  <h2>
-    Hi there,
-  </h2>
-  <p>
-    this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-  </p>
-  <ul>
-    <li>
-      That’s a bullet list with one …
-    </li>
-    <li>
-      … or two list items.
-    </li>
-  </ul>
-  <p>
-    Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-  </p>
-  <pre><code class="language-css">body {
-    display: none;
-  }</code></pre>
-  <p>
-    I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-  </p>
-  <blockquote>
-    Wow, that’s amazing. Good work, boy! 👏
-    <br />
-    — Mom
-  </blockquote>
-  `;
+  // const content = `
+  // <h2>
+  //   Hi there,
+  // </h2>
+  // <p>
+  //   this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
+  // </p>
+  // <ul>
+  //   <li>
+  //     That’s a bullet list with one …
+  //   </li>
+  //   <li>
+  //     … or two list items.
+  //   </li>
+  // </ul>
+  // <p>
+  //   Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
+  // </p>
+  // <pre><code class="language-css">body {
+  //   display: none;
+  // }</code></pre>
+  // <p>
+  //   I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
+  // </p>
+  // <blockquote>
+  //   Wow, that’s amazing. Good work, boy! 👏
+  //   <br />
+  //   — Mom
+  // </blockquote>
+  // `;
 
   return (
     <div>
@@ -268,7 +269,7 @@ const AddCeremonyModalContent = ({
                           onInput={(e) => {}}
                         ></div> */}
                         {/* <EditorContent editor={editor}  /> */}
-                        <EditorProvider
+                        {/* <EditorProvider
                           slotBefore={
                             !editor ? null : (
                               <div className="flex space-x-2 border-b border-gray-300 pb-2 mb-2">
@@ -387,7 +388,7 @@ const AddCeremonyModalContent = ({
                           }
                           extensions={extensions}
                           content={content}
-                        ></EditorProvider>
+                        ></EditorProvider> */}
                       </div>
                     </div>
                   </div>

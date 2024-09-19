@@ -1,30 +1,25 @@
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import PhotoProfileInput from "@/components/input/PhotoProfileInput";
+import DropdownInput from "@/components/dropdown/DropdownInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
-import SwitchInput from "@/components/input/SwitchInput";
 import PrimaryModal from "@/components/modal/PrimaryModal";
 import { MapPinIcon } from "@heroicons/react/20/solid";
 import React, { ReactElement } from "react";
 
-interface UserModalProps {
+interface TransactionModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   title: string;
-  activeUser?: boolean;
-  setActiveUser?: (value: boolean) => void;
   bottomAction: ReactElement;
   isForDetail?: boolean;
 }
 
-const UserModal = ({
+const TransactionModal = ({
   open,
   setOpen,
   title,
-  activeUser,
-  setActiveUser,
   bottomAction,
   isForDetail,
-}: UserModalProps) => {
+}: TransactionModalProps) => {
   return (
     <PrimaryModal
       open={open}
@@ -32,19 +27,44 @@ const UserModal = ({
       title={title}
       content={
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
-          <PhotoProfileInput />
-          <PrimaryInput
-            name="Nama Lengkap"
-            onChange={(e) => {}}
-            value={""}
+          <div className="w-full flex flex-row space-x-4">
+            <PrimaryInput
+              name="Nama Upacara"
+              onChange={(e) => {}}
+              value={""}
+              className="w-full"
+            />
+            <PrimaryInput
+              name="Nama Upacara"
+              onChange={(e) => {}}
+              value={""}
+              className="w-full"
+            />
+          </div>
+          <DropdownInput
+            items={[]}
+            label="Paket"
+            placeholder="Pilih Paket Upacara"
+            selectedItem={undefined}
+            setSelectedItem={(value) => {}}
+            className="w-full"
+            isOptional={true}
+          />
+          <DropdownInput
+            items={[]}
+            label="Pemedek/Pengguna"
+            placeholder="Pilih Pemedek/Pengguna"
+            selectedItem={undefined}
+            setSelectedItem={(value) => {}}
             className="w-full"
           />
-          <PrimaryInput
-            name="Email"
-            onChange={(e) => {}}
-            value={""}
+          <DropdownInput
+            items={[]}
+            label="Tipe Pembayaran"
+            placeholder="Pilih metode pembayaran"
+            selectedItem={undefined}
+            setSelectedItem={(value) => {}}
             className="w-full"
-            type="email"
           />
           <PrimaryInput
             name="No.Handphone"
@@ -91,22 +111,6 @@ const UserModal = ({
             type="password"
             className="w-full"
           />
-          {activeUser !== undefined && (
-            <SwitchInput
-              className="self-start pt-2"
-              label={
-                <span className="font-medium text-gray-500">
-                  Aktif/Non-Aktif
-                </span>
-              }
-              value={activeUser ?? false}
-              onChange={(e) => {
-                if (setActiveUser) {
-                  setActiveUser(e);
-                }
-              }}
-            />
-          )}
         </div>
       }
       bottomAction={bottomAction}
@@ -114,4 +118,4 @@ const UserModal = ({
   );
 };
 
-export default UserModal;
+export default TransactionModal;
