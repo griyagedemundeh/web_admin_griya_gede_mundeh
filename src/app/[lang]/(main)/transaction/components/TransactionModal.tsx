@@ -1,9 +1,12 @@
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import DropdownInput from "@/components/dropdown/DropdownInput";
+import PrimaryCurrencyInput from "@/components/input/PrimaryCurrencyInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
+import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import PrimaryModal from "@/components/modal/PrimaryModal";
-import { MapPinIcon } from "@heroicons/react/20/solid";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
+import PrimaryDatePicker, {
+  IDatePickerValue,
+} from "@/components/input/PrimaryDatePicker";
 
 interface TransactionModalProps {
   open: boolean;
@@ -20,6 +23,11 @@ const TransactionModal = ({
   bottomAction,
   isForDetail,
 }: TransactionModalProps) => {
+  const [value, setValue] = useState<IDatePickerValue>({
+    startDate: null,
+    endDate: null,
+  });
+
   return (
     <PrimaryModal
       open={open}
@@ -35,10 +43,11 @@ const TransactionModal = ({
               className="w-full"
             />
             <PrimaryInput
-              name="Nama Upacara"
+              name="Judul Tambahan"
               onChange={(e) => {}}
               value={""}
               className="w-full"
+              isOptional={true}
             />
           </div>
           <DropdownInput
@@ -66,49 +75,42 @@ const TransactionModal = ({
             setSelectedItem={(value) => {}}
             className="w-full"
           />
+
+          <PrimaryDatePicker
+            label="Tanggal Upacara"
+            setValue={setValue}
+            value={value}
+          />
+
           <PrimaryInput
-            name="No.Handphone"
+            name="Lokasi Upacara"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
 
-          {isForDetail && (
-            <div className="flex flex-row space-x-2 items-end w-full">
-              <PrimaryInput
-                name="Alamat Utama"
-                onChange={(e) => {}}
-                value={""}
-                className="w-full"
-              />
-
-              <IconBackgroundButton
-                icon={MapPinIcon}
-                onClick={() => {}}
-                colorIcon="white"
-                className="bg-gray-300 hover:bg-gray-200"
-              />
-            </div>
-          )}
-
-          <PrimaryInput
-            name="Alamat Utama"
-            onChange={(e) => {}}
-            value={""}
+          <PrimaryCurrencyInput
+            label="Total Harga"
+            setValue={(e) => {}}
+            value=""
+            placeholder="Masukkan total harga"
             className="w-full"
           />
-          <PrimaryInput
-            name="Password"
-            onChange={(e) => {}}
-            value={""}
-            type="password"
+
+          <DropdownInput
+            items={[]}
+            label="Pengelola"
+            placeholder="Pilih pengelola"
+            selectedItem={undefined}
+            setSelectedItem={(value) => {}}
             className="w-full"
           />
-          <PrimaryInput
-            name="Konfirmasi Password"
+
+          <PrimaryTextArea
             onChange={(e) => {}}
             value={""}
-            type="password"
+            name="Catatan"
+            isOptional={true}
             className="w-full"
           />
         </div>

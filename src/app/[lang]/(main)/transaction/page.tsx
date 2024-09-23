@@ -3,10 +3,8 @@
 import {
   CheckCircleIcon,
   CreditCardIcon,
+  DocumentCheckIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
-  TagIcon,
-  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
@@ -22,6 +20,11 @@ import PrimaryTable from "@/components/table/PrimaryTable";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import Transaction from "@/data/models/transaction";
 import TransactionModal from "./components/TransactionModal";
+import SecondaryButton from "@/components/button/SecondaryButton";
+import PrimaryButton from "@/components/button/PrimaryButton";
+import PrimaryDatePicker, {
+  IDatePickerValue,
+} from "@/components/input/PrimaryDatePicker";
 
 export default function TransactionPage({
   params: { lang },
@@ -30,16 +33,19 @@ export default function TransactionPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
+
   const [openDetail, setOpenDetail] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
   const [data, setData] = useState(() => transactions);
-  const [active, setActive] = useState<boolean>(true);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [value, setValue] = useState<IDatePickerValue>({
+    startDate: null,
+    endDate: null,
+  });
 
   const columns = useMemo<ColumnDef<Transaction>[]>(
     () => [
@@ -114,58 +120,10 @@ export default function TransactionPage({
         mainActionTitle="Tambah Transaksi"
         onFilterReset={() => {}}
         filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
-            <div className="w-full">
-              <div
-                id="date-range-picker"
-                date-rangepicker
-                className="flex items-center w-full"
-              >
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                    </svg>
-                  </div>
-                  <input
-                    id="datepicker-range-start"
-                    name="start"
-                    type="text"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary1 focus:border-primary1 block w-full ps-10 p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary1 dark:focus:border-primary1"
-                    placeholder="Select date start"
-                  />
-                </div>
-                <span className="mx-4 text-gray-500">to</span>
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                    </svg>
-                  </div>
-                  <input
-                    id="datepicker-range-end"
-                    name="end"
-                    type="text"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary1 focus:border-primary1 block w-full ps-10 p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary1 dark:focus:border-primary1"
-                    placeholder="Select date end"
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            <PrimaryDatePicker setValue={setValue} value={value} />
 
-            <DropdownFilter
+            {/* <DropdownFilter
               label="Status"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
@@ -193,7 +151,7 @@ export default function TransactionPage({
                   className="absolute top-1 right-1"
                 />
               }
-            />
+            /> */}
           </div>
         }
         mainActionOnClick={() => {
@@ -216,32 +174,25 @@ export default function TransactionPage({
         title="Tambah Transaksi"
         bottomAction={
           <PrimaryWithIconButton
-            label="Simpan"
+            label="Buat Invoice"
             onClick={() => {}}
-            icon={UserPlusIcon}
+            icon={DocumentCheckIcon}
           />
         }
       />
 
-      {/* Dialog Detail Transaction*/}
-      {/* <UserModal
+      {/* Dialog PRE-PAID Transaction*/}
+      <TransactionModal
         open={openDetail}
-        isForDetail={true}
         setOpen={setOpenDetail}
-        activeUser={active}
-        setActiveUser={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        title="Detail Pengguna"
+        title="Detail Transaksi"
         bottomAction={
-          <PrimaryWithIconButton
-            label="Perbarui"
-            onClick={() => {}}
-            icon={PencilIcon}
-          />
+          <div className="flex flex-row space-x-2">
+            <SecondaryButton label="Ubah" onClick={() => {}} />
+            <PrimaryButton label="Bayar Sekarang" onClick={() => {}} />
+          </div>
         }
-      /> */}
+      />
     </>
   );
 }

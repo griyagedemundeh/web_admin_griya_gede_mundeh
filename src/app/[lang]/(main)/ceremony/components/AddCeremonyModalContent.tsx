@@ -26,6 +26,7 @@ import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import CeremonyPackage from "@/data/models/ceremonyPackage";
 import IconButton from "@/components/button/IconButton";
 import SecondaryThinButton from "@/components/button/SecondaryThinButton";
+import PrimaryCurrencyInput from "@/components/input/PrimaryCurrencyInput";
 // import SecondaryThinButton from "@/components/button/SecondaryThinButton";
 // import { Color } from "@tiptap/extension-color";
 // import ListItem from "@tiptap/extension-list-item";
@@ -220,26 +221,12 @@ const AddCeremonyModalContent = ({
                     placeholder="Masukkan nama paket"
                   />
 
-                  <div>
-                    <label
-                      htmlFor="price"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Harga Paket
-                    </label>
-                    <CurrencyInput
-                      id="input-example"
-                      name="input-name"
-                      placeholder="Masukkan harga paket"
-                      defaultValue={parseInt(ceremonyPackage.price, 10)}
-                      prefix="Rp"
-                      className="block w-full mt-2 rounded-md border-0 py-1.5 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 placeholder:text-xs bg-gray-50"
-                      decimalsLimit={2}
-                      onValueChange={(value, name, values) =>
-                        console.log(value, name, values)
-                      }
-                    />
-                  </div>
+                  <PrimaryCurrencyInput
+                    label="Harga Paket"
+                    setValue={(e) => {}}
+                    value=""
+                    placeholder="Masukkan harga paket"
+                  />
 
                   <div className="col-span-full">
                     <label

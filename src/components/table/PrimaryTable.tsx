@@ -96,9 +96,9 @@ const PrimaryTable = ({
         )}
       </div>
 
-      <div className="py-8">
-        <div>
-          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
+      <div className="py-8 relative">
+        <div className="w-full relative">
+          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8 w-full relative">
             <div className="sm:flex-auto">
               {onFilterReset ? (
                 <button
