@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CalendarDateRangeIcon,
   CheckCircleIcon,
   CreditCardIcon,
   DocumentCheckIcon,
@@ -22,9 +23,14 @@ import Transaction from "@/data/models/transaction";
 import TransactionModal from "./components/TransactionModal";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryButton from "@/components/button/PrimaryButton";
-import PrimaryDatePicker, {
-  IDatePickerValue,
-} from "@/components/input/PrimaryDatePicker";
+import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
+import "@wojtekmaj/react-datetimerange-picker/dist/DateTimeRangePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
+
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function TransactionPage({
   params: { lang },
@@ -35,6 +41,7 @@ export default function TransactionPage({
   const [open, setOpen] = useState(false);
 
   const [openDetail, setOpenDetail] = useState(false);
+  const [value, onChange] = useState<Value>([new Date(), new Date()]);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
@@ -42,10 +49,6 @@ export default function TransactionPage({
   const [data, setData] = useState(() => transactions);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [value, setValue] = useState<IDatePickerValue>({
-    startDate: null,
-    endDate: null,
-  });
 
   const columns = useMemo<ColumnDef<Transaction>[]>(
     () => [
@@ -121,9 +124,12 @@ export default function TransactionPage({
         onFilterReset={() => {}}
         filters={
           <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
-            <PrimaryDatePicker setValue={setValue} value={value} />
+            <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-            {/* <DropdownFilter
+            <DropdownFilter
               label="Status"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
@@ -143,7 +149,7 @@ export default function TransactionPage({
               onChange={(e) => {}}
               value={""}
               placeholder="Cari transaksi"
-              className="w-full"
+              className=""
               trailing={
                 <IconButton
                   icon={MagnifyingGlassIcon}
@@ -151,7 +157,7 @@ export default function TransactionPage({
                   className="absolute top-1 right-1"
                 />
               }
-            /> */}
+            />
           </div>
         }
         mainActionOnClick={() => {

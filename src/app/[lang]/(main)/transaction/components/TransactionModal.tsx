@@ -4,9 +4,7 @@ import PrimaryInput from "@/components/input/PrimaryInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import PrimaryModal from "@/components/modal/PrimaryModal";
 import React, { ReactElement, useState } from "react";
-import PrimaryDatePicker, {
-  IDatePickerValue,
-} from "@/components/input/PrimaryDatePicker";
+import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
 
 interface TransactionModalProps {
   open: boolean;
@@ -23,11 +21,6 @@ const TransactionModal = ({
   bottomAction,
   isForDetail,
 }: TransactionModalProps) => {
-  const [value, setValue] = useState<IDatePickerValue>({
-    startDate: null,
-    endDate: null,
-  });
-
   return (
     <PrimaryModal
       open={open}
@@ -78,8 +71,9 @@ const TransactionModal = ({
 
           <PrimaryDatePicker
             label="Tanggal Upacara"
-            setValue={setValue}
-            value={value}
+            setValue={(e) => {}}
+            value={[new Date(), new Date()]}
+            className="w-full"
           />
 
           <PrimaryInput
