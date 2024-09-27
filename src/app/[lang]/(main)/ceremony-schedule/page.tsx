@@ -2,9 +2,8 @@
 
 import {
   CheckCircleIcon,
-  CreditCardIcon,
-  DocumentCheckIcon,
   MagnifyingGlassIcon,
+  TagIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
@@ -14,15 +13,13 @@ import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import { status, transactions } from "@/utils/dummyData";
+import { categories, ceremonySchedules, status } from "@/utils/dummyData";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import Transaction from "@/data/models/transaction";
-import TransactionModal from "./components/TransactionModal";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
+import CeremonyScheduleModal from "./components/CeremonyScheduleModal";
 
 type ValuePiece = Date | null;
 
@@ -37,25 +34,30 @@ export default function TransactionPage({
   const [open, setOpen] = useState(false);
 
   const [openDetail, setOpenDetail] = useState(false);
-  const [value, onChange] = useState<Value>([new Date(), new Date()]);
+
+  const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
+    useState<DropdownFilterItemProps>();
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const [data, setData] = useState(() => transactions);
+  const [data, setData] = useState(() => ceremonySchedules);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns = useMemo<ColumnDef<Transaction>[]>(
+  const columns = useMemo<ColumnDef<CeremonySchedule>[]>(
     () => [
       {
-        header: "Detail Order",
+        header: "Nama Upacara",
         cell: (info) => (
           <div className="py-4 sm:pl-6 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-col space-y-2">
-              <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
-                {info.row.original.invoiceNumber}
-              </p>
+              <div className="flex flex-row space-x-2">
+                <div className="h-4 w-4 rounded-full bg-orange-400"></div>
+                <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
+                  {info.row.original.status}
+                </p>
+              </div>
               <p className="text-gray-800 line-clamp-1 text-ellipsis">
                 {info.row.original.title}
               </p>
@@ -64,28 +66,22 @@ export default function TransactionPage({
         ),
       },
       {
-        header: "Status",
+        header: "Kategori",
+        cell: (info) => <div className="pl-4">{info.row.original.status}</div>,
+      },
+      {
+        header: "Alamat",
         cell: (info) => (
-          <div className="w-1/2">
-            <div className="py-1 bg-emerald-100 border-green border-2 rounded-lg text-green w-auto text-center">
-              <p>{info.row.original.status}</p>
-            </div>
+          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {info.row.original.address}
           </div>
         ),
       },
       {
-        header: "Total Harga",
+        header: "Hitung Mundur",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            Rp{info.row.original.totalPrice}
-          </div>
-        ),
-      },
-      {
-        header: "Tanggal Upacara",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.ceremonyDate.toISOString()}
+            {info.row.original.countDown.toISOString()}
           </div>
         ),
       },
@@ -113,16 +109,23 @@ export default function TransactionPage({
 
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Transaksi</h1>
+      <h1 className="font-bold text-xl mb-8">Jadwal Upacara</h1>
       <PrimaryTable
-        title="Riwayat Transaksi"
-        mainActionTitle="Tambah Transaksi"
+        title="Daftar Jadwal Upacara"
         onFilterReset={() => {}}
         filters={
           <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
             <PrimaryDatePicker
               setValue={(value) => {}}
               value={[new Date(), new Date()]}
+            />
+
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedCeremonyCategory}
+              setSelectedItem={setSelectedCeremonyCategory}
+              icon={TagIcon}
+              items={categories}
             />
 
             <DropdownFilter
@@ -133,18 +136,10 @@ export default function TransactionPage({
               items={status}
             />
 
-            <DropdownFilter
-              label="Tipe Pembayaran"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CreditCardIcon}
-              items={status}
-            />
-
             <PrimaryInput
               onChange={(e) => {}}
               value={""}
-              placeholder="Cari transaksi"
+              placeholder="Cari upacara"
               className=""
               trailing={
                 <IconButton
@@ -156,9 +151,6 @@ export default function TransactionPage({
             />
           </div>
         }
-        mainActionOnClick={() => {
-          setOpen(true);
-        }}
         columns={columns}
         data={data ?? []}
         isLoading={false}
@@ -169,29 +161,15 @@ export default function TransactionPage({
         isCommon={true}
       />
 
-      {/* Dialog Add Transaction*/}
-      <TransactionModal
-        open={open}
-        setOpen={setOpen}
-        title="Tambah Transaksi"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Buat Invoice"
-            onClick={() => {}}
-            icon={DocumentCheckIcon}
-          />
-        }
-      />
-
       {/* Dialog PRE-PAID Transaction*/}
-      <TransactionModal
+      <CeremonyScheduleModal
         open={openDetail}
         setOpen={setOpenDetail}
-        title="Detail Transaksi"
+        title="Detail Jadwal Upacara"
         bottomAction={
           <div className="flex flex-row space-x-2">
-            <SecondaryButton label="Ubah" onClick={() => {}} />
-            <PrimaryButton label="Bayar Sekarang" onClick={() => {}} />
+            <SecondaryButton label="Konsultasi" onClick={() => {}} />
+            <PrimaryButton label="Ubah Status" onClick={() => {}} />
           </div>
         }
       />

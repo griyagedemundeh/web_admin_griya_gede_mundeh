@@ -212,3 +212,46 @@ export const transactions: Transaction[] = [
     totalPrice: 2500000,
   },
 ];
+
+export const ceremonySchedules: CeremonySchedule[] = [
+  {
+    id: "1",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "2",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "3",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "4",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "5",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+];

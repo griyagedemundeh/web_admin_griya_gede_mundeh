@@ -43,7 +43,7 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
     },
     {
       name: t.label.ceremonySchedule,
-      href: `/ceremonySchedule`,
+      href: `/ceremony-schedule`,
       icon: CalendarDaysIcon,
       current: false,
     },

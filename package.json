@@ -22,7 +22,6 @@
     "@tiptap/starter-kit": "^2.7.1",
     "@types/negotiator": "^0.6.3",
     "ckeditor5": "^43.1.0",
-    "dayjs": "^1.11.13",
     "highcharts": "^11.4.8",
     "highcharts-react-official": "^3.2.1",
     "negotiator": "^0.6.3",
