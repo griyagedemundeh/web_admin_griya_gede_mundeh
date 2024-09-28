@@ -52,8 +52,8 @@ export default function TransactionPage({
         cell: (info) => (
           <div className="py-4 sm:pl-6 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-col space-y-2">
-              <div className="flex flex-row space-x-2">
-                <div className="h-4 w-4 rounded-full bg-orange-400"></div>
+              <div className="flex flex-row space-x-2 items-center">
+                <div className="h-2 w-2 rounded-full bg-orange-400"></div>
                 <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
                   {info.row.original.status}
                 </p>
