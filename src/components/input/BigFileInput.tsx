@@ -2,12 +2,13 @@ import { PhotoIcon } from "@heroicons/react/20/solid";
 import React, { ChangeEventHandler } from "react";
 
 interface BigFileInputProps {
+  name: string;
   label?: string;
   value: any;
   onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-const BigFileInput = ({ onChange, value, label }: BigFileInputProps) => {
+const BigFileInput = ({ onChange, value, label, name }: BigFileInputProps) => {
   return (
     <div className="col-span-full">
       {label ? (
@@ -15,7 +16,7 @@ const BigFileInput = ({ onChange, value, label }: BigFileInputProps) => {
           htmlFor="cover-photo"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Cover photo
+          {label}
         </label>
       ) : null}
       <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 bg-gray-50">
@@ -31,8 +32,8 @@ const BigFileInput = ({ onChange, value, label }: BigFileInputProps) => {
             >
               <span>Unggah Gambar</span>
               <input
-                id="file-upload"
-                name="file-upload"
+                id={name}
+                name={name}
                 type="file"
                 className="sr-only"
                 value={value}

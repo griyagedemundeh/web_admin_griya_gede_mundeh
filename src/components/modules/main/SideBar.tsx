@@ -83,7 +83,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
             </li>
             <li className="mt-auto">
               <a
-                href="/"
+                href="/setting"
                 className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-yellow-50 hover:text-primary1"
               >
                 <Cog6ToothIcon

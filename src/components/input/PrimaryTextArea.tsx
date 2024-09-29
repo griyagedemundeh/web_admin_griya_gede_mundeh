@@ -2,6 +2,7 @@ import React, { ChangeEventHandler } from "react";
 
 interface PrimaryInputProps {
   name?: string;
+  label?: string;
   value: string | number;
   placeholder?: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
@@ -11,6 +12,7 @@ interface PrimaryInputProps {
 
 const PrimaryTextArea = ({
   name,
+  label,
   onChange,
   value,
   className,
@@ -19,12 +21,14 @@ const PrimaryTextArea = ({
 }: PrimaryInputProps) => {
   return (
     <div className={className}>
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium leading-6 text-gray-900"
-      >
-        {name} {isOptional && " (Opsional)"}
-      </label>
+      {label ? (
+        <label
+          htmlFor={name}
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          {name} {isOptional && " (Opsional)"}
+        </label>
+      ) : null}
       <div className="mt-2">
         <textarea
           id={name}
