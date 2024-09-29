@@ -6,7 +6,7 @@ import {
   PencilIcon,
   UserPlusIcon,
 } from "@heroicons/react/20/solid";
-import { getDictionary } from "../../dictionaries";
+import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -28,7 +28,7 @@ import ManagerModal from "./components/ManagerModal";
 export default function ManagerPage({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
@@ -142,7 +142,7 @@ export default function ManagerPage({
               label="Status"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
-              icon={<CheckCircleIcon height={16} width={16} color="gray" />}
+              icon={CheckCircleIcon}
               items={status}
             />
 

@@ -4,7 +4,7 @@ import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
-import { getDictionary } from "../../dictionaries";
+import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
 import {
@@ -31,7 +31,7 @@ import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
 export default function CeremonyPage({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
@@ -121,7 +121,7 @@ export default function CeremonyPage({
       <h1 className="font-bold text-xl mb-8">Kategori Upacara Agama</h1>
 
       <PrimaryTable
-        title="Upacara Kategori Agama"
+        title="Kategori Upacara Agama"
         mainActionTitle="Tambah Kategori Upacara Agama"
         onFilterReset={() => {}}
         filters={
@@ -130,7 +130,7 @@ export default function CeremonyPage({
               label="Status"
               selectedItem={selectedStatusItem}
               setSelectedItem={setSelectedStatusItem}
-              icon={<CheckCircleIcon height={16} width={16} color="gray" />}
+              icon={CheckCircleIcon}
               items={status}
             />
 

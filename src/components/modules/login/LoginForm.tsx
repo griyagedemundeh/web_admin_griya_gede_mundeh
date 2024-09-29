@@ -1,5 +1,6 @@
 "use client";
 
+import { Locale } from "@/app/[lang]/dictionaries";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Images from "@/constants/images";

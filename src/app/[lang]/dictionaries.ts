@@ -4,6 +4,8 @@
 import en from "./dictionaries/en.json";
 import id from "./dictionaries/id.json";
 
+export type Locale = "en" | "id";
+
 // Create a dictionary object with imported language files
 const dictionaries = {
   en,

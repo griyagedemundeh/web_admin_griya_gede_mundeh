@@ -82,8 +82,8 @@ const PrimaryTable = ({
     >
       <div className="px-8 py-6 flex flex-row justify-between w-full items-center border-b border-gray-300">
         <h2 className="font-bold text-primary1">{title}</h2>
-
-        {actions ?? (
+        {actions}
+        {mainActionOnClick ? (
           <PrimaryWithIconButton
             label={mainActionTitle ?? ""}
             onClick={(e) => {
@@ -93,12 +93,12 @@ const PrimaryTable = ({
             }}
             icon={PlusIcon}
           />
-        )}
+        ) : null}
       </div>
 
-      <div className="py-8">
-        <div>
-          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
+      <div className="py-8 relative">
+        <div className="w-full relative">
+          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8 w-full relative">
             <div className="sm:flex-auto">
               {onFilterReset ? (
                 <button
@@ -121,7 +121,7 @@ const PrimaryTable = ({
           <div className="mt-8 flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                <table className="min-w-full divide-y divide-gray-300">
+                <table className="min-w-full divide-y divide-gray-300 bg-white">
                   <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
                       <tr key={headerGroup.id}>
@@ -146,9 +146,9 @@ const PrimaryTable = ({
                   </thead>
                   {isLoading ? (
                     <tbody>
-                      {Array.from({ length: 10 }).map((_, index) => (
+                      {Array.from({ length: 10 }).map((item) => (
                         <tr
-                          key={index}
+                          key={item as any}
                           className="border border-1 border-zinc-300 border-x-0"
                         >
                           <td className="px-5 py-2  text-[16px] font-medium leading-normal">
@@ -265,10 +265,10 @@ const PrimaryTable = ({
                             className="h-5 w-5"
                           />
                         </button>
-                        {Array.from({ length: totalPage ?? 0 }).map(
+                        {Array.from({ length: totalPage as number }).map(
                           (item, index) => (
                             <button
-                              key={item as number}
+                              key={`${index}+${new Date()}`}
                               aria-current="page"
                               className={
                                 currentPage === index + 1

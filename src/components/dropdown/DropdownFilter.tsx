@@ -3,11 +3,16 @@
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import React from "react";
+import React, { ForwardRefExoticComponent } from "react";
 
 interface DropdownFilterProps {
   items: DropdownFilterItemProps[];
-  icon: any;
+  icon: ForwardRefExoticComponent<
+    React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
+      title?: string;
+      titleId?: string;
+    } & React.RefAttributes<SVGSVGElement>
+  >;
   label: string;
   selectedItem: DropdownFilterItemProps | undefined;
   setSelectedItem: (value: DropdownFilterItemProps | undefined) => void;
@@ -15,7 +20,7 @@ interface DropdownFilterProps {
 
 const DropdownFilter = ({
   items,
-  icon,
+  icon: Icon,
   label,
   selectedItem,
   setSelectedItem,
@@ -23,10 +28,10 @@ const DropdownFilter = ({
   //   const [selectedItem, setSelectedItem] = useState<DropdownFilterItemProps>();
 
   return (
-    <Menu as="div" className="relative inline-block text-left">
-      <div>
+    <Menu as="div" className="relative inline-block text-left w-auto">
+      <div className="w-full">
         <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 items-center">
-          {icon}
+          {<Icon height={16} width={16} color="gray" />}
           <p className="text-xs text-gray-500">
             {selectedItem?.title ?? label}
           </p>

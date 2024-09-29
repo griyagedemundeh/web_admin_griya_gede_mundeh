@@ -1,4 +1,6 @@
+import Article from "@/data/models/article";
 import Ceremony from "@/data/models/ceremony";
+import Transaction from "@/data/models/transaction";
 import User from "@/data/models/user";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 
@@ -107,5 +109,149 @@ export const users: User[] = [
     phone: "081231232445",
     status: false,
     avatarUrl: null,
+  },
+];
+
+export const articles: Article[] = [
+  {
+    id: "1",
+    kategori: "Kehidupan",
+    postedDate: new Date(),
+    status: true,
+    thumbnailString:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    title:
+      "Arti Mepamit, Upacara Adat Bali yang Dijalani Mahalini & Dinikahi Rizky Febian",
+  },
+  {
+    id: "2",
+    kategori: "Kehidupan",
+    postedDate: new Date(),
+    status: true,
+    thumbnailString:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    title:
+      "Arti Mepamit, Upacara Adat Bali yang Dijalani Mahalini & Dinikahi Rizky Febian",
+  },
+  {
+    id: "3",
+    kategori: "Kehidupan",
+    postedDate: new Date(),
+    status: true,
+    thumbnailString:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    title:
+      "Arti Mepamit, Upacara Adat Bali yang Dijalani Mahalini & Dinikahi Rizky Febian",
+  },
+  {
+    id: "4",
+    kategori: "Kehidupan",
+    postedDate: new Date(),
+    status: true,
+    thumbnailString:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    title:
+      "Arti Mepamit, Upacara Adat Bali yang Dijalani Mahalini & Dinikahi Rizky Febian",
+  },
+  {
+    id: "5",
+    kategori: "Kehidupan",
+    postedDate: new Date(),
+    status: true,
+    thumbnailString:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    title:
+      "Arti Mepamit, Upacara Adat Bali yang Dijalani Mahalini & Dinikahi Rizky Febian",
+  },
+];
+
+export const transactions: Transaction[] = [
+  {
+    id: "1",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "2",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "3",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "4",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+  {
+    id: "5",
+    ceremonyDate: new Date(),
+    paymentType: "BCA",
+    status: "Sukses",
+    title: "Upacara Mebayuh Bapak Kadek",
+    invoiceNumber: "INV-32131231230214124242",
+    totalPrice: 2500000,
+  },
+];
+
+export const ceremonySchedules: CeremonySchedule[] = [
+  {
+    id: "1",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "2",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "3",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "4",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
+  },
+  {
+    id: "5",
+    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+    category: "Dewa Yadnya",
+    countDown: new Date(),
+    status: "Persiapan",
+    title: "Upacara Mebayuh Bapak Kadek",
   },
 ];

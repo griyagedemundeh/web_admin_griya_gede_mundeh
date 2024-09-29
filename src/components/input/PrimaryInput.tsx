@@ -10,6 +10,7 @@ interface PrimaryInputProps {
   onChange: ChangeEventHandler<HTMLInputElement>;
   className?: string;
   trailing?: any;
+  isOptional?: boolean;
 }
 
 export default function PrimaryInput({
@@ -21,6 +22,7 @@ export default function PrimaryInput({
   onChange,
   className,
   trailing,
+  isOptional,
 }: PrimaryInputProps) {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -32,6 +34,8 @@ export default function PrimaryInput({
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           {label}
+          {name}
+          {isOptional && " (Opsional)"}
         </label>
       ) : null}
       <div className={name ? "mt-2 relative " : "relative"}>

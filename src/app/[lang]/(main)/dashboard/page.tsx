@@ -1,13 +1,13 @@
 import CeremonyCard from "@/components/card/CeremonyCard";
-import { getDictionary } from "../../dictionaries";
-import TransactionChart from "@/components/chart/TransactionChart";
+import { getDictionary, Locale } from "../../dictionaries";
+// import TransactionChart from "@/components/chart/TransactionChart";
 
 const data = [{}, {}, {}, {}, {}, {}];
 
 export default async function Dashboard({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = await getDictionary(lang);
 
@@ -26,9 +26,7 @@ export default async function Dashboard({
         ))}
       </div>
 
-      <div>
-        <TransactionChart />
-      </div>
+      <div>{/* <TransactionChart /> */}</div>
     </div>
   );
 }

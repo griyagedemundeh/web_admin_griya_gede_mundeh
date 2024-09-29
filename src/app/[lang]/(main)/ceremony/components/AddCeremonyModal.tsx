@@ -45,7 +45,7 @@ const AddCeremonyModal = ({
       title="Tambah Upacara Agama"
       content={
         <AddCeremonyModalContent
-          ceremonyCategories={ceremonyPackages}
+          ceremonyCategories={ceremonyCategories}
           ceremonyPackages={ceremonyPackages}
           progress={progress}
           selectedCeremonyCategory={selectedCeremonyCategory}

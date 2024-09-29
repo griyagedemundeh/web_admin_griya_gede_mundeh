@@ -9,6 +9,8 @@ interface DropdownFilterProps {
   placeholder?: string;
   selectedItem: DropdownFilterItemProps | undefined;
   setSelectedItem: (value: DropdownFilterItemProps | undefined) => void;
+  className?: string;
+  isOptional?: boolean;
 }
 
 const DropdownInput = ({
@@ -17,10 +19,14 @@ const DropdownInput = ({
   selectedItem,
   setSelectedItem,
   placeholder,
+  className,
+  isOptional,
 }: DropdownFilterProps) => {
   return (
-    <div className="relative">
-      <p className="text-sm font-medium leading-6 text-gray-900">{label}</p>
+    <div className={className + " relative"}>
+      <p className="text-sm font-medium leading-6 text-gray-900">
+        {label} {isOptional && " (Opsional)"}
+      </p>
       <Menu as="div" className="relative inline-block text-left mt-2 w-full">
         <div>
           <MenuButton

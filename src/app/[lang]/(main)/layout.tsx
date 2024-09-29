@@ -1,12 +1,12 @@
 import MainTemplate from "@/components/modules/main/MainTemplate";
-import { getDictionary } from "../dictionaries";
+import { getDictionary, Locale } from "../dictionaries";
 
 export default async function MainLayout({
   children,
   params: { lang },
 }: Readonly<{
   children: React.ReactNode;
-  params: { lang: string };
+  params: { lang: Locale };
 }>) {
   const t = await getDictionary(lang);
 

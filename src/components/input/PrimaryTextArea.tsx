@@ -7,6 +7,7 @@ interface PrimaryInputProps {
   placeholder?: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   className?: string;
+  isOptional?: boolean;
 }
 
 const PrimaryTextArea = ({
@@ -16,6 +17,7 @@ const PrimaryTextArea = ({
   value,
   className,
   placeholder,
+  isOptional,
 }: PrimaryInputProps) => {
   return (
     <div className={className}>
@@ -24,7 +26,7 @@ const PrimaryTextArea = ({
           htmlFor={name}
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          {label}
+          {name} {isOptional && " (Opsional)"}
         </label>
       ) : null}
       <div className="mt-2">
