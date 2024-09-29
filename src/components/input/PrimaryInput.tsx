@@ -3,6 +3,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 interface PrimaryInputProps {
   name?: string;
+  label?: string;
   value: string | number;
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
@@ -13,6 +14,7 @@ interface PrimaryInputProps {
 
 export default function PrimaryInput({
   name,
+  label,
   value,
   type,
   placeholder,
@@ -24,12 +26,12 @@ export default function PrimaryInput({
 
   return (
     <div className={className}>
-      {name ? (
+      {label ? (
         <label
           htmlFor={name}
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          {name}
+          {label}
         </label>
       ) : null}
       <div className={name ? "mt-2 relative " : "relative"}>
