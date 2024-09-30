@@ -30,13 +30,13 @@ const TransactionModal = ({
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
           <div className="w-full flex flex-row space-x-4">
             <PrimaryInput
-              name="Nama Upacara"
+              label="Nama Upacara"
               onChange={(e) => {}}
               value={""}
               className="w-full"
             />
             <PrimaryInput
-              name="Judul Tambahan"
+              label="Judul Tambahan"
               onChange={(e) => {}}
               value={""}
               className="w-full"
@@ -77,7 +77,7 @@ const TransactionModal = ({
           />
 
           <PrimaryInput
-            name="Lokasi Upacara"
+            label="Lokasi Upacara"
             onChange={(e) => {}}
             value={""}
             className="w-full"
@@ -103,7 +103,7 @@ const TransactionModal = ({
           <PrimaryTextArea
             onChange={(e) => {}}
             value={""}
-            name="Catatan"
+            label="Catatan"
             isOptional={true}
             className="w-full"
           />

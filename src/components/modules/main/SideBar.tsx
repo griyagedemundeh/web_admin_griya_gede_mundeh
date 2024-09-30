@@ -84,11 +84,15 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
             <li className="mt-auto">
               <a
                 href="/setting"
-                className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-yellow-50 hover:text-primary1"
+                className={`group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-yellow-50 hover:text-primary1 ${
+                  pathName.includes("setting")
+                    ? "bg-yellow-50 text-primary1  border-l-primary1 border-l-4"
+                    : "text-gray-700 hover:bg-yellow-50 hover:text-primary1"
+                }`}
               >
                 <Cog6ToothIcon
                   aria-hidden="true"
-                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-primary1"
+                  className="h-6 w-6 shrink-0 group-hover:text-primary1"
                 />
                 Settings
               </a>

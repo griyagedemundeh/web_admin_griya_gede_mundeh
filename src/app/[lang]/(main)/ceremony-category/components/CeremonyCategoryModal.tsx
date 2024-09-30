@@ -33,7 +33,7 @@ const CeremonyCategoryModal = ({
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
           <PhotoProfileInput />
           <PrimaryInput
-            name="Nama Kategori Upacara Agama"
+            label="Nama Kategori Upacara Agama"
             onChange={(e) => {}}
             value={""}
             className="w-full"
@@ -41,7 +41,7 @@ const CeremonyCategoryModal = ({
           <PrimaryTextArea
             onChange={(e) => {}}
             value={""}
-            name="Deskripsi Kategori Upacara"
+            label="Deskripsi Kategori Upacara"
             className="w-full"
           />
 

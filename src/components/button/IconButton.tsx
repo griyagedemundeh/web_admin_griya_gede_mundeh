@@ -32,7 +32,7 @@ const IconButton = ({
     >
       <Icon
         aria-hidden="true"
-        className={classNameIcon ?? "h-5 w-5"}
+        className={classNameIcon + " h-5 w-5"}
         color={color ?? "gray"}
       />
     </button>

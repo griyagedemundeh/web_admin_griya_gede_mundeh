@@ -42,6 +42,7 @@ const PrimaryDatePicker = ({
           onChange={(e) => {
             setValue(e);
           }}
+          hideOnScroll={true}
           containerStyle={{
             padding: 0,
             marginLeft: 4,
