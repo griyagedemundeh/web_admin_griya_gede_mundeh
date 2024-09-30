@@ -187,7 +187,7 @@ const AddCeremonyModalContent = ({
             <PrimaryTextArea
               value={""}
               onChange={(e) => {}}
-              name="Deskripsi Upacara"
+              label="Deskripsi Upacara"
               placeholder="Masukkan deskripsi singkat upacaramu disini"
             />
           </div>

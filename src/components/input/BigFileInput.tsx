@@ -2,7 +2,7 @@ import { PhotoIcon } from "@heroicons/react/20/solid";
 import React, { ChangeEventHandler } from "react";
 
 interface BigFileInputProps {
-  name: string;
+  name?: string;
   label?: string;
   value: any;
   onChange: ChangeEventHandler<HTMLInputElement>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { getDictionary } from "../../dictionaries";
+import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryCard from "@/components/card/PrimaryCard";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import SettingTabs from "./components/SettingTabs";
@@ -60,7 +60,6 @@ const ProfileSettingsContent = () => (
             onChange={(e) => {}}
           />
           <PrimaryTextArea
-            name="about"
             label="Tentang Griya"
             value={""}
             placeholder="Informasikan Sejarah Griya/Hal yang beruhubungan dengan Griya"
@@ -68,7 +67,6 @@ const ProfileSettingsContent = () => (
             className="w-full sm:col-span-6"
           />
           <PrimaryTextArea
-            name="vision"
             label="Visi Griya"
             value={""}
             placeholder="Tuliskan Visi dari Griya"
@@ -76,7 +74,6 @@ const ProfileSettingsContent = () => (
             className="w-full sm:col-span-6"
           />
           <PrimaryTextArea
-            name="mission"
             label="Misi Griya"
             value={""}
             placeholder="Tuliskan Misi dari Griya"
@@ -174,7 +171,7 @@ const AdminProfileSettingContent = () => (
 export default function SettingPage({
   params: { lang },
 }: {
-  params: { lang: string };
+  params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [activeTab, setActiveTab] = useState("profile-griya");
