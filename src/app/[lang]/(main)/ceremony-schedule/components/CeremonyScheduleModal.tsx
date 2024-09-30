@@ -65,7 +65,7 @@ const CeremonyScheduleModal = ({
           <PrimaryTextArea
             onChange={(e) => {}}
             value={""}
-            name="Catatan"
+            label="Catatan"
             isOptional={true}
             className="w-full"
           />
