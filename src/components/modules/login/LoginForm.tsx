@@ -1,6 +1,5 @@
 "use client";
 
-import { Locale } from "@/app/[lang]/dictionaries";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Images from "@/constants/images";
@@ -45,7 +44,7 @@ const LoginForm = ({ t }: LoginFormProps) => {
         <div className="w-full mt-10">
           <div className="px-52">
             <PrimaryInput
-              name={t.label.emailorPhone}
+              label={t.label.emailorPhone}
               value={emailValue}
               onChange={(e) => {
                 setEmailValue(e.target.value);
@@ -53,7 +52,7 @@ const LoginForm = ({ t }: LoginFormProps) => {
             />
             <div className="mt-4" />
             <PrimaryInput
-              name={t.label.password}
+              label={t.label.password}
               value={passwordValue}
               type="password"
               onChange={(e) => {
