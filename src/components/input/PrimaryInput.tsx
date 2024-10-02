@@ -11,6 +11,7 @@ interface PrimaryInputProps {
   className?: string;
   trailing?: any;
   isOptional?: boolean;
+  error?: string;
 }
 
 export default function PrimaryInput({
@@ -23,6 +24,7 @@ export default function PrimaryInput({
   className,
   trailing,
   isOptional,
+  error,
 }: PrimaryInputProps) {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -51,7 +53,7 @@ export default function PrimaryInput({
         {trailing}
 
         {type === "password" ? (
-          <button
+          <div
             className="absolute top-2 right-2 hover:cursor-pointer"
             onClick={() => {
               setIsVisible(!isVisible);
@@ -62,9 +64,10 @@ export default function PrimaryInput({
             ) : (
               <EyeIcon aria-hidden="true" className="h-5 w-5" />
             )}
-          </button>
+          </div>
         ) : null}
       </div>
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 }

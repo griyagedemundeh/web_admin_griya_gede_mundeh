@@ -130,7 +130,7 @@ export default function ManagerPage({
   );
 
   return (
-    <>
+    <div>
       <h1 className="font-bold text-xl mb-8">Pengelola</h1>
       <PrimaryTable
         title="Daftar Pengelola"
@@ -231,6 +231,6 @@ export default function ManagerPage({
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
       />
-    </>
+    </div>
   );
 }

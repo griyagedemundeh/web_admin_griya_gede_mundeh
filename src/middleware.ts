@@ -1,11 +1,12 @@
 import { match } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
 import { NextRequest, NextResponse } from "next/server";
+import CookieKey from "./constants/cookie_key";
 
-let locales = ["id", "en"];
-let defaultLocale = "id";
+const locales = ["id", "en"];
+const defaultLocale = "id";
 
-// Get the preferred locale, similar to the above or using a library
+// Get the preferred locale from the request
 function getLocale(request: NextRequest) {
   const acceptLang = request.headers.get("Accept-Language");
   if (!acceptLang) return defaultLocale;
@@ -15,37 +16,49 @@ function getLocale(request: NextRequest) {
 }
 
 export function middleware(request: NextRequest) {
-  // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
+
+  // Bypass locale processing for assets
+  if (pathname.startsWith("/assets/")) {
+    return NextResponse.next();
+  }
+
+  // Determine if the path already includes a locale
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathname.startsWith("/assets/")) {
-    return NextResponse.next(); // Bypass locale processing
-  }
-
-  if (pathnameHasLocale) return;
-  // Redirect if there is no locale
   const locale = getLocale(request);
 
-  const cookies = request.cookies;
-  const isLogin = cookies.get("isLogin");
+  // Check if the user is logged in by reading the cookie
+  const cookies = request.headers.get("cookie");
+  const isLoggedin = cookies?.includes(`${CookieKey.IS_LOGGED_IN}=true`);
 
-  // if (isLogin === undefined) {
-  //   request.nextUrl.pathname = `/${locale}/login`;
-  //   request.cookies.set("isLogin", "true");
-  //   return NextResponse.redirect(request.nextUrl);
-  // }
+  // If the user is already logged in and is accessing the login page, redirect to dashboard
+  if (!pathnameHasLocale && isLoggedin) {
+    if (pathname === "/" || pathname === "/home" || pathname === "/dashboard") {
+      return NextResponse.redirect(
+        new URL(`/${locale}/dashboard`, request.url)
+      );
+    }
 
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-  return NextResponse.redirect(request.nextUrl);
+    // If there is no locale in the pathname, add the preferred locale and proceed
+    request.nextUrl.pathname = `/${locale}${pathname}`;
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  if (!pathnameHasLocale && !isLoggedin) {
+    request.nextUrl.pathname = `/${locale}/login`;
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  return NextResponse.next();
 }
+
 export const config = {
   matcher: [
-    // Skip all internal paths (_next)
-    "/((?!_next).*)",
-    // Optional: only run on root (/) URL
-    // '/'
+    "/((?!_next).*)", // Skip all internal paths like _next
+    "/dashboard/:path*", // Match any dashboard-related paths
+    "/", // Match the root URL
   ],
 };
