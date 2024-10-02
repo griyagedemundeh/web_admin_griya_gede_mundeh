@@ -7,6 +7,7 @@ const nextConfig = {
       "assets.promediateknologi.id",
       "awsimages.detik.net.id",
       "cdn.pixabay.com",
+      "ggm-api.gatenzteam.com",
     ],
   },
 };

@@ -4,6 +4,7 @@ import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import React from "react";
+import { useAuth } from "@/hooks/auth/use_auth";
 
 interface HeaderProps {
   onClose: (value: boolean) => void;
@@ -12,6 +13,8 @@ interface HeaderProps {
 }
 
 const Header = ({ navigations, onClose, t }: HeaderProps) => {
+  const { account } = useAuth();
+
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       <button
@@ -47,8 +50,8 @@ const Header = ({ navigations, onClose, t }: HeaderProps) => {
             <MenuButton className="-m-1.5 flex items-center p-1.5">
               <span className="sr-only">Open user menu</span>
               <Image
-                alt=""
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                alt={account?.fullName ?? ""}
+                src={account?.avatarUrl ?? ""}
                 className="h-8 w-8 rounded-full bg-gray-50"
                 height={40}
                 width={40}

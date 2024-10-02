@@ -5,6 +5,7 @@ import Auth from "@/data/models/auth/response/auth";
 import ApiResponse from "@/data/models/base/api-base-response";
 
 export interface IAuthService {
+  getAccount(): Auth;
   registerAdmin(request: RegisterAdminRequest): Promise<ApiResponse<Auth>>;
   login(request: LoginRequest): Promise<ApiResponse<Auth>>;
 }

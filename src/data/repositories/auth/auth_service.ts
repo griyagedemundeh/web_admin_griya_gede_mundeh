@@ -12,6 +12,19 @@ import { AxiosResponse } from "axios";
 import { setCookie } from "cookies-next";
 
 export class AuthService implements IAuthService {
+  getAccount(): Auth {
+    try {
+      const account = LocalStorage.get<Auth>(StorageKey.ACCOUNT) as Auth;
+
+      return account;
+    } catch (error) {
+      console.error("====================================");
+      console.error("ERROR GET ACCOUNT --> ", error);
+      console.error("====================================");
+      throw error;
+    }
+  }
+
   async registerAdmin(
     request: RegisterAdminRequest
   ): Promise<ApiResponse<Auth>> {
@@ -22,9 +35,6 @@ export class AuthService implements IAuthService {
         uri,
         request
       );
-
-      this.setToken({ access_token: response.data.data.token });
-      LocalStorage.set(StorageKey.ACCOUNT, response.data);
 
       return response.data;
     } catch (error) {

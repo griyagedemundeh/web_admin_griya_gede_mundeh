@@ -4,42 +4,46 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import Auth from "@/data/models/auth/response/auth";
 import LoginRequest from "@/data/models/auth/request/login_request";
 import { showToast } from "@/utils";
-import { useRouter } from "next/navigation";
 import Routes from "@/constants/routes";
 import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
+import { AuthService } from "@/data/repositories/auth/auth_service";
 
 interface IUseAuth {
   login: UseMutateFunction<ApiResponse<Auth>, unknown, LoginRequest, unknown>;
   isLoadingLogin: boolean;
+  account: Auth | undefined;
 }
 
 export const useAuth = (): IUseAuth => {
-  const router = useRouter();
+  const [account, setAccount] = useState<Auth>();
 
   const { mutate: login, isLoading: isLoadingLogin } = useMutation(
     loginBridge,
     {
       onSuccess: async (value) => {
-        console.log("====================================");
-        console.log("DATA ---> ", value);
-        console.log("====================================");
-
         value.message.forEach((message) => {
           showToast({ status: "success", message: message });
         });
 
-        router.replace(Routes.dashboard);
+        setTimeout(() => {
+          window.location.href = Routes.dashboard;
+        }, 2000);
       },
       onError: async (error: AxiosError<ApiResponse<Auth>>) => {
-        console.error("====================================");
         console.error("ERROR LOGIN -> ", error);
-        console.error("====================================");
         showToast({ status: "error", message: error.message });
       },
     }
   );
 
+  useEffect(() => {
+    const authService = new AuthService();
+    setAccount(authService.getAccount());
+  }, []); // No dependencies
+
   return {
+    account,
     login,
     isLoadingLogin,
   };
