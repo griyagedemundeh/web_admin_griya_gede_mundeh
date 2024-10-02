@@ -2,7 +2,6 @@ import { ChangeEventHandler, HTMLInputTypeAttribute, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 interface PrimaryInputProps {
-  name?: string;
   label?: string;
   value: string | number;
   type?: HTMLInputTypeAttribute;
@@ -15,7 +14,6 @@ interface PrimaryInputProps {
 }
 
 export default function PrimaryInput({
-  name,
   label,
   value,
   type,
@@ -32,17 +30,17 @@ export default function PrimaryInput({
     <div className={className}>
       {label ? (
         <label
-          htmlFor={name}
+          htmlFor={label}
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           {label}
           {isOptional && " (Opsional)"}
         </label>
       ) : null}
-      <div className={name ? "mt-2 relative " : "relative"}>
+      <div className={label ? "mt-2 relative " : "relative"}>
         <input
-          id={name ?? ""}
-          name={name ?? ""}
+          id={label ?? ""}
+          name={label ?? ""}
           type={isVisible ? "text" : type}
           value={value}
           onChange={onChange}

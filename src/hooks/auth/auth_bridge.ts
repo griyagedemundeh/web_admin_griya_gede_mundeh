@@ -15,11 +15,11 @@ export const login = async (
     .then(async (value) => {
       return value;
     })
-    .catch((error: AxiosError<Auth>) => {
+    .catch((error: AxiosError<ApiResponse<Auth>>) => {
       console.error("====================================");
       console.error(`${TAG_ERROR} LOGIN`, error);
       console.error("====================================");
-      throw error.response;
+      throw error;
     });
 
   return response;

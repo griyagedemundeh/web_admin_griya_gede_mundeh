@@ -30,9 +30,8 @@ export const useAuth = (): IUseAuth => {
           window.location.href = Routes.dashboard;
         }, 2000);
       },
-      onError: async (error: AxiosError<ApiResponse<Auth>>) => {
-        console.error("ERROR LOGIN -> ", error);
-        showToast({ status: "error", message: error.message });
+      onError: async (error: AxiosError<ApiResponse<Auth>> | AxiosError) => {
+        showToast({ status: "error", message: `${error.message}` });
       },
     }
   );
