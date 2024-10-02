@@ -1,6 +1,8 @@
 import { match } from "@formatjs/intl-localematcher";
+import { getCookie } from "cookies-next";
 import Negotiator from "negotiator";
 import { NextRequest, NextResponse } from "next/server";
+import CookieKey from "./constants/cookie_key";
 
 let locales = ["id", "en"];
 let defaultLocale = "id";
@@ -14,7 +16,7 @@ function getLocale(request: NextRequest) {
   return match(languages, locales, defaultLocale);
 }
 
-export function middleware(request: NextRequest) {
+export function middleware(request: NextRequest, response: NextResponse) {
   // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = locales.some(
@@ -29,8 +31,15 @@ export function middleware(request: NextRequest) {
   // Redirect if there is no locale
   const locale = getLocale(request);
 
-  const cookies = request.cookies;
-  const isLogin = cookies.get("isLogin");
+  // const cookies = request.cookies;
+  const isLogin = getCookie(CookieKey.IS_LOGGED_IN, {
+    req: request,
+    res: response,
+  });
+
+  console.log("====================================");
+  console.log("DATA ISLOGIN ---->>> ", isLogin === undefined);
+  console.log("====================================");
 
   if (isLogin === undefined) {
     request.nextUrl.pathname = `/${locale}/login`;

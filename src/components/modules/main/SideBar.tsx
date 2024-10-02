@@ -1,6 +1,7 @@
 import LogoWithTitle from "@/components/mini/LogoWithTitle";
 import BasicNavigation from "@/interfaces/BasicNavigation";
-import classNames from "@/utils/classname";
+import { classNames } from "@/utils";
+
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import React from "react";

@@ -11,8 +11,7 @@ import {
 import MobileBarDialog from "./MobileBarDialog";
 import SideBar from "./SideBar";
 import Header from "./Header";
-import getInitials from "@/utils/getInitial";
-import Script from "next/script";
+import { getInitials } from "@/utils";
 
 interface MainTemplateProps {
   t: any;
@@ -110,10 +109,6 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"
-        strategy="lazyOnload"
-      />
     </div>
   );
 };

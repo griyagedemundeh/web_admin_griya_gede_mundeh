@@ -2,7 +2,8 @@
 
 import LogoWithTitle from "@/components/mini/LogoWithTitle";
 import BasicNavigation from "@/interfaces/BasicNavigation";
-import classNames from "@/utils/classname";
+import { classNames } from "@/utils";
+
 import {
   Dialog,
   DialogBackdrop,
