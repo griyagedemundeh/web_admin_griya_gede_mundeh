@@ -9,7 +9,9 @@ const nextConfig = {
       "cdn.pixabay.com",
       "ggm-api.gatenzteam.com",
     ],
+    unoptimized: true, // Add this line for Netlify compatibility
   },
+  output: "standalone", // Add this line for better Netlify compatibility
 };
 
 export default nextConfig;
