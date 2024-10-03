@@ -1,5 +1,6 @@
 import Article from "@/data/models/article";
 import Ceremony from "@/data/models/ceremony";
+import SocialNetwork from "@/data/models/socialNetwork";
 import Transaction from "@/data/models/transaction";
 import User from "@/data/models/user";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
@@ -253,5 +254,24 @@ export const ceremonySchedules: CeremonySchedule[] = [
     countDown: new Date(),
     status: "Persiapan",
     title: "Upacara Mebayuh Bapak Kadek",
+  },
+];
+
+export const socialNetwork: SocialNetwork[] = [
+  {
+    platformName: "Facebook",
+    platformProfile: "Griya Gede Mundeh",
+    platformIconUrl:
+      "https://static.xx.fbcdn.net/rsrc.php/yD/r/UJj0tgk-RrT.ico?_nc_eui2=AeFnyd5RTehNr6eWxl5WRyOfKl70C3VliBEqXvQLdWWIEbxjhgXxaN9ItV8xfVeMpgN35Zv5IAe7f0beyJr_jRnO",
+    profileUrl: "https://web.facebook.com/profile.php?id=100082506170817",
+    status: true,
+  },
+  {
+    platformName: "Instagram",
+    platformProfile: "griyagedemundeh",
+    platformIconUrl:
+      "https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png",
+    profileUrl: "https://www.instagram.com/griyagedemundeh/",
+    status: true,
   },
 ];

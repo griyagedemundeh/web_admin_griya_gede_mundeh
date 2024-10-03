@@ -47,10 +47,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(request.nextUrl);
   }
 
-  if (!pathnameHasLocale && !isLoggedin) {
-    request.nextUrl.pathname = `/${locale}/login`;
-    return NextResponse.redirect(request.nextUrl);
-  }
+  // if (!pathnameHasLocale && !isLoggedin) {
+  //   request.nextUrl.pathname = `/${locale}/login`;
+  //   return NextResponse.redirect(request.nextUrl);
+  // }
 
   return NextResponse.next();
 }

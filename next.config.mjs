@@ -8,6 +8,8 @@ const nextConfig = {
       "awsimages.detik.net.id",
       "cdn.pixabay.com",
       "ggm-api.gatenzteam.com",
+      "static.xx.fbcdn.net",
+      "static.cdninstagram.com",
     ],
   },
 };
