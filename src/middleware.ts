@@ -39,11 +39,6 @@ export function middleware(request: NextRequest) {
   const isLoggedIn =
     request.cookies.get(CookieKey.IS_LOGGED_IN)?.value === "true";
 
-  console.log("====================================");
-  console.log("IS LOGGEDIN -->", isLoggedIn);
-  console.log("PATH -->", pathname);
-  console.log("====================================");
-
   // Handle root path
   if (pathname === "/") {
     return NextResponse.redirect(

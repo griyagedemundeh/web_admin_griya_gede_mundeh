@@ -30,8 +30,14 @@ export const useAuth = (): IUseAuth => {
           window.location.href = Routes.dashboard;
         }, 2000);
       },
-      onError: async (error: AxiosError<ApiResponse<Auth>> | AxiosError) => {
-        showToast({ status: "error", message: `${error.message}` });
+      onError: async (error: AxiosError<ApiResponse<Auth>> | unknown) => {
+        if (error instanceof Array) {
+          error.forEach((message) => {
+            showToast({ status: "error", message: `${message}` });
+          });
+          return;
+        }
+        showToast({ status: "error", message: `${error}` });
       },
     }
   );

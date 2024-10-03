@@ -8,7 +8,7 @@ import RegisterAdminRequest from "@/data/models/auth/request/register_admin_requ
 import Auth from "@/data/models/auth/response/auth";
 import ApiResponse from "@/data/models/base/api-base-response";
 import LocalStorage from "@/data/storage/local_storage";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { setCookie } from "cookies-next";
 
 export class AuthService implements IAuthService {
@@ -57,11 +57,11 @@ export class AuthService implements IAuthService {
       LocalStorage.set(StorageKey.ACCOUNT, response.data.data);
 
       return response.data;
-    } catch (error) {
+    } catch (error: AxiosError<ApiResponse<Auth>> | any) {
       console.error("====================================");
-      console.error("ERROR LOGIN --> ", error);
+      console.error("ERROR LOGIN --> ", error.response.data.message);
       console.error("====================================");
-      throw error;
+      throw error.response.data.message;
     }
   }
 
