@@ -34,20 +34,20 @@ const UserModal = ({
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
           <PhotoProfileInput />
           <PrimaryInput
-            name="Nama Lengkap"
+            label="Nama Lengkap"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
           <PrimaryInput
-            name="Email"
+            label="Email"
             onChange={(e) => {}}
             value={""}
             className="w-full"
             type="email"
           />
           <PrimaryInput
-            name="No.Handphone"
+            label="No.Handphone"
             onChange={(e) => {}}
             value={""}
             className="w-full"
@@ -56,7 +56,7 @@ const UserModal = ({
           {isForDetail && (
             <div className="flex flex-row space-x-2 items-end w-full">
               <PrimaryInput
-                name="Alamat Utama"
+                label="Alamat Utama"
                 onChange={(e) => {}}
                 value={""}
                 className="w-full"
@@ -72,20 +72,20 @@ const UserModal = ({
           )}
 
           <PrimaryInput
-            name="Alamat Utama"
+            label="Alamat Utama"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
           <PrimaryInput
-            name="Password"
+            label="Password"
             onChange={(e) => {}}
             value={""}
             type="password"
             className="w-full"
           />
           <PrimaryInput
-            name="Konfirmasi Password"
+            label="Konfirmasi Password"
             onChange={(e) => {}}
             value={""}
             type="password"

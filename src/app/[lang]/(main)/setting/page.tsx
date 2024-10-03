@@ -15,7 +15,6 @@ const ProfileSettingsContent = () => (
       <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3">
         <div className="grid grid-cols-1">
           <BigFileInput
-            name="logo"
             label="Upload Logo Griya"
             onChange={(e) => {}}
             value={""}
@@ -25,7 +24,6 @@ const ProfileSettingsContent = () => (
         <div className="grid max-w-2xl gap-4 sm:grid-cols-6 md:col-span-2">
           <PrimaryInput
             value={""}
-            name="name"
             label="Nama Griya"
             type="text"
             placeholder="Nama Griya"
@@ -34,7 +32,6 @@ const ProfileSettingsContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="email"
             label="Email Griya"
             type="text"
             placeholder="griya@domain.com"
@@ -43,7 +40,6 @@ const ProfileSettingsContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="phoneNumber"
             label="No. Telp Griya"
             type="text"
             placeholder="+62 819-xxxx-xxxx"
@@ -52,7 +48,6 @@ const ProfileSettingsContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="address"
             label="Alamat Griya"
             type="text"
             placeholder="Jl. Denpasar-Gilimanuk"
@@ -100,7 +95,6 @@ const AdminProfileSettingContent = () => (
       <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3">
         <div className="grid grid-cols-1">
           <BigFileInput
-            name="logo"
             label="Upload Photo Profile"
             onChange={(e) => {}}
             value={""}
@@ -110,7 +104,6 @@ const AdminProfileSettingContent = () => (
         <div className="grid max-w-2xl gap-4 sm:grid-cols-6 md:col-span-2">
           <PrimaryInput
             value={""}
-            name="name"
             label="Nama Lengkap"
             type="text"
             placeholder="Nama Lengkap"
@@ -119,7 +112,6 @@ const AdminProfileSettingContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="email"
             label="Email"
             type="text"
             placeholder="admin@domain.com"
@@ -128,7 +120,6 @@ const AdminProfileSettingContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="phoneNumber"
             label="No. Handphone"
             type="text"
             placeholder="+62 819-xxxx-xxxx"
@@ -137,7 +128,6 @@ const AdminProfileSettingContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="password"
             label="Password"
             type="password"
             placeholder="Password saat ini"
@@ -146,7 +136,6 @@ const AdminProfileSettingContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="new-password"
             label="Password Baru"
             type="password"
             placeholder="Password Baru"
@@ -155,7 +144,6 @@ const AdminProfileSettingContent = () => (
           />
           <PrimaryInput
             value={""}
-            name="address"
             label="Konfirmasi Password Baru"
             type="password"
             placeholder="Konfirmasi Password Baru"

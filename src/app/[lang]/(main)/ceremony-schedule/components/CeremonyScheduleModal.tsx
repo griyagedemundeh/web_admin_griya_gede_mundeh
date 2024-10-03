@@ -25,38 +25,38 @@ const CeremonyScheduleModal = ({
       content={
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
           <PrimaryInput
-            name="Status"
+            label="Status"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
           <PrimaryInput
-            name="Nama Upacara"
+            label="Nama Upacara"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
 
           <PrimaryInput
-            name="Pemedek/Penyelenggara"
+            label="Pemedek/Penyelenggara"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
           <PrimaryInput
-            name="Tanggal Upacara"
+            label="Tanggal Upacara"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
           <PrimaryInput
-            name="Lokasi Upacara"
+            label="Lokasi Upacara"
             onChange={(e) => {}}
             value={""}
             className="w-full"
           />
           <PrimaryInput
-            name="Pengelola"
+            label="Pengelola"
             onChange={(e) => {}}
             value={""}
             className="w-full"

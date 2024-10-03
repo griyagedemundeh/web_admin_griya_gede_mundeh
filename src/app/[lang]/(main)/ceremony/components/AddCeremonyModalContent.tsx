@@ -170,7 +170,7 @@ const AddCeremonyModalContent = ({
         {progress < 50 ? (
           <div className="flex flex-col space-y-4">
             <PrimaryInput
-              name="Nama Upacara"
+              label="Nama Upacara"
               value={""}
               onChange={(e) => {}}
               placeholder="Masukkan nama upacara"
@@ -215,7 +215,7 @@ const AddCeremonyModalContent = ({
                 </div>
                 <div className="flex flex-col space-y-4">
                   <PrimaryInput
-                    name="Nama Paket"
+                    label="Nama Paket"
                     value={ceremonyPackage.title}
                     onChange={(e) => {}}
                     placeholder="Masukkan nama paket"
