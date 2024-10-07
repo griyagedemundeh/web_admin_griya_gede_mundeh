@@ -27,20 +27,17 @@ const ManagerModal = ({
   setActiveManager,
   bottomAction,
 }: ManagerModalProps) => {
-  const { setIsLoading } = useCentralStore();
   const { addAdmin, isAddAdminSuccess, isAddAdminError } = useAdmin();
 
   const [addAdminRequest, setAddAdminRequest] = useState<AddAdminRequest>({
     email: "",
     fullName: "",
     password: "",
-    password_confirmation: "",
+    passwordConfirm: "",
     phoneNumber: "",
   });
 
   const handleAddAdmin = (addAdminRequest: AddAdminRequest) => {
-    setIsLoading(true);
-
     addAdmin(addAdminRequest);
 
     setOpen(false);
@@ -110,10 +107,10 @@ const ManagerModal = ({
                   />
                   <PrimaryInput
                     label="Konfirmasi Password"
-                    value={values.password_confirmation}
+                    value={values.passwordConfirm}
                     placeholder="Masukkan konfirmasi password admin"
-                    error={errors.password_confirmation ?? undefined}
-                    onChange={handleChange("password_confirmation")}
+                    error={errors.passwordConfirm ?? undefined}
+                    onChange={handleChange("passwordConfirm")}
                     type="password"
                     className="w-full"
                   />

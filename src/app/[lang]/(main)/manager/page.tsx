@@ -11,18 +11,19 @@ import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import { status, users } from "@/utils/dummyData";
+import { status } from "@/utils/dummyData";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import User from "@/data/models/user";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import SwitchInput from "@/components/input/SwitchInput";
 import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
 import ManagerModal from "./components/ManagerModal";
+import { useAdmin } from "@/hooks/admin/use_admin";
+import Admin from "@/data/models/admin/response/admin";
 
 export default function ManagerPage({
   params: { lang },
@@ -38,11 +39,16 @@ export default function ManagerPage({
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const [data, setData] = useState(() => users);
+  const { allAdmin } = useAdmin();
+
   const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns = useMemo<ColumnDef<User>[]>(
+  useEffect(() => {
+    setCurrentPage(allAdmin?.meta?.currentPage ?? 1);
+  }, [allAdmin]);
+
+  const columns = useMemo<ColumnDef<Admin>[]>(
     () => [
       {
         header: "Nama Pengelola",
@@ -50,7 +56,7 @@ export default function ManagerPage({
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
-                alt={info.row.original.name}
+                alt={info.row.original.fullName}
                 src={
                   info.row.original.avatarUrl ??
                   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
@@ -60,7 +66,7 @@ export default function ManagerPage({
                 width={40}
                 objectFit="cover"
               />
-              <p className="font-bold">{info.row.original.name}</p>
+              <p className="font-bold">{info.row.original.fullName ?? "-"}</p>
             </div>
           </div>
         ),
@@ -69,7 +75,7 @@ export default function ManagerPage({
         header: "Email",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.email}
+            {info.row.original.email ?? "-"}
           </div>
         ),
       },
@@ -77,7 +83,7 @@ export default function ManagerPage({
         header: "No.Hp",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.phone}
+            {info.row.original.phoneNumber ?? "-"}
           </div>
         ),
       },
@@ -86,13 +92,13 @@ export default function ManagerPage({
         cell: (info) => (
           <SwitchInput
             label={
-              info.row.original.status ? (
+              info.row.original.fullName ? (
                 <span className="font-medium text-gray-900">Aktif</span>
               ) : (
                 <span className="font-medium text-gray-400">Non-Aktif</span>
               )
             }
-            value={info.row.original.status}
+            value={true}
             onChange={(e) => {}}
           />
         ),
@@ -164,12 +170,12 @@ export default function ManagerPage({
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        data={allAdmin?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={10}
+        totalPage={allAdmin?.meta?.total}
+        limitPage={5}
         isCommon={true}
       />
 

@@ -4,6 +4,7 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import { AxiosError, AxiosResponse } from "axios";
 import { IAdminService } from "./admin_service_interface";
 import Admin from "@/data/models/admin/response/admin";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 export class AdminService implements IAdminService {
   async addAdmin(request: RegisterAdminRequest): Promise<ApiResponse<Admin>> {
@@ -17,6 +18,23 @@ export class AdminService implements IAdminService {
 
       return response.data;
     } catch (error: AxiosError<ApiResponse<Admin>> | any) {
+      console.error("====================================");
+      console.error("ERROR ADD ADMIN --> ", error.response.data.message);
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async getAllAdmin(request: ListDataRequest): Promise<ApiResponse<Admin[]>> {
+    const uri = "/super-admin/admin";
+
+    try {
+      const response: AxiosResponse<ApiResponse<Admin[]>> = await api.get(uri, {
+        params: request,
+      });
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<Admin[]>> | any) {
       console.error("====================================");
       console.error("ERROR ADD ADMIN --> ", error.response.data.message);
       console.error("====================================");

@@ -2,7 +2,7 @@ type AddAdminRequest = {
   fullName: string;
   phoneNumber: string;
   password: string;
-  password_confirmation: string;
+  passwordConfirm: string;
   email: string;
 };
 

@@ -20,7 +20,7 @@ const adminValidation = Yup.object({
       "Kata sandi tidak valid!"
     )
     .required("Kata sandi harus diisi!"),
-  password_confirmation: Yup.string()
+  passwordConfirm: Yup.string()
     .min(
       MINIMAL_PASSWORD_LENGTH,
       "Konfirmasi Kata sandi masih kurang dari 8 karakter!"
