@@ -1,4 +1,4 @@
-type RegisterAdminRequest = {
+type AddAdminRequest = {
   fullName: string;
   phoneNumber: string;
   password: string;
@@ -6,4 +6,4 @@ type RegisterAdminRequest = {
   email: string;
 };
 
-export default RegisterAdminRequest;
+export default AddAdminRequest;

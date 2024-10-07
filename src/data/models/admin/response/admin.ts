@@ -1,11 +1,10 @@
-type Auth = {
+type Admin = {
   id: number;
   fullName: string;
-  avatarUrl: string;
+  avatarUrl: string | null;
   email: string;
   phoneNumber: string;
   token: string;
-  role: string;
 };
 
-export default Auth;
+export default Admin;

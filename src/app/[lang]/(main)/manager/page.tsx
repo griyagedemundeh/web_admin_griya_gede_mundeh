@@ -4,7 +4,6 @@ import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
   PencilIcon,
-  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
@@ -175,18 +174,7 @@ export default function ManagerPage({
       />
 
       {/* Dialog Add Manager*/}
-      <ManagerModal
-        open={open}
-        setOpen={setOpen}
-        title="Tambah Pengelola"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={UserPlusIcon}
-          />
-        }
-      />
+      <ManagerModal open={open} setOpen={setOpen} title="Tambah Pengelola" />
 
       {/* Dialog Detail Manager*/}
       <ManagerModal

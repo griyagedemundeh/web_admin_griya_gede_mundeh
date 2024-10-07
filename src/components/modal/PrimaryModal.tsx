@@ -9,7 +9,7 @@ interface PrimaryModalProps {
   setOpen: (value: boolean) => void;
   title: string;
   content: ReactElement;
-  bottomAction: ReactElement;
+  bottomAction?: ReactElement;
 }
 
 const PrimaryModal = ({
@@ -48,9 +48,11 @@ const PrimaryModal = ({
               {content}
             </div>
 
-            <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
-              {bottomAction}
-            </div>
+            {bottomAction && (
+              <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
+                {bottomAction}
+              </div>
+            )}
           </DialogPanel>
         </div>
       </div>
