@@ -1,72 +1,50 @@
 import PrimaryInput from "@/components/input/PrimaryInput";
 import SwitchInput from "@/components/input/SwitchInput";
-import PrimaryModal from "@/components/modal/PrimaryModal";
-import AddAdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import { Form, Formik } from "formik";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import adminValidation from "../validation/admin_validation";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import { UserPlusIcon } from "@heroicons/react/20/solid";
+import { PencilIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
 import { useAdmin } from "@/hooks/admin/use_admin";
-import { useCentralStore } from "@/store";
+import Modal from "@/components/modal/Modal";
+import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 
-interface ManagerModalProps {
-  open: boolean;
-  setOpen: (value: boolean) => void;
-  title: string;
-  activeManager?: boolean;
-  setActiveManager?: (value: boolean) => void;
-  bottomAction?: ReactElement;
+interface DetailManagerModalProps {
+  data: AdminRequest;
 }
 
-const ManagerModal = ({
-  open,
-  setOpen,
-  title,
-  activeManager,
-  setActiveManager,
-  bottomAction,
-}: ManagerModalProps) => {
-  const { addAdmin, isAddAdminSuccess, isAddAdminError } = useAdmin();
+const DetailManagerModal = ({ data }: DetailManagerModalProps) => {
+  const {} = useAdmin();
 
-  const [addAdminRequest, setAddAdminRequest] = useState<AddAdminRequest>({
-    email: "",
-    fullName: "",
-    password: "",
-    passwordConfirm: "",
-    phoneNumber: "",
-  });
-
-  const handleAddAdmin = (addAdminRequest: AddAdminRequest) => {
-    addAdmin(addAdminRequest);
-
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    if (isAddAdminSuccess) {
-      setOpen(false);
-    }
-
-    if (isAddAdminError) {
-      setOpen(true);
-    }
-  }, [isAddAdminSuccess, isAddAdminError]);
+  const [active, setActive] = useState<boolean>(true);
+  const [openDetail, setOpenDetail] = useState(false);
+  const handleEditAdmin = (adminRequest: AdminRequest) => {};
 
   return (
-    <Formik
-      initialValues={addAdminRequest}
-      onSubmit={handleAddAdmin}
-      validationSchema={adminValidation}
-      suppressHydrationWarning={true}
-    >
-      {({ errors, handleChange, handleSubmit, values }) => (
-        <Form>
-          <PrimaryModal
-            open={open}
-            setOpen={setOpen}
-            title={title}
-            content={
+    <>
+      <IconBackgroundButton
+        icon={PencilSquareIcon}
+        colorBackground="emerald"
+        className="bg-emerald-100"
+        colorIcon="green"
+        onClick={() => {
+          setOpenDetail(true);
+        }}
+      />
+      <Modal
+        title="Detail Pengelola"
+        isOpen={openDetail}
+        setIsOpen={setOpenDetail}
+      >
+        <Formik
+          initialValues={data}
+          onSubmit={handleEditAdmin}
+          validationSchema={adminValidation}
+          suppressHydrationWarning={true}
+        >
+          {({ errors, handleChange, handleSubmit, values }) => (
+            <Form>
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   {/* <PhotoProfileInput isNull={true} onclose={toggleModalUpload} /> */}
@@ -114,7 +92,7 @@ const ManagerModal = ({
                     type="password"
                     className="w-full"
                   />
-                  {activeManager !== undefined && (
+                  {active !== undefined && (
                     <SwitchInput
                       className="self-start pt-2"
                       label={
@@ -122,11 +100,9 @@ const ManagerModal = ({
                           Aktif/Non-Aktif
                         </span>
                       }
-                      value={activeManager ?? false}
+                      value={active ?? false}
                       onChange={(e) => {
-                        if (setActiveManager) {
-                          setActiveManager(e);
-                        }
+                        setActive(e);
                       }}
                     />
                   )}
@@ -137,16 +113,16 @@ const ManagerModal = ({
                     onClick={() => {
                       handleSubmit();
                     }}
-                    icon={UserPlusIcon}
+                    icon={PencilIcon}
                   />
                 </div>
               </div>
-            }
-          />
-        </Form>
-      )}
-    </Formik>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
+    </>
   );
 };
 
-export default ManagerModal;
+export default DetailManagerModal;

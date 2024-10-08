@@ -1,4 +1,4 @@
-type AddAdminRequest = {
+type AdminRequest = {
   fullName: string;
   phoneNumber: string;
   password: string;
@@ -6,4 +6,4 @@ type AddAdminRequest = {
   email: string;
 };
 
-export default AddAdminRequest;
+export default AdminRequest;

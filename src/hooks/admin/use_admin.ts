@@ -3,7 +3,7 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import { showToast } from "@/utils";
 import { AxiosError } from "axios";
 import Admin from "@/data/models/admin/response/admin";
-import AddAdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import {
   addAdmin as addAdminBridge,
   useGetAllAdminQuery,
@@ -15,7 +15,7 @@ interface IUseAdmin {
   addAdmin: UseMutateFunction<
     ApiResponse<Admin>,
     unknown,
-    AddAdminRequest,
+    AdminRequest,
     unknown
   >;
   allAdmin: ApiResponse<Admin[]> | undefined;
@@ -60,7 +60,6 @@ export const useAdmin = (): IUseAdmin => {
   });
 
   useEffect(() => {
-    setIsLoading(isLoadingAddAdmin);
     setIsLoading(isAllAdminLoading);
 
     if (isAddAdminError) {
@@ -68,7 +67,7 @@ export const useAdmin = (): IUseAdmin => {
         showToast({ status: "error", message: `${message}` });
       });
     }
-  }, [isLoadingAddAdmin, isAllAdminLoading, isAllAdminError]);
+  }, [isAllAdminLoading, isAllAdminError]);
 
   return {
     addAdmin,

@@ -1,4 +1,4 @@
-import AddAdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import Admin from "@/data/models/admin/response/admin";
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
@@ -10,7 +10,7 @@ const authService = new AdminService();
 const TAG_ERROR = "Error during :";
 
 export const addAdmin = async (
-  request: AddAdminRequest
+  request: AdminRequest
 ): Promise<ApiResponse<Admin>> => {
   const response = await authService
     .addAdmin(request)

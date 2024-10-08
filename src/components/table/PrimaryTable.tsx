@@ -11,6 +11,7 @@ import React, {
   MouseEventHandler,
   ReactElement,
   SetStateAction,
+  useState,
 } from "react";
 import PrimaryWithIconButton from "../button/PrimaryWithIconButton";
 import {
@@ -22,6 +23,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Skeleton } from "../skeleton/Skeleton";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 interface PrimaryTableProps {
   title?: string;
@@ -41,6 +43,10 @@ interface PrimaryTableProps {
   limitPage?: number;
   totalPage?: number;
   className?: string;
+  last?: number;
+  from?: number;
+  listDataRequest?: ListDataRequest;
+  setListDataRequest?: (value: ListDataRequest) => void;
 }
 
 const PrimaryTable = ({
@@ -61,7 +67,12 @@ const PrimaryTable = ({
   isLoading,
   setIsLoading,
   className,
+  from,
+  last,
+  listDataRequest,
+  setListDataRequest,
 }: PrimaryTableProps) => {
+  const [active, setActive] = useState<number>(1);
   const table = useReactTable({
     columns,
     data,
@@ -70,10 +81,21 @@ const PrimaryTable = ({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-
-    //
-    debugTable: true,
   });
+
+  const next = () => {
+    if (active === last) return;
+    setActive(active + 1);
+
+    setListDataRequest({ ...listDataRequest, page: active + 1 });
+  };
+
+  const prev = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setListDataRequest({ ...listDataRequest, page: active - 1 });
+  };
 
   return (
     <div
@@ -269,6 +291,21 @@ const PrimaryTable = ({
                           (item, index) => (
                             <button
                               key={`${index}+${new Date()}`}
+                              onClick={() => {
+                                if (
+                                  currentPage &&
+                                  totalPage !== undefined &&
+                                  setCurrentPage
+                                ) {
+                                  if (index > currentPage) {
+                                    setCurrentPage(currentPage + 1);
+                                    table.nextPage();
+                                  } else {
+                                    setCurrentPage(currentPage - 1);
+                                    table.previousPage();
+                                  }
+                                }
+                              }}
                               aria-current="page"
                               className={
                                 currentPage === index + 1

@@ -1,10 +1,12 @@
+import User from "../../user/response/user";
+
 type Admin = {
   id: number;
-  fullName: string;
-  avatarUrl: string | null;
-  email: string;
-  phoneNumber: string;
-  token: string;
+  userId: number;
+  role: "Super Admin" | "Admin" | "Member";
+  createdAt: string;
+  updatedAt: string;
+  user: User;
 };
 
 export default Admin;

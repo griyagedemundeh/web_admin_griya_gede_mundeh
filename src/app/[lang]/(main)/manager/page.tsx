@@ -21,9 +21,14 @@ import PrimaryTable from "@/components/table/PrimaryTable";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import SwitchInput from "@/components/input/SwitchInput";
 import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-import ManagerModal from "./components/ManagerModal";
+
 import { useAdmin } from "@/hooks/admin/use_admin";
 import Admin from "@/data/models/admin/response/admin";
+import DetailManagerModal from "./components/DetailManagerModal";
+import AddManagerModal from "./components/AddManagerModal";
+import AdminRequest from "@/data/models/admin/request/add_admin_request";
+import Images from "@/constants/images";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 export default function ManagerPage({
   params: { lang },
@@ -34,7 +39,6 @@ export default function ManagerPage({
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
@@ -43,6 +47,17 @@ export default function ManagerPage({
 
   const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
+    limit: 5,
+    page: 1,
+  });
+  const [adminRequest, setAdminRequest] = useState<AdminRequest>({
+    email: "",
+    fullName: "",
+    password: "",
+    passwordConfirm: "",
+    phoneNumber: "",
+  });
 
   useEffect(() => {
     setCurrentPage(allAdmin?.meta?.currentPage ?? 1);
@@ -56,17 +71,16 @@ export default function ManagerPage({
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
-                alt={info.row.original.fullName}
-                src={
-                  info.row.original.avatarUrl ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                }
+                alt={info.row.original.user.fullName}
+                src={info.row.original.user.avatarUrl ?? Images.dummyProfile}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
                 objectFit="cover"
               />
-              <p className="font-bold">{info.row.original.fullName ?? "-"}</p>
+              <p className="font-bold">
+                {info.row.original.user.fullName ?? "-"}
+              </p>
             </div>
           </div>
         ),
@@ -75,7 +89,7 @@ export default function ManagerPage({
         header: "Email",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.email ?? "-"}
+            {info.row.original.user.email ?? "-"}
           </div>
         ),
       },
@@ -83,7 +97,7 @@ export default function ManagerPage({
         header: "No.Hp",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.phoneNumber ?? "-"}
+            {info.row.original.user.phoneNumber ?? "-"}
           </div>
         ),
       },
@@ -92,7 +106,7 @@ export default function ManagerPage({
         cell: (info) => (
           <SwitchInput
             label={
-              info.row.original.fullName ? (
+              info.row.original.user.fullName ? (
                 <span className="font-medium text-gray-900">Aktif</span>
               ) : (
                 <span className="font-medium text-gray-400">Non-Aktif</span>
@@ -106,26 +120,27 @@ export default function ManagerPage({
       {
         header: "Aksi",
         cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
-                }}
-              />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
-                }}
-              />
+          <div className="relative">
+            <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <div className="flex flex-row space-x-2">
+                <DetailManagerModal
+                  data={{
+                    fullName: info.row.original.user.fullName,
+                    phoneNumber: info.row.original.user.phoneNumber,
+                    password: "",
+                    passwordConfirm: "",
+                    email: info.row.original.user.email,
+                  }}
+                />
+                <IconBackgroundButton
+                  icon={TrashIcon}
+                  colorBackground="rose"
+                  colorIcon="red"
+                  onClick={() => {
+                    setOpenDelete(true);
+                  }}
+                />
+              </div>
             </div>
           </div>
         ),
@@ -175,31 +190,12 @@ export default function ManagerPage({
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={allAdmin?.meta?.total}
-        limitPage={5}
+        limitPage={listDataRequest.limit}
         isCommon={true}
       />
 
       {/* Dialog Add Manager*/}
-      <ManagerModal open={open} setOpen={setOpen} title="Tambah Pengelola" />
-
-      {/* Dialog Detail Manager*/}
-      <ManagerModal
-        open={openDetail}
-        setOpen={setOpenDetail}
-        activeManager={active}
-        setActiveManager={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        title="Detail Pengelola"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Perbarui"
-            onClick={() => {}}
-            icon={PencilIcon}
-          />
-        }
-      />
+      <AddManagerModal open={open} setOpen={setOpen} data={adminRequest} />
 
       {/* Delete Dialog */}
       <AlertDangerModal
