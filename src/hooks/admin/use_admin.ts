@@ -6,6 +6,7 @@ import Admin from "@/data/models/admin/response/admin";
 import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import {
   addAdmin as addAdminBridge,
+  deleteAdmin as deleteAdminBridge,
   useGetAllAdminQuery,
 } from "./admin_bridge";
 import { useCentralStore } from "@/store";
@@ -18,10 +19,21 @@ interface IUseAdmin {
     AdminRequest,
     unknown
   >;
+  deleteAdmin: UseMutateFunction<
+    ApiResponse<null>,
+    unknown,
+    {
+      id: number | string;
+    },
+    unknown
+  >;
   allAdmin: ApiResponse<Admin[]> | undefined;
   isLoadingAddAdmin: boolean;
   isAddAdminSuccess: boolean;
   isAddAdminError: boolean;
+  isLoadingDeleteAdmin: boolean;
+  isDeleteAdminSuccess: boolean;
+  isDeleteAdminError: boolean;
 }
 
 export const useAdmin = (): IUseAdmin => {
@@ -32,7 +44,8 @@ export const useAdmin = (): IUseAdmin => {
     isLoading: isAllAdminLoading,
     isError: isAllAdminError,
     error: errorAllAdmin,
-  } = useGetAllAdminQuery({ limit: 5, page: 1 });
+    refetch: refecthAllAdmin,
+  } = useGetAllAdminQuery({ limit: 100, page: 1 });
 
   const {
     mutate: addAdmin,
@@ -48,6 +61,39 @@ export const useAdmin = (): IUseAdmin => {
       setIsLoading(false);
     },
     onError: async (error: AxiosError<ApiResponse<Admin>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
+  const {
+    mutate: deleteAdmin,
+    isLoading: isLoadingDeleteAdmin,
+    isSuccess: isDeleteAdminSuccess,
+    isError: isDeleteAdminError,
+  } = useMutation(deleteAdminBridge, {
+    onSuccess: async (value) => {
+      refecthAllAdmin();
+
+      if (value instanceof Array) {
+        value.forEach((message) => {
+          showToast({ status: "success", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "success", message: `${value.message}` });
+
+      setIsLoading(false);
+
+      window.location.reload();
+    },
+    onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
       setIsLoading(false);
       if (error instanceof Array) {
         error.forEach((message) => {
@@ -75,5 +121,9 @@ export const useAdmin = (): IUseAdmin => {
     isLoadingAddAdmin,
     isAddAdminSuccess,
     isAddAdminError,
+    deleteAdmin,
+    isDeleteAdminError,
+    isDeleteAdminSuccess,
+    isLoadingDeleteAdmin,
   };
 };

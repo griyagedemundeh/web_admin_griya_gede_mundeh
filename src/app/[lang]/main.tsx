@@ -23,7 +23,9 @@ const Main = ({
     <QueryClientProvider client={queryClient}>
       <html
         lang={params.lang}
-        className="scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white"
+        className={`scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white ${
+          isLoading ? "overflow-hidden" : ""
+        }`}
       >
         <body className={params.className}>
           <div className="relative">

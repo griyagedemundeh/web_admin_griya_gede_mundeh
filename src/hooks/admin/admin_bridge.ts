@@ -27,6 +27,26 @@ export const addAdmin = async (
   return response;
 };
 
+export const deleteAdmin = async ({
+  id,
+}: {
+  id: number | string;
+}): Promise<ApiResponse<null>> => {
+  const response = await authService
+    .deleteAdmin({ id })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<null>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} DELETE ADMIN `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
 export const getAllAdmin = async (
   request: ListDataRequest
 ): Promise<ApiResponse<Admin[]>> => {

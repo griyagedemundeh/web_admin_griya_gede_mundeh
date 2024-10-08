@@ -83,19 +83,19 @@ const PrimaryTable = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const next = () => {
-    if (active === last) return;
-    setActive(active + 1);
+  // const next = () => {
+  //   if (active === last) return;
+  //   setActive(active + 1);
 
-    setListDataRequest({ ...listDataRequest, page: active + 1 });
-  };
+  //   setListDataRequest({ ...listDataRequest, page: active + 1 });
+  // };
 
-  const prev = () => {
-    if (active === 1) return;
-    setActive(active - 1);
+  // const prev = () => {
+  //   if (active === 1) return;
+  //   setActive(active - 1);
 
-    setListDataRequest({ ...listDataRequest, page: active - 1 });
-  };
+  //   setListDataRequest({ ...listDataRequest, page: active - 1 });
+  // };
 
   return (
     <div
@@ -287,7 +287,7 @@ const PrimaryTable = ({
                             className="h-5 w-5"
                           />
                         </button>
-                        {Array.from({ length: totalPage as number }).map(
+                        {/*{Array.from({ length: totalPage as number }).map(
                           (item, index) => (
                             <button
                               key={`${index}+${new Date()}`}
@@ -316,7 +316,7 @@ const PrimaryTable = ({
                               {`${index + 1}`}
                             </button>
                           )
-                        )}
+                        )}*/}
 
                         <button
                           onClick={() => {

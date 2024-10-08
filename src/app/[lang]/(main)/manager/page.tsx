@@ -29,6 +29,7 @@ import AddManagerModal from "./components/AddManagerModal";
 import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import Images from "@/constants/images";
 import ListDataRequest from "@/data/models/base/list_data_request";
+import DeleteManagerModal from "./components/DeleteManagerModal";
 
 export default function ManagerPage({
   params: { lang },
@@ -48,7 +49,7 @@ export default function ManagerPage({
   const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
-    limit: 5,
+    limit: 100,
     page: 1,
   });
   const [adminRequest, setAdminRequest] = useState<AdminRequest>({
@@ -106,13 +107,13 @@ export default function ManagerPage({
         cell: (info) => (
           <SwitchInput
             label={
-              info.row.original.user.fullName ? (
+              info.row.original.user.isActive ? (
                 <span className="font-medium text-gray-900">Aktif</span>
               ) : (
                 <span className="font-medium text-gray-400">Non-Aktif</span>
               )
             }
-            value={true}
+            value={info.row.original.user.isActive === 1}
             onChange={(e) => {}}
           />
         ),
@@ -132,12 +133,10 @@ export default function ManagerPage({
                     email: info.row.original.user.email,
                   }}
                 />
-                <IconBackgroundButton
-                  icon={TrashIcon}
-                  colorBackground="rose"
-                  colorIcon="red"
-                  onClick={() => {
-                    setOpenDelete(true);
+                <DeleteManagerModal
+                  data={{
+                    fullName: info.row.original.user.fullName,
+                    id: info.row.original.id,
                   }}
                 />
               </div>
@@ -197,18 +196,6 @@ export default function ManagerPage({
       {/* Dialog Add Manager*/}
       <AddManagerModal open={open} setOpen={setOpen} data={adminRequest} />
 
-      {/* Delete Dialog */}
-      <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      />
       {/* Confirmation Dialog */}
       <AlertConfirmationModal
         onRightClick={() => {

@@ -25,6 +25,25 @@ export class AdminService implements IAdminService {
     }
   }
 
+  async deleteAdmin({
+    id,
+  }: {
+    id: number | string;
+  }): Promise<ApiResponse<null>> {
+    const uri = `/super-admin/admin/${id}`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<null>> = await api.delete(uri);
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<null>> | any) {
+      console.error("====================================");
+      console.error("ERROR DELETE ADMIN --> ", error.response.data.message);
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
   async getAllAdmin(request: ListDataRequest): Promise<ApiResponse<Admin[]>> {
     const uri = "/super-admin/admin";
 
