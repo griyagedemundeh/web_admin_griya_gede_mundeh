@@ -30,7 +30,6 @@ export default function ManagerPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  // const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();

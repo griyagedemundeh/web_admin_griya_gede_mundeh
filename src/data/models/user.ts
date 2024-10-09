@@ -1,4 +1,4 @@
-type User = {
+type DummyUser = {
   name: string;
   email: string;
   phone: string;
@@ -6,4 +6,4 @@ type User = {
   avatarUrl?: string | null;
 };
 
-export default User;
+export default DummyUser;

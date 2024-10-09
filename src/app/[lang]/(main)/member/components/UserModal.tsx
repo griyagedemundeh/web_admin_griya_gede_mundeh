@@ -1,5 +1,4 @@
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import PhotoProfileInput from "@/components/input/PhotoProfileInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import SwitchInput from "@/components/input/SwitchInput";
 import PrimaryModal from "@/components/modal/PrimaryModal";

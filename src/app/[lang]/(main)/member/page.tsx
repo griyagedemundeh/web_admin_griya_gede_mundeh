@@ -3,27 +3,23 @@
 import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
-  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import { status, users } from "@/utils/dummyData";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
+import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import User from "@/data/models/user";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SwitchInput from "@/components/input/SwitchInput";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-import UserModal from "./components/UserModal";
+import DummyUser from "@/data/models/user";
+import Images from "@/constants/images";
+import AddMemberModal from "./components/AddMemberModal";
+import AdminRequest from "@/data/models/admin/request/admin_request";
+import DetailMemberModal from "./components/DetailMemberModal";
+import DeleteMemberModal from "./components/DeleteMemberModal";
 
 export default function UserPage({
   params: { lang },
@@ -32,30 +28,31 @@ export default function UserPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const [data, setData] = useState(() => users);
-  const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns = useMemo<ColumnDef<User>[]>(
+  // Tolong sesuaikan dengan MemberRequest
+  const [adminRequest, setAdminRequest] = useState<AdminRequest>({
+    email: "",
+    fullName: "",
+    password: "",
+    passwordConfirm: "",
+    phoneNumber: "",
+  });
+
+  // Tolong ubah Dummy User ini pakai model Member
+  const columns = useMemo<ColumnDef<DummyUser>[]>(
     () => [
       {
-        header: "Nama Pengelola",
+        header: "Nama Anggota",
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
                 alt={info.row.original.name}
-                src={
-                  info.row.original.avatarUrl ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                }
+                src={info.row.original.avatarUrl ?? Images.dummyProfile}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
@@ -82,43 +79,44 @@ export default function UserPage({
           </div>
         ),
       },
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+      // {
+      //   header: "Status",
+      //   cell: (info) => (
+      //     <SwitchInput
+      //       label={
+      //         info.row.original.status ? (
+      //           <span className="font-medium text-gray-900">Aktif</span>
+      //         ) : (
+      //           <span className="font-medium text-gray-400">Non-Aktif</span>
+      //         )
+      //       }
+      //       value={info.row.original.status}
+      //       onChange={(e) => {}}
+      //     />
+      //   ),
+      // },
       {
         header: "Aksi",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
+              <DetailMemberModal
+                // sesuaikan dengan id Member
+                id={1}
+                data={{
+                  // Sesuaikan dengan Member
+                  fullName: "",
+                  phoneNumber: "",
+                  password: "",
+                  passwordConfirm: "",
+                  email: "",
                 }}
               />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
+              <DeleteMemberModal
+                data={{
+                  // sesuaikan dengan member
+                  fullName: "",
+                  id: "",
                 }}
               />
             </div>
@@ -165,7 +163,8 @@ export default function UserPage({
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        // Ubah [] dengan data allMember
+        data={[]}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -174,54 +173,12 @@ export default function UserPage({
         isCommon={true}
       />
 
-      {/* Dialog Add User*/}
-      <UserModal
-        open={open}
-        setOpen={setOpen}
-        title="Tambah Pengguna"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={UserPlusIcon}
-          />
-        }
-      />
+      {/* Dialog Add Member*/}
+      {/* Tolong sesuaikan dengan MemberRequest */}
+      <AddMemberModal open={open} setOpen={setOpen} data={adminRequest} />
 
-      {/* Dialog Detail User*/}
-      <UserModal
-        open={openDetail}
-        isForDetail={true}
-        setOpen={setOpenDetail}
-        activeUser={active}
-        setActiveUser={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        title="Detail Pengguna"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Perbarui"
-            onClick={() => {}}
-            icon={PencilIcon}
-          />
-        }
-      />
-
-      {/* Delete Dialog */}
-      <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      />
       {/* Confirmation Dialog */}
-      <AlertConfirmationModal
+      {/* <AlertConfirmationModal
         onRightClick={() => {
           setOpenActiveConfirmation(false);
         }}
@@ -231,7 +188,7 @@ export default function UserPage({
         description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
     </>
   );
 }

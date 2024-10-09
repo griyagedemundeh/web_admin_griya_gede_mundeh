@@ -1,4 +1,3 @@
-import PhotoProfileInput from "@/components/input/PhotoProfileInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import SwitchInput from "@/components/input/SwitchInput";
