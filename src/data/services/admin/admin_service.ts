@@ -1,5 +1,5 @@
 import api from "@/configs/api";
-import RegisterAdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/admin_request";
 import ApiResponse from "@/data/models/base/api-base-response";
 import { AxiosError, AxiosResponse } from "axios";
 import { IAdminService } from "./admin_service_interface";
@@ -8,7 +8,7 @@ import ListDataRequest from "@/data/models/base/list_data_request";
 import User from "@/data/models/user/response/user";
 
 export class AdminService implements IAdminService {
-  async addAdmin(request: RegisterAdminRequest): Promise<ApiResponse<Admin>> {
+  async addAdmin(request: AdminRequest): Promise<ApiResponse<Admin>> {
     const uri = "/super-admin/admin/create";
 
     try {
@@ -50,7 +50,7 @@ export class AdminService implements IAdminService {
     request,
   }: {
     id: number | string;
-    request: RegisterAdminRequest;
+    request: AdminRequest;
   }): Promise<ApiResponse<User>> {
     const uri = `/super-admin/admin/${id}`;
 

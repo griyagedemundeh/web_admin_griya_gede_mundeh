@@ -3,7 +3,7 @@ import User from "../../user/response/user";
 type Admin = {
   id: number;
   userId: number;
-  role: "Super Admin" | "Admin" | "Member";
+  role: "superAdmin" | "admin" | "member";
   createdAt: string;
   updatedAt: string;
   user: User;

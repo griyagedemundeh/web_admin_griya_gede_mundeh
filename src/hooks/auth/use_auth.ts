@@ -7,7 +7,7 @@ import { showToast } from "@/utils";
 import Routes from "@/constants/routes";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { AuthService } from "@/data/repositories/auth/auth_service";
+import { AuthService } from "@/data/services/auth/auth_service";
 
 interface IUseAuth {
   login: UseMutateFunction<ApiResponse<Auth>, unknown, LoginRequest, unknown>;

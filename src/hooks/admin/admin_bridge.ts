@@ -1,9 +1,10 @@
-import AdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/admin_request";
 import Admin from "@/data/models/admin/response/admin";
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import User from "@/data/models/user/response/user";
-import { AdminService } from "@/data/repositories/admin/admin_service";
+import { AdminService } from "@/data/services/admin/admin_service";
+
 import { AxiosError } from "axios";
 import { useQuery, UseQueryResult } from "react-query";
 
@@ -70,6 +71,7 @@ export const deleteAdmin = async ({
   return response;
 };
 
+// GET DATA
 export const getAllAdmin = async (
   request: ListDataRequest
 ): Promise<ApiResponse<Admin[]>> => {

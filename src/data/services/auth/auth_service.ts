@@ -4,7 +4,7 @@ import { appBaseUrl } from "@/configs/config";
 import CookieKey from "@/constants/cookie_key";
 import StorageKey from "@/constants/storage_key";
 import LoginRequest from "@/data/models/auth/request/login_request";
-import RegisterAdminRequest from "@/data/models/admin/request/add_admin_request";
+import RegisterAdminRequest from "@/data/models/admin/request/admin_request";
 import Auth from "@/data/models/auth/response/auth";
 import ApiResponse from "@/data/models/base/api-base-response";
 import LocalStorage from "@/data/storage/local_storage";

@@ -14,6 +14,7 @@ api.interceptors.request.use(
     let access_token = getCookie("access_token");
 
     config.headers.Authorization = `Bearer ${access_token}`;
+    config.headers["Access-Control-Allow-Credentials"] = true;
     config.withCredentials = true;
 
     return config;

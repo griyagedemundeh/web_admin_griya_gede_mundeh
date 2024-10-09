@@ -1,5 +1,5 @@
 import PrimaryInput from "@/components/input/PrimaryInput";
-import AdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/admin_request";
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import adminValidation from "../validation/admin_validation";

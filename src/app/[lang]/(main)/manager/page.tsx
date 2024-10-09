@@ -3,30 +3,22 @@
 import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
 import { status } from "@/utils/dummyData";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SwitchInput from "@/components/input/SwitchInput";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-
 import { useAdmin } from "@/hooks/admin/use_admin";
 import Admin from "@/data/models/admin/response/admin";
 import DetailManagerModal from "./components/DetailManagerModal";
 import AddManagerModal from "./components/AddManagerModal";
-import AdminRequest from "@/data/models/admin/request/add_admin_request";
+import AdminRequest from "@/data/models/admin/request/admin_request";
 import Images from "@/constants/images";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import DeleteManagerModal from "./components/DeleteManagerModal";
@@ -38,15 +30,13 @@ export default function ManagerPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
+  // const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
   const { allAdmin } = useAdmin();
 
-  const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
     limit: 100,
@@ -198,7 +188,7 @@ export default function ManagerPage({
       <AddManagerModal open={open} setOpen={setOpen} data={adminRequest} />
 
       {/* Confirmation Dialog */}
-      <AlertConfirmationModal
+      {/* <AlertConfirmationModal
         onRightClick={() => {
           setOpenActiveConfirmation(false);
         }}
@@ -208,7 +198,7 @@ export default function ManagerPage({
         description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
     </div>
   );
 }
