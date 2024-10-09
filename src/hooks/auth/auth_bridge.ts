@@ -1,7 +1,8 @@
 import LoginRequest from "@/data/models/auth/request/login_request";
 import Auth from "@/data/models/auth/response/auth";
 import ApiResponse from "@/data/models/base/api-base-response";
-import { AuthService } from "@/data/repositories/auth/auth_service";
+import { AuthService } from "@/data/services/auth/auth_service";
+
 import { AxiosError } from "axios";
 
 const auth_service = new AuthService();

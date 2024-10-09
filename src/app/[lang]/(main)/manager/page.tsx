@@ -3,27 +3,25 @@
 import {
   CheckCircleIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
-  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import { status, users } from "@/utils/dummyData";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
+import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import User from "@/data/models/user";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SwitchInput from "@/components/input/SwitchInput";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-import ManagerModal from "./components/ManagerModal";
+import { useAdmin } from "@/hooks/admin/use_admin";
+import Admin from "@/data/models/admin/response/admin";
+import DetailManagerModal from "./components/DetailManagerModal";
+import AddManagerModal from "./components/AddManagerModal";
+import AdminRequest from "@/data/models/admin/request/admin_request";
+import Images from "@/constants/images";
+import ListDataRequest from "@/data/models/base/list_data_request";
+import DeleteManagerModal from "./components/DeleteManagerModal";
 
 export default function ManagerPage({
   params: { lang },
@@ -32,18 +30,31 @@ export default function ManagerPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
+  // const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const [data, setData] = useState(() => users);
-  const [active, setActive] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { allAdmin } = useAdmin();
 
-  const columns = useMemo<ColumnDef<User>[]>(
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
+    limit: 100,
+    page: 1,
+  });
+  const [adminRequest, setAdminRequest] = useState<AdminRequest>({
+    email: "",
+    fullName: "",
+    password: "",
+    passwordConfirm: "",
+    phoneNumber: "",
+  });
+
+  useEffect(() => {
+    setCurrentPage(allAdmin?.meta?.currentPage ?? 1);
+  }, [allAdmin]);
+
+  const columns = useMemo<ColumnDef<Admin>[]>(
     () => [
       {
         header: "Nama Pengelola",
@@ -51,17 +62,16 @@ export default function ManagerPage({
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
-                alt={info.row.original.name}
-                src={
-                  info.row.original.avatarUrl ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                }
+                alt={info.row.original.user.fullName}
+                src={info.row.original.user.avatarUrl ?? Images.dummyProfile}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
                 objectFit="cover"
               />
-              <p className="font-bold">{info.row.original.name}</p>
+              <p className="font-bold">
+                {info.row.original.user.fullName ?? "-"}
+              </p>
             </div>
           </div>
         ),
@@ -70,7 +80,7 @@ export default function ManagerPage({
         header: "Email",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.email}
+            {info.row.original.user.email ?? "-"}
           </div>
         ),
       },
@@ -78,49 +88,49 @@ export default function ManagerPage({
         header: "No.Hp",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.phone}
+            {info.row.original.user.phoneNumber ?? "-"}
           </div>
         ),
       },
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+      // {
+      //   header: "Status",
+      //   cell: (info) => (
+      //     <SwitchInput
+      //       label={
+      //         info.row.original.user.isActive ? (
+      //           <span className="font-medium text-gray-900">Aktif</span>
+      //         ) : (
+      //           <span className="font-medium text-gray-400">Non-Aktif</span>
+      //         )
+      //       }
+      //       value={info.row.original.user.isActive === 1}
+      //       onChange={(e) => {}}
+      //     />
+      //   ),
+      // },
       {
         header: "Aksi",
         cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
-                }}
-              />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
-                }}
-              />
+          <div className="relative">
+            <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <div className="flex flex-row space-x-2">
+                <DetailManagerModal
+                  id={info.row.original.id}
+                  data={{
+                    fullName: info.row.original.user.fullName,
+                    phoneNumber: info.row.original.user.phoneNumber,
+                    password: "",
+                    passwordConfirm: "",
+                    email: info.row.original.user.email,
+                  }}
+                />
+                <DeleteManagerModal
+                  data={{
+                    fullName: info.row.original.user.fullName,
+                    id: info.row.original.id,
+                  }}
+                />
+              </div>
             </div>
           </div>
         ),
@@ -165,62 +175,20 @@ export default function ManagerPage({
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        data={allAdmin?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={10}
+        totalPage={allAdmin?.meta?.total}
+        limitPage={listDataRequest.limit}
         isCommon={true}
       />
 
       {/* Dialog Add Manager*/}
-      <ManagerModal
-        open={open}
-        setOpen={setOpen}
-        title="Tambah Pengelola"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={UserPlusIcon}
-          />
-        }
-      />
+      <AddManagerModal open={open} setOpen={setOpen} data={adminRequest} />
 
-      {/* Dialog Detail Manager*/}
-      <ManagerModal
-        open={openDetail}
-        setOpen={setOpenDetail}
-        activeManager={active}
-        setActiveManager={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        title="Detail Pengelola"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Perbarui"
-            onClick={() => {}}
-            icon={PencilIcon}
-          />
-        }
-      />
-
-      {/* Delete Dialog */}
-      <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      />
       {/* Confirmation Dialog */}
-      <AlertConfirmationModal
+      {/* <AlertConfirmationModal
         onRightClick={() => {
           setOpenActiveConfirmation(false);
         }}
@@ -230,7 +198,7 @@ export default function ManagerPage({
         description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
     </div>
   );
 }

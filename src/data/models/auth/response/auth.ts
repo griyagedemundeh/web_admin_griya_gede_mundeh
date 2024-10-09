@@ -5,6 +5,7 @@ type Auth = {
   email: string;
   phoneNumber: string;
   token: string;
+  role: string;
 };
 
 export default Auth;

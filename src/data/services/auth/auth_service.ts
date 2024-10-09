@@ -4,7 +4,7 @@ import { appBaseUrl } from "@/configs/config";
 import CookieKey from "@/constants/cookie_key";
 import StorageKey from "@/constants/storage_key";
 import LoginRequest from "@/data/models/auth/request/login_request";
-import RegisterAdminRequest from "@/data/models/auth/request/register_admin_request";
+import RegisterAdminRequest from "@/data/models/admin/request/admin_request";
 import Auth from "@/data/models/auth/response/auth";
 import ApiResponse from "@/data/models/base/api-base-response";
 import LocalStorage from "@/data/storage/local_storage";
@@ -12,6 +12,9 @@ import { AxiosError, AxiosResponse } from "axios";
 import { setCookie } from "cookies-next";
 
 export class AuthService implements IAuthService {
+  registerAdmin(request: RegisterAdminRequest): Promise<ApiResponse<Auth>> {
+    throw new Error("Method not implemented.");
+  }
   getAccount(): Auth {
     try {
       const account = LocalStorage.get<Auth>(StorageKey.ACCOUNT) as Auth;
@@ -25,25 +28,6 @@ export class AuthService implements IAuthService {
     }
   }
 
-  async registerAdmin(
-    request: RegisterAdminRequest
-  ): Promise<ApiResponse<Auth>> {
-    const uri = "/super-admin/admin/create";
-
-    try {
-      const response: AxiosResponse<ApiResponse<Auth>> = await api.post(
-        uri,
-        request
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error("====================================");
-      console.error("ERROR REGISTER ADMIN --> ", error);
-      console.error("====================================");
-      throw error;
-    }
-  }
   async login(request: LoginRequest) {
     const uri = "/auth/sign-in";
 
@@ -53,7 +37,10 @@ export class AuthService implements IAuthService {
         request
       );
 
-      this.setToken({ access_token: response.data.data.token });
+      this.setToken({
+        access_token: response.data.data.token,
+        admin_role: response.data.data.role,
+      });
       LocalStorage.set(StorageKey.ACCOUNT, response.data.data);
 
       return response.data;
@@ -65,12 +52,22 @@ export class AuthService implements IAuthService {
     }
   }
 
-  private setToken({ access_token }: { access_token: string }) {
+  private setToken({
+    access_token,
+    admin_role,
+  }: {
+    access_token: string;
+    admin_role: string;
+  }) {
     setCookie(CookieKey.ACCESS_TOKEN, access_token, {
       domain: appBaseUrl(),
     });
 
     setCookie(CookieKey.IS_LOGGED_IN, true, {
+      domain: appBaseUrl(),
+    });
+
+    setCookie(CookieKey.ADMIN_ROLE, admin_role, {
       domain: appBaseUrl(),
     });
   }

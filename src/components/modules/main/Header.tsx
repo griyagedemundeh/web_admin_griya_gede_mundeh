@@ -5,6 +5,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import React from "react";
 import { useAuth } from "@/hooks/auth/use_auth";
+import Images from "@/constants/images";
 
 interface HeaderProps {
   onClose: (value: boolean) => void;
@@ -51,7 +52,7 @@ const Header = ({ navigations, onClose, t }: HeaderProps) => {
               <span className="sr-only">Open user menu</span>
               <Image
                 alt={account?.fullName ?? ""}
-                src={account?.avatarUrl ?? ""}
+                src={account?.avatarUrl ?? Images.dummyProfile}
                 className="h-8 w-8 rounded-full bg-gray-50"
                 height={40}
                 width={40}

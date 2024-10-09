@@ -32,7 +32,7 @@ const UserModal = ({
       title={title}
       content={
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
-          <PhotoProfileInput />
+          {/* <PhotoProfileInput /> */}
           <PrimaryInput
             label="Nama Lengkap"
             onChange={(e) => {}}

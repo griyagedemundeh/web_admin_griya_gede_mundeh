@@ -31,7 +31,7 @@ const CeremonyCategoryModal = ({
       title={"Tambah Kategori Upacara Agama"}
       content={
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
-          <PhotoProfileInput />
+          {/* <PhotoProfileInput /> */}
           <PrimaryInput
             label="Nama Kategori Upacara Agama"
             onChange={(e) => {}}
