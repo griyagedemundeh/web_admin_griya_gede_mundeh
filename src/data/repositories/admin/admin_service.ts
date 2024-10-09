@@ -5,6 +5,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import { IAdminService } from "./admin_service_interface";
 import Admin from "@/data/models/admin/response/admin";
 import ListDataRequest from "@/data/models/base/list_data_request";
+import User from "@/data/models/user/response/user";
 
 export class AdminService implements IAdminService {
   async addAdmin(request: RegisterAdminRequest): Promise<ApiResponse<Admin>> {
@@ -39,6 +40,30 @@ export class AdminService implements IAdminService {
     } catch (error: AxiosError<ApiResponse<null>> | any) {
       console.error("====================================");
       console.error("ERROR DELETE ADMIN --> ", error.response.data.message);
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async editAdmin({
+    id,
+    request,
+  }: {
+    id: number | string;
+    request: RegisterAdminRequest;
+  }): Promise<ApiResponse<User>> {
+    const uri = `/super-admin/admin/${id}`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<User>> = await api.patch(
+        uri,
+        request
+      );
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<User>> | any) {
+      console.error("====================================");
+      console.error("ERROR EDIT ADMIN --> ", error.response.data.message);
       console.error("====================================");
       throw error.response.data.message;
     }

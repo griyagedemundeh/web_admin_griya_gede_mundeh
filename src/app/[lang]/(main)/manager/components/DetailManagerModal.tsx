@@ -1,25 +1,42 @@
 import PrimaryInput from "@/components/input/PrimaryInput";
-import SwitchInput from "@/components/input/SwitchInput";
 import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
-import adminValidation from "../validation/admin_validation";
+import React, { useEffect, useState } from "react";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import { PencilIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
 import { useAdmin } from "@/hooks/admin/use_admin";
 import Modal from "@/components/modal/Modal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
+import { useCentralStore } from "@/store";
+import editAdminValidation from "../validation/edit_admin_validation";
 
 interface DetailManagerModalProps {
+  id: number | string;
   data: AdminRequest;
 }
 
-const DetailManagerModal = ({ data }: DetailManagerModalProps) => {
-  const {} = useAdmin();
+const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
+  const { setIsLoading } = useCentralStore();
+  const { editAdmin, isEditAdminSuccess, isEditAdminError } = useAdmin();
 
   const [active, setActive] = useState<boolean>(true);
   const [openDetail, setOpenDetail] = useState(false);
-  const handleEditAdmin = (adminRequest: AdminRequest) => {};
+
+  const handleEditAdmin = (adminRequest: AdminRequest) => {
+    setIsLoading(true);
+    editAdmin({ id, request: adminRequest });
+    setOpenDetail(false);
+  };
+
+  useEffect(() => {
+    if (isEditAdminSuccess) {
+      setOpenDetail(false);
+    }
+
+    if (isEditAdminError) {
+      setOpenDetail(true);
+    }
+  }, [isEditAdminSuccess, isEditAdminError]);
 
   return (
     <>
@@ -40,7 +57,7 @@ const DetailManagerModal = ({ data }: DetailManagerModalProps) => {
         <Formik
           initialValues={data}
           onSubmit={handleEditAdmin}
-          validationSchema={adminValidation}
+          validationSchema={editAdminValidation}
           suppressHydrationWarning={true}
         >
           {({ errors, handleChange, handleSubmit, values }) => (
@@ -92,7 +109,7 @@ const DetailManagerModal = ({ data }: DetailManagerModalProps) => {
                     type="password"
                     className="w-full"
                   />
-                  {active !== undefined && (
+                  {/* {active !== undefined && (
                     <SwitchInput
                       className="self-start pt-2"
                       label={
@@ -105,7 +122,7 @@ const DetailManagerModal = ({ data }: DetailManagerModalProps) => {
                         setActive(e);
                       }}
                     />
-                  )}
+                  )} */}
                 </div>
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                   <PrimaryWithIconButton

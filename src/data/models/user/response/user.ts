@@ -5,8 +5,9 @@ type User = {
   email: string;
   phoneNumber: string;
   isActive: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+  role?: string | null;
 };
 
 export default User;

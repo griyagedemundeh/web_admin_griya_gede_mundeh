@@ -7,16 +7,27 @@ import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import {
   addAdmin as addAdminBridge,
   deleteAdmin as deleteAdminBridge,
+  editAdmin as editAdminBridge,
   useGetAllAdminQuery,
 } from "./admin_bridge";
 import { useCentralStore } from "@/store";
 import { useEffect } from "react";
+import User from "@/data/models/user/response/user";
 
 interface IUseAdmin {
   addAdmin: UseMutateFunction<
     ApiResponse<Admin>,
     unknown,
     AdminRequest,
+    unknown
+  >;
+  editAdmin: UseMutateFunction<
+    ApiResponse<User>,
+    unknown,
+    {
+      id: number | string;
+      request: AdminRequest;
+    },
     unknown
   >;
   deleteAdmin: UseMutateFunction<
@@ -31,6 +42,9 @@ interface IUseAdmin {
   isLoadingAddAdmin: boolean;
   isAddAdminSuccess: boolean;
   isAddAdminError: boolean;
+  isLoadingEditAdmin: boolean;
+  isEditAdminSuccess: boolean;
+  isEditAdminError: boolean;
   isLoadingDeleteAdmin: boolean;
   isDeleteAdminSuccess: boolean;
   isDeleteAdminError: boolean;
@@ -59,6 +73,33 @@ export const useAdmin = (): IUseAdmin => {
       });
 
       setIsLoading(false);
+      window.location.reload();
+    },
+    onError: async (error: AxiosError<ApiResponse<Admin>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
+  const {
+    mutate: editAdmin,
+    isLoading: isLoadingEditAdmin,
+    isSuccess: isEditAdminSuccess,
+    isError: isEditAdminError,
+  } = useMutation(editAdminBridge, {
+    onSuccess: async (value) => {
+      value.message.forEach((message) => {
+        showToast({ status: "success", message: message });
+      });
+
+      setIsLoading(false);
+      window.location.reload();
     },
     onError: async (error: AxiosError<ApiResponse<Admin>> | unknown) => {
       setIsLoading(false);
@@ -121,6 +162,10 @@ export const useAdmin = (): IUseAdmin => {
     isLoadingAddAdmin,
     isAddAdminSuccess,
     isAddAdminError,
+    editAdmin,
+    isEditAdminError,
+    isEditAdminSuccess,
+    isLoadingEditAdmin,
     deleteAdmin,
     isDeleteAdminError,
     isDeleteAdminSuccess,

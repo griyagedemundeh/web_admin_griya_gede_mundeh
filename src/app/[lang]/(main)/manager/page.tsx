@@ -102,22 +102,22 @@ export default function ManagerPage({
           </div>
         ),
       },
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.user.isActive ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.user.isActive === 1}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+      // {
+      //   header: "Status",
+      //   cell: (info) => (
+      //     <SwitchInput
+      //       label={
+      //         info.row.original.user.isActive ? (
+      //           <span className="font-medium text-gray-900">Aktif</span>
+      //         ) : (
+      //           <span className="font-medium text-gray-400">Non-Aktif</span>
+      //         )
+      //       }
+      //       value={info.row.original.user.isActive === 1}
+      //       onChange={(e) => {}}
+      //     />
+      //   ),
+      // },
       {
         header: "Aksi",
         cell: (info) => (
@@ -125,6 +125,7 @@ export default function ManagerPage({
             <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
               <div className="flex flex-row space-x-2">
                 <DetailManagerModal
+                  id={info.row.original.id}
                   data={{
                     fullName: info.row.original.user.fullName,
                     phoneNumber: info.row.original.user.phoneNumber,

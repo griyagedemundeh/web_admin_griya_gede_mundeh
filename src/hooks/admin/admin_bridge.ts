@@ -2,6 +2,7 @@ import AdminRequest from "@/data/models/admin/request/add_admin_request";
 import Admin from "@/data/models/admin/response/admin";
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
+import User from "@/data/models/user/response/user";
 import { AdminService } from "@/data/repositories/admin/admin_service";
 import { AxiosError } from "axios";
 import { useQuery, UseQueryResult } from "react-query";
@@ -20,6 +21,28 @@ export const addAdmin = async (
     .catch((error: AxiosError<ApiResponse<Admin>> | unknown) => {
       console.error("====================================");
       console.error(`${TAG_ERROR} ADD ADMIN `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const editAdmin = async ({
+  id,
+  request,
+}: {
+  id: number | string;
+  request: AdminRequest;
+}): Promise<ApiResponse<User>> => {
+  const response = await authService
+    .editAdmin({ id, request })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<User>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} EDIT ADMIN `, error);
       console.error("====================================");
       throw error;
     });
