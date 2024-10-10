@@ -12,7 +12,7 @@ import { useCentralStore } from "@/store";
 import { useEffect } from "react";
 import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category_response";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
-import { statusMessage } from "@/utils/statusMessage";
+import { statusMessage } from "@/utils";
 
 interface IUseCeremony {
   addCeremonyCategory: UseMutateFunction<

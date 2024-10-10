@@ -1,24 +1,26 @@
 import React, { useState } from "react";
-import { useAdmin } from "@/hooks/admin/use_admin";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import { useCentralStore } from "@/store";
+import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 
-interface DeleteManagerModalProps {
-  data: { id: number | string; fullName: string };
+interface DeleteCeremonyCategoryModalProps {
+  data: { id: number | string; name: string };
 }
 
-const DeleteManagerModal = ({ data }: DeleteManagerModalProps) => {
+const DeleteCeremonyCategoryModal = ({
+  data,
+}: DeleteCeremonyCategoryModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { deleteAdmin } = useAdmin();
+  const { deleteCeremonyCategory } = useCeremony();
 
   const [openDelete, setOpenDelete] = useState(false);
 
   const handleDelete = () => {
     setOpenDelete(false);
     setIsLoading(true);
-    deleteAdmin({ id: data.id });
+    deleteCeremonyCategory({ id: data.id });
   };
 
   return (
@@ -38,7 +40,7 @@ const DeleteManagerModal = ({ data }: DeleteManagerModalProps) => {
         open={openDelete}
         setOpen={setOpenDelete}
         title="Hapus"
-        description={`Apakah kamu yakin ingin menghapus admin ${data.fullName}?`}
+        description={`Apakah kamu yakin ingin menghapus Kategori Upacara Agama ${data.name}?`}
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
       />
@@ -46,4 +48,4 @@ const DeleteManagerModal = ({ data }: DeleteManagerModalProps) => {
   );
 };
 
-export default DeleteManagerModal;
+export default DeleteCeremonyCategoryModal;

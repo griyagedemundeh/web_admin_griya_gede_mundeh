@@ -34,12 +34,6 @@ const AddCeremonyCategoryModal = ({
   const handleAddCeremonyCategory = (
     ceremonyCategoryRequest: CeremonyCategoryRequest
   ) => {
-    console.log("====================================");
-    console.log("sdasdsadsad------>>>>>", {
-      ...ceremonyCategoryRequest,
-      icon: data.icon,
-    });
-    console.log("====================================");
     setIsLoading(true);
     addCeremonyCategory({ ...ceremonyCategoryRequest, icon: data.icon });
     setOpen(false);

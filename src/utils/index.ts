@@ -52,3 +52,37 @@ export function showToast({
       break;
   }
 }
+
+export const statusMessage = ({
+  message,
+  status,
+}: {
+  message: string | string[] | any;
+  status: TypeToastStatus;
+}) => {
+  if (message instanceof Array) {
+    message.forEach((mes) => {
+      showToast({ status: status, message: `${mes}` });
+    });
+    return;
+  }
+  showToast({ status: status, message: `${message}` });
+};
+
+export async function urlToFile({
+  fileName,
+  mimeType,
+  url,
+}: {
+  url: string;
+  fileName: string;
+  mimeType?: string;
+}) {
+  const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
+  const response = await fetch(proxyUrl);
+
+  const blob = await response.blob();
+  const file = new File([blob], fileName, { type: mimeType ?? "image/png" });
+
+  return file;
+}

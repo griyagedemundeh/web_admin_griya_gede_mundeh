@@ -1,6 +1,6 @@
 type CeremonyCategoryRequest = {
   name: string;
-  icon: File | null;
+  icon: File | null | string;
   description: string;
 };
 

@@ -70,9 +70,18 @@ export class CeremonyService implements ICeremonyService {
   }): Promise<ApiResponse<CeremonyCategory>> {
     const uri = `${this.BASE_CATEGORY_ENDPOINT}/${id}`;
 
+    const data = new FormData();
+    data.append("name", request.name);
+    data.append("description", request.description);
+    data.append("icon", request.icon as File);
+
     try {
       const response: AxiosResponse<ApiResponse<CeremonyCategory>> =
-        await api.patch(uri, request);
+        await api.patch(uri, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
       return response.data;
     } catch (error: AxiosError<ApiResponse<CeremonyCategory>> | any) {
