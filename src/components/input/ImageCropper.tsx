@@ -9,7 +9,7 @@ interface Props {
   maxWidth: number;
   maxHeight: number;
   onCrop: (blob: Blob) => void;
-  onclose: () => void;
+  onclose?: () => void;
 }
 
 interface HTMLImageElementWithCropper extends HTMLImageElement {
@@ -93,7 +93,10 @@ export default function ImageCropper({
               label="Batal"
               onClick={() => {
                 handleCancel();
-                onclose();
+
+                if (onclose) {
+                  onclose();
+                }
               }}
             />
 

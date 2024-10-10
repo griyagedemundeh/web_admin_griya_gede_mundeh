@@ -2,20 +2,14 @@ import React, { useState } from "react";
 import ImageCropper from "./ImageCropper";
 
 interface PhotoProfileInputProps {
-  onclose: () => void;
-  isNull: boolean;
+  onclose?: () => void;
+
   onChange?: (file: File) => void;
 }
 
-const PhotoProfileInput = ({
-  isNull,
-  onclose,
-  onChange,
-}: PhotoProfileInputProps) => {
+const PhotoProfileInput = ({ onclose, onChange }: PhotoProfileInputProps) => {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [error, setError] = useState(false);
-
-  //   const UploadI = new UpdateImage();
 
   const handleDragOver = (e: any) => {
     e.preventDefault();
@@ -81,8 +75,8 @@ const PhotoProfileInput = ({
     reader.readAsDataURL(file);
   };
 
-  const handleCrop = async (blob: any) => {
-    const file = new File([blob], "avatar.png", {
+  const handleCrop = async (blob: Blob) => {
+    const file = new File([blob], `avatar.png`, {
       lastModified: new Date().getTime(),
       type: blob.type,
     });
