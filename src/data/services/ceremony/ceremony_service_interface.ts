@@ -1,28 +1,18 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
-import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category_response";
+import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
+import {
+  Ceremony,
+  CeremonyInList,
+} from "@/data/models/ceremony/response/ceremony";
+import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category";
 
 export interface ICeremonyService {
-  addCeremonyCategory(
-    request: CeremonyCategoryRequest
-  ): Promise<ApiResponse<CeremonyCategory>>;
+  // Ceremony
+  addCeremony(request: CeremonyRequest): Promise<ApiResponse<Ceremony>>;
 
-  deleteCeremonyCategory({
-    id,
-  }: {
-    id: number | string;
-  }): Promise<ApiResponse<null>>;
-
-  editCeremonyCategory({
-    id,
-    request,
-  }: {
-    id: number | string;
-    request: CeremonyCategoryRequest;
-  }): Promise<ApiResponse<CeremonyCategory>>;
-
-  getAllCeremonyCategory(
+  getAllCeremony(
     request: ListDataRequest
-  ): Promise<ApiResponse<CeremonyCategory[]>>;
+  ): Promise<ApiResponse<CeremonyInList[]>>;
 }

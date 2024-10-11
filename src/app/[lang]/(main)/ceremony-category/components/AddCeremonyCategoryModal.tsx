@@ -9,7 +9,7 @@ import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import PhotoProfileInput from "@/components/input/PhotoProfileInput";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
 import ceremonyCategoryValidation from "../validation/ceremony_category_validation";
-import { useCeremony } from "@/hooks/ceremony/use_ceremony";
+import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 
 interface AddCeremonyCategoryModalProps {
   open: boolean;
@@ -29,7 +29,7 @@ const AddCeremonyCategoryModal = ({
     addCeremonyCategory,
     isAddCeremonyCategoryError,
     isAddCeremonyCategorySuccess,
-  } = useCeremony();
+  } = useCeremonyCategory();
 
   const handleAddCeremonyCategory = (
     ceremonyCategoryRequest: CeremonyCategoryRequest

@@ -7,7 +7,7 @@ import Modal from "@/components/modal/Modal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useCentralStore } from "@/store";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
-import { useCeremony } from "@/hooks/ceremony/use_ceremony";
+import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 import PhotoProfileInput from "@/components/input/PhotoProfileInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import editCeremonyCategoryValidation from "../validation/edit_admin_validation";
@@ -27,7 +27,7 @@ const DetailCeremonyCategoryModal = ({
     editCeremonyCategory,
     isEditCeremonyCategorySuccess,
     isEditCeremonyCategoryError,
-  } = useCeremony();
+  } = useCeremonyCategory();
 
   const [openDetail, setOpenDetail] = useState(false);
   const [fileFromApi, setFileFromApi] = useState<File>();

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 // import { CKEditor } from "@ckeditor/ckeditor5-react";
 
@@ -16,7 +16,11 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 // import List from "@ckeditor/ckeditor5-list/src/list";
 // import Undo from "@ckeditor/ckeditor5-undo/src/undo";
 
-import { PlusIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  PlusIcon,
+} from "@heroicons/react/20/solid";
 import DropdownInput from "@/components/dropdown/DropdownInput";
 import BigFileInput from "@/components/input/BigFileInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
@@ -27,6 +31,12 @@ import CeremonyPackage from "@/data/models/ceremonyPackage";
 import IconButton from "@/components/button/IconButton";
 import SecondaryThinButton from "@/components/button/SecondaryThinButton";
 import PrimaryCurrencyInput from "@/components/input/PrimaryCurrencyInput";
+import SecondaryWithIconButton from "@/components/button/SecondaryWithIconButton";
+import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
+import { Form, Formik } from "formik";
+import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
+import ceremonyValidation from "../validation/ceremony_validation";
+import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 // import SecondaryThinButton from "@/components/button/SecondaryThinButton";
 // import { Color } from "@tiptap/extension-color";
 // import ListItem from "@tiptap/extension-list-item";
@@ -42,6 +52,8 @@ import PrimaryCurrencyInput from "@/components/input/PrimaryCurrencyInput";
 interface AddCeremonyModalProps {
   progress: number;
   setProgress: (value: number) => void;
+  ceremonyRequest: CeremonyRequest;
+  handleCeremonySubmit: (ceremonyRequest: CeremonyRequest) => void;
   ceremonyCategories: DropdownFilterItemProps[];
   selectedCeremonyCategory: DropdownFilterItemProps | undefined;
   setSelectedCeremonyCategory: (
@@ -72,6 +84,8 @@ const ToolbarButton = ({
 const AddCeremonyModalContent = ({
   progress,
   setProgress,
+  ceremonyRequest,
+  handleCeremonySubmit,
   ceremonyCategories,
   selectedCeremonyCategory,
   setSelectedCeremonyCategory,
@@ -132,6 +146,23 @@ const AddCeremonyModalContent = ({
   // </blockquote>
   // `;
 
+  const { allCeremonyCategory } = useCeremonyCategory();
+
+  const [categories, setCategories] = useState<DropdownFilterItemProps[]>([]);
+
+  useEffect(() => {
+    if (allCeremonyCategory?.data) {
+      setCategories((prevCategories) =>
+        prevCategories.concat(
+          allCeremonyCategory.data.map((category) => ({
+            id: category.id,
+            title: category.name,
+          }))
+        )
+      );
+    }
+  }, [allCeremonyCategory?.data]);
+
   return (
     <div>
       <div className="px-6">
@@ -168,29 +199,52 @@ const AddCeremonyModalContent = ({
 
       <div className="px-6 my-6 ">
         {progress < 50 ? (
-          <div className="flex flex-col space-y-4">
-            <PrimaryInput
-              label="Nama Upacara"
-              value={""}
-              onChange={(e) => {}}
-              placeholder="Masukkan nama upacara"
-            />
+          <Formik
+            initialValues={ceremonyRequest}
+            onSubmit={handleCeremonySubmit}
+            validationSchema={ceremonyValidation}
+            suppressHydrationWarning={true}
+          >
+            {({ errors, handleChange, handleSubmit, values }) => (
+              <Form>
+                <div className="flex flex-col space-y-4">
+                  <PrimaryInput
+                    label="Nama Upacara"
+                    value={values.title}
+                    error={errors.title ?? undefined}
+                    onChange={handleChange("title")}
+                    placeholder="Masukkan nama upacara"
+                  />
 
-            <DropdownInput
-              items={ceremonyCategories}
-              label="Kategori Upacara"
-              placeholder="Pilih Kategori Upacara"
-              selectedItem={selectedCeremonyCategory}
-              setSelectedItem={setSelectedCeremonyCategory}
-            />
+                  <DropdownInput
+                    items={categories ?? []}
+                    label="Kategori Upacara"
+                    placeholder="Pilih Kategori Upacara"
+                    selectedItem={selectedCeremonyCategory}
+                    setSelectedItem={setSelectedCeremonyCategory}
+                  />
 
-            <PrimaryTextArea
-              value={""}
-              onChange={(e) => {}}
-              label="Deskripsi Upacara"
-              placeholder="Masukkan deskripsi singkat upacaramu disini"
-            />
-          </div>
+                  <PrimaryTextArea
+                    value={values.description}
+                    error={errors.description ?? undefined}
+                    onChange={handleChange("description")}
+                    label="Deskripsi Upacara"
+                    placeholder="Masukkan deskripsi singkat upacaramu disini"
+                  />
+                </div>
+                <div className="flex flex-row justify-end mt-6 space-x-4">
+                  <PrimaryWithIconButton
+                    label="Selanjutnya"
+                    className={progress > 50 ? "w-full" : ""}
+                    onClick={() => {
+                      setProgress(progress + 33.33);
+                    }}
+                    icon={ChevronDoubleRightIcon}
+                  />
+                </div>
+              </Form>
+            )}
+          </Formik>
         ) : null}
         {progress > 50 && progress < 90 ? (
           <BigFileInput onChange={(e) => {}} value={""} />
@@ -404,6 +458,26 @@ const AddCeremonyModalContent = ({
           </div>
         ) : null}
       </div>
+      {/* <div className="px-6 flex flex-row justify-end mb-4 space-x-4">
+        {progress > 50 ? (
+          <SecondaryWithIconButton
+            label="Kembali"
+            className="w-full"
+            onClick={() => {
+              setProgress(progress - 33.33);
+            }}
+            icon={ChevronDoubleLeftIcon}
+          />
+        ) : null}
+        <PrimaryWithIconButton
+          label="Selanjutnya"
+          className={progress > 50 ? "w-full" : ""}
+          onClick={() => {
+            setProgress(progress + 33.33);
+          }}
+          icon={ChevronDoubleRightIcon}
+        />
+      </div> */}
     </div>
   );
 };

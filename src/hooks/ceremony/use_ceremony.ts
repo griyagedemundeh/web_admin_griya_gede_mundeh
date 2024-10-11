@@ -3,150 +3,149 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import { AxiosError } from "axios";
 
 import {
-  addCeremonyCategory as addCeremonyCategoryBridge,
-  deleteCeremonyCategory as deleteCeremonyCategoryBridge,
-  editCeremonyCategory as editCeremonyCategoryBridge,
-  useGetAllCeremonyCategoryQuery,
+  addCeremony as addCeremonyBridge,
+  // deleteCeremony as deleteCeremonyBridge,
+  // editCeremony as editCeremonyBridge,
+  useGetAllCeremonyQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
 import { useEffect } from "react";
-import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category_response";
-import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
+import { Ceremony } from "@/data/models/ceremony/response/ceremony";
+import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import { statusMessage } from "@/utils";
+import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
 
 interface IUseCeremony {
-  addCeremonyCategory: UseMutateFunction<
-    ApiResponse<CeremonyCategory>,
+  addCeremony: UseMutateFunction<
+    ApiResponse<Ceremony>,
     unknown,
-    CeremonyCategoryRequest,
+    CeremonyRequest,
     unknown
   >;
-  editCeremonyCategory: UseMutateFunction<
-    ApiResponse<CeremonyCategory>,
-    unknown,
-    {
-      id: number | string;
-      request: CeremonyCategoryRequest;
-    },
-    unknown
-  >;
-  deleteCeremonyCategory: UseMutateFunction<
-    ApiResponse<null>,
-    unknown,
-    {
-      id: number | string;
-    },
-    unknown
-  >;
-  allCeremonyCategory: ApiResponse<CeremonyCategory[]> | undefined;
-  isLoadingAddCeremonyCategory: boolean;
-  isAddCeremonyCategorySuccess: boolean;
-  isAddCeremonyCategoryError: boolean;
-  isLoadingEditCeremonyCategory: boolean;
-  isEditCeremonyCategorySuccess: boolean;
-  isEditCeremonyCategoryError: boolean;
-  isLoadingDeleteCeremonyCategory: boolean;
-  isDeleteCeremonyCategorySuccess: boolean;
-  isDeleteCeremonyCategoryError: boolean;
+  // editCeremony: UseMutateFunction<
+  //   ApiResponse<Ceremony>,
+  //   unknown,
+  //   {
+  //     id: number | string;
+  //     request: CeremonyRequest;
+  //   },
+  //   unknown
+  // >;
+  // deleteCeremony: UseMutateFunction<
+  //   ApiResponse<null>,
+  //   unknown,
+  //   {
+  //     id: number | string;
+  //   },
+  //   unknown
+  // >;
+  allCeremony: ApiResponse<CeremonyInList[]> | undefined;
+  isLoadingAddCeremony: boolean;
+  isAddCeremonySuccess: boolean;
+  isAddCeremonyError: boolean;
+  // isLoadingEditCeremony: boolean;
+  // isEditCeremonySuccess: boolean;
+  // isEditCeremonyError: boolean;
+  // isLoadingDeleteCeremony: boolean;
+  // isDeleteCeremonySuccess: boolean;
+  // isDeleteCeremonyError: boolean;
 }
 
 export const useCeremony = (): IUseCeremony => {
   const { setIsLoading } = useCentralStore();
 
   const {
-    data: allCeremonyCategory,
-    isLoading: isAllCeremonyCategoryLoading,
-    isError: isAllCeremonyCategoryError,
-    error: errorAllCeremonyCategory,
-    refetch: refecthAllCeremonyCategory,
-  } = useGetAllCeremonyCategoryQuery({ limit: 100, page: 1 });
+    data: allCeremony,
+    isLoading: isAllCeremonyLoading,
+    isError: isAllCeremonyError,
+    error: errorAllCeremony,
+    refetch: refecthAllCeremony,
+  } = useGetAllCeremonyQuery({ limit: 100, page: 1 });
 
   // ADD
   const {
-    mutate: addCeremonyCategory,
-    isLoading: isLoadingAddCeremonyCategory,
-    isSuccess: isAddCeremonyCategorySuccess,
-    isError: isAddCeremonyCategoryError,
-  } = useMutation(addCeremonyCategoryBridge, {
+    mutate: addCeremony,
+    isLoading: isLoadingAddCeremony,
+    isSuccess: isAddCeremonySuccess,
+    isError: isAddCeremonyError,
+  } = useMutation(addCeremonyBridge, {
     onSuccess: async (value) => {
       statusMessage({ message: value.message, status: "success" });
 
       setIsLoading(false);
-      window.location.reload();
+      // window.location.reload();
     },
-    onError: async (
-      error: AxiosError<ApiResponse<CeremonyCategory>> | unknown
-    ) => {
+    onError: async (error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
       setIsLoading(false);
       statusMessage({ message: error, status: "error" });
     },
   });
 
   // EDIT
-  const {
-    mutate: editCeremonyCategory,
-    isLoading: isLoadingEditCeremonyCategory,
-    isSuccess: isEditCeremonyCategorySuccess,
-    isError: isEditCeremonyCategoryError,
-  } = useMutation(editCeremonyCategoryBridge, {
-    onSuccess: async (value) => {
-      statusMessage({ message: value.message, status: "success" });
+  // const {
+  //   mutate: editCeremony,
+  //   isLoading: isLoadingEditCeremony,
+  //   isSuccess: isEditCeremonySuccess,
+  //   isError: isEditCeremonyError,
+  // } = useMutation(editCeremonyBridge, {
+  //   onSuccess: async (value) => {
+  //     statusMessage({ message: value.message, status: "success" });
 
-      setIsLoading(false);
-      window.location.reload();
-    },
-    onError: async (
-      error: AxiosError<ApiResponse<CeremonyCategory>> | unknown
-    ) => {
-      setIsLoading(false);
-      statusMessage({ message: error, status: "error" });
-    },
-  });
+  //     setIsLoading(false);
+  //     window.location.reload();
+  //   },
+  //   onError: async (
+  //     error: AxiosError<ApiResponse<Ceremony>> | unknown
+  //   ) => {
+  //     setIsLoading(false);
+  //     statusMessage({ message: error, status: "error" });
+  //   },
+  // });
 
   // DELETE
-  const {
-    mutate: deleteCeremonyCategory,
-    isLoading: isLoadingDeleteCeremonyCategory,
-    isSuccess: isDeleteCeremonyCategorySuccess,
-    isError: isDeleteCeremonyCategoryError,
-  } = useMutation(deleteCeremonyCategoryBridge, {
-    onSuccess: async (value) => {
-      refecthAllCeremonyCategory();
+  // const {
+  //   mutate: deleteCeremony,
+  //   isLoading: isLoadingDeleteCeremony,
+  //   isSuccess: isDeleteCeremonySuccess,
+  //   isError: isDeleteCeremonyError,
+  // } = useMutation(deleteCeremonyBridge, {
+  //   onSuccess: async (value) => {
+  //     refecthAllCeremony();
 
-      statusMessage({ message: value.message, status: "success" });
+  //     statusMessage({ message: value.message, status: "success" });
 
-      setIsLoading(false);
+  //     setIsLoading(false);
 
-      window.location.reload();
-    },
-    onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
-      setIsLoading(false);
-      statusMessage({ message: error, status: "error" });
-    },
-  });
+  //     window.location.reload();
+  //   },
+  //   onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
+  //     setIsLoading(false);
+  //     statusMessage({ message: error, status: "error" });
+  //   },
+  // });
 
   //
   useEffect(() => {
-    setIsLoading(isAllCeremonyCategoryLoading);
+    setIsLoading(isAllCeremonyLoading);
 
-    if (isAllCeremonyCategoryError) {
-      statusMessage({ message: errorAllCeremonyCategory, status: "error" });
+    if (isAllCeremonyError) {
+      statusMessage({ message: errorAllCeremony, status: "error" });
     }
-  }, [isAllCeremonyCategoryLoading, isAllCeremonyCategoryError]);
+  }, [isAllCeremonyLoading, isAllCeremonyError]);
 
   return {
-    addCeremonyCategory,
-    allCeremonyCategory,
-    isLoadingAddCeremonyCategory,
-    isAddCeremonyCategorySuccess,
-    isAddCeremonyCategoryError,
-    editCeremonyCategory,
-    isEditCeremonyCategoryError,
-    isEditCeremonyCategorySuccess,
-    isLoadingEditCeremonyCategory,
-    deleteCeremonyCategory,
-    isDeleteCeremonyCategoryError,
-    isDeleteCeremonyCategorySuccess,
-    isLoadingDeleteCeremonyCategory,
+    addCeremony,
+    allCeremony,
+    isLoadingAddCeremony,
+    isAddCeremonySuccess,
+    isAddCeremonyError,
+    // editCeremony,
+    // isEditCeremonyError,
+    // isEditCeremonySuccess,
+    // isLoadingEditCeremony,
+    // deleteCeremony,
+    // isDeleteCeremonyError,
+    // isDeleteCeremonySuccess,
+    // isLoadingDeleteCeremony,
   };
 };

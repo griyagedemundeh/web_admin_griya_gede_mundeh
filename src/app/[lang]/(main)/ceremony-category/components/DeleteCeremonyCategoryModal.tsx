@@ -3,7 +3,7 @@ import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import { useCentralStore } from "@/store";
-import { useCeremony } from "@/hooks/ceremony/use_ceremony";
+import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 
 interface DeleteCeremonyCategoryModalProps {
   data: { id: number | string; name: string };
@@ -13,7 +13,7 @@ const DeleteCeremonyCategoryModal = ({
   data,
 }: DeleteCeremonyCategoryModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { deleteCeremonyCategory } = useCeremony();
+  const { deleteCeremonyCategory } = useCeremonyCategory();
 
   const [openDelete, setOpenDelete] = useState(false);
 

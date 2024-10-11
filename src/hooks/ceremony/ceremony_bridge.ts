@@ -1,27 +1,28 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
-import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
-import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category_response";
-
+import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
+import {
+  Ceremony,
+  CeremonyInList,
+} from "@/data/models/ceremony/response/ceremony";
 import { CeremonyService } from "@/data/services/ceremony/ceremony_service";
-
 import { AxiosError } from "axios";
 import { useQuery, UseQueryResult } from "react-query";
 
 const ceremonyService = new CeremonyService();
 const TAG_ERROR = "Error during :";
 
-export const addCeremonyCategory = async (
-  request: CeremonyCategoryRequest
-): Promise<ApiResponse<CeremonyCategory>> => {
+export const addCeremony = async (
+  request: CeremonyRequest
+): Promise<ApiResponse<Ceremony>> => {
   const response = await ceremonyService
-    .addCeremonyCategory(request)
+    .addCeremony(request)
     .then(async (value) => {
       return value;
     })
-    .catch((error: AxiosError<ApiResponse<CeremonyCategory>> | unknown) => {
+    .catch((error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
       console.error("====================================");
-      console.error(`${TAG_ERROR} ADD CEREMONY CATEGORY `, error);
+      console.error(`${TAG_ERROR} ADD CEREMONY `, error);
       console.error("====================================");
       throw error;
     });
@@ -29,58 +30,15 @@ export const addCeremonyCategory = async (
   return response;
 };
 
-export const editCeremonyCategory = async ({
-  id,
-  request,
-}: {
-  id: number | string;
-  request: CeremonyCategoryRequest;
-}): Promise<ApiResponse<CeremonyCategory>> => {
-  const response = await ceremonyService
-    .editCeremonyCategory({ id, request })
-    .then(async (value) => {
-      return value;
-    })
-    .catch((error: AxiosError<ApiResponse<CeremonyCategory>> | unknown) => {
-      console.error("====================================");
-      console.error(`${TAG_ERROR} EDIT CEREMONY CATEGORY `, error);
-      console.error("====================================");
-      throw error;
-    });
-
-  return response;
-};
-
-export const deleteCeremonyCategory = async ({
-  id,
-}: {
-  id: number | string;
-}): Promise<ApiResponse<null>> => {
-  const response = await ceremonyService
-    .deleteCeremonyCategory({ id })
-    .then(async (value) => {
-      return value;
-    })
-    .catch((error: AxiosError<ApiResponse<null>> | unknown) => {
-      console.error("====================================");
-      console.error(`${TAG_ERROR} DELETE CEREMONY CATEGORY `, error);
-      console.error("====================================");
-      throw error;
-    });
-
-  return response;
-};
-
-// GET DATA
-export const getAllCeremonyCategory = async (
+export const getAllCeremony = async (
   request: ListDataRequest
-): Promise<ApiResponse<CeremonyCategory[]>> => {
+): Promise<ApiResponse<CeremonyInList[]>> => {
   const response = await ceremonyService
-    .getAllCeremonyCategory(request)
+    .getAllCeremony(request)
     .then(async (value) => {
       return value;
     })
-    .catch((error: AxiosError<ApiResponse<CeremonyCategory[]>> | unknown) => {
+    .catch((error: AxiosError<ApiResponse<CeremonyInList[]>> | unknown) => {
       console.error("====================================");
       console.error(`${TAG_ERROR} GET ALL CEREMONY CATEGORY `, error);
       console.error("====================================");
@@ -90,7 +48,7 @@ export const getAllCeremonyCategory = async (
   return response;
 };
 
-export const useGetAllCeremonyCategoryQuery = (
+export const useGetAllCeremonyQuery = (
   request: ListDataRequest
-): UseQueryResult<ApiResponse<CeremonyCategory[]>, unknown> =>
-  useQuery("allCeremonyCategory", () => getAllCeremonyCategory(request));
+): UseQueryResult<ApiResponse<CeremonyInList[]>, unknown> =>
+  useQuery("allCeremony", () => getAllCeremony(request));

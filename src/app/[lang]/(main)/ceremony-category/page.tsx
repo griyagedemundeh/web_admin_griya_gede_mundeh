@@ -16,8 +16,8 @@ import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import AddCeremonyCategoryModal from "./components/AddCeremonyCategoryModal";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
-import { useCeremony } from "@/hooks/ceremony/use_ceremony";
-import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category_response";
+import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
+import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category";
 import Images from "@/constants/images";
 import DetailCeremonyCategoryModal from "./components/DetailCeremonyCategoryModal";
 
@@ -31,7 +31,7 @@ export default function CeremonyCategoryPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const { allCeremonyCategory } = useCeremony();
+  const { allCeremonyCategory } = useCeremonyCategory();
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
