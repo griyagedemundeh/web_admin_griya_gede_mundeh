@@ -81,26 +81,26 @@ const AddCeremonyModal = ({
     //     />
     //   }
     //   bottomAction={
-    //     <>
-    //       {progress > 50 ? (
-    //         <SecondaryWithIconButton
-    //           label="Kembali"
-    //           className="w-full"
-    //           onClick={() => {
-    //             setProgress(progress - 33.33);
-    //           }}
-    //           icon={ChevronDoubleLeftIcon}
-    //         />
-    //       ) : null}
-    //       <PrimaryWithIconButton
-    //         label="Selanjutnya"
-    //         className={progress > 50 ? "w-full" : ""}
-    //         onClick={() => {
-    //           setProgress(progress + 33.33);
-    //         }}
-    //         icon={ChevronDoubleRightIcon}
-    //       />
-    //     </>
+    // <>
+    //   {progress > 50 ? (
+    //     <SecondaryWithIconButton
+    //       label="Kembali"
+    //       className="w-full"
+    //       onClick={() => {
+    //         setProgress(progress - 33.33);
+    //       }}
+    //       icon={ChevronDoubleLeftIcon}
+    //     />
+    //   ) : null}
+    //   <PrimaryWithIconButton
+    //     label="Selanjutnya"
+    //     className={progress > 50 ? "w-full" : ""}
+    //     onClick={() => {
+    //       setProgress(progress + 33.33);
+    //     }}
+    //     icon={ChevronDoubleRightIcon}
+    //   />
+    // </>
     //   }
     // />
   );
