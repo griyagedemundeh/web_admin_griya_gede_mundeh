@@ -1,5 +1,5 @@
 interface DropdownFilterItemProps {
-  id: string;
+  id: string | number;
   title: string;
 }
 

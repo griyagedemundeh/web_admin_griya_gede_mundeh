@@ -7,43 +7,43 @@ import {
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import {
-  CheckBadgeIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import Ceremony from "@/data/models/ceremony";
-import { ceremonies, status } from "@/utils/dummyData";
-
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
+import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import SwitchInput from "@/components/input/SwitchInput";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import CeremonyCategoryModal from "./components/CeremonyCategoryModal";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
+import AddCeremonyCategoryModal from "./components/AddCeremonyCategoryModal";
+import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
+import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
+import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category";
+import Images from "@/constants/images";
+import DetailCeremonyCategoryModal from "./components/DetailCeremonyCategoryModal";
 
-export default function CeremonyPage({
+import DeleteCeremonyCategoryModal from "./components/DeleteCeremonyCategoryModal";
+
+export default function CeremonyCategoryPage({
   params: { lang },
 }: {
   params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-  const [active, setActive] = useState<boolean>(true);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
+
+  const { allCeremonyCategory } = useCeremonyCategory();
 
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const columnsCategories = useMemo<ColumnDef<Ceremony>[]>(
+  const [ceremonyCategoryRequest, setCeremonyCategoryRequest] =
+    useState<CeremonyCategoryRequest>({
+      name: "",
+      icon: null,
+      description: "",
+    });
+
+  const columnsCategories = useMemo<ColumnDef<CeremonyCategory>[]>(
     () => [
       {
         header: "Kategori Upacara Agama",
@@ -51,58 +51,54 @@ export default function CeremonyPage({
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
-                alt={info.row.original.title}
-                src={info.row.original.thumbnailUrl}
+                alt={info.row.original.name}
+                src={info.row.original.icon ?? Images.dummyProfile}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
                 objectFit="cover"
               />
               <div>
-                <p className="font-bold">{info.row.original.title}</p>
+                <p className="font-bold">{info.row.original.name}</p>
               </div>
             </div>
           </div>
         ),
       },
 
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+      // {
+      //   header: "Status",
+      //   cell: (info) => (
+      //     <SwitchInput
+      //       label={
+      //         info.row.original.status ? (
+      //           <span className="font-medium text-gray-900">Aktif</span>
+      //         ) : (
+      //           <span className="font-medium text-gray-400">Non-Aktif</span>
+      //         )
+      //       }
+      //       value={info.row.original.status}
+      //       onChange={(e) => {}}
+      //     />
+      //   ),
+      // },
       {
         header: "Aksi",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
+              <DetailCeremonyCategoryModal
+                id={info.row.original.id}
+                data={{
+                  name: info.row.original.name,
+                  description: info.row.original.description,
+                  icon: info.row.original.icon ?? "",
                 }}
               />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
+              <DeleteCeremonyCategoryModal
+                data={{
+                  name: info.row.original.name,
+                  id: info.row.original.id,
                 }}
               />
             </div>
@@ -113,7 +109,6 @@ export default function CeremonyPage({
     []
   );
 
-  const [data, setData] = useState(() => ceremonies);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
@@ -153,7 +148,7 @@ export default function CeremonyPage({
           setOpen(true);
         }}
         columns={columnsCategories}
-        data={data ?? []}
+        data={allCeremonyCategory?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -163,53 +158,15 @@ export default function CeremonyPage({
       />
 
       {/* Dialog Add Category */}
-      <CeremonyCategoryModal
+      <AddCeremonyCategoryModal
         open={open}
         setOpen={setOpen}
-        title="Tambah Kategori Upacara Agama"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={CheckBadgeIcon}
-          />
-        }
-      />
-
-      <CeremonyCategoryModal
-        open={openDetail}
-        setOpen={setOpenDetail}
-        isForDetail={true}
-        title="Tambah Kategori Upacara Agama"
-        activeCeremonyCategory={active}
-        setActiveCeremonyCategory={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={CheckBadgeIcon}
-          />
-        }
-      />
-
-      {/* Delete Dialog */}
-      <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
+        data={ceremonyCategoryRequest}
+        setData={setCeremonyCategoryRequest}
       />
 
       {/* Confirmation Dialog */}
-      <AlertConfirmationModal
+      {/* <AlertConfirmationModal
         onRightClick={() => {
           setOpenActiveConfirmation(false);
         }}
@@ -219,7 +176,7 @@ export default function CeremonyPage({
         description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
     </>
   );
 }

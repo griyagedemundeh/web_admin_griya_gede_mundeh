@@ -7,6 +7,7 @@ interface PrimaryInputProps {
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   className?: string;
   isOptional?: boolean;
+  error?: string;
 }
 
 const PrimaryTextArea = ({
@@ -16,6 +17,7 @@ const PrimaryTextArea = ({
   className,
   placeholder,
   isOptional,
+  error,
 }: PrimaryInputProps) => {
   return (
     <div className={className}>
@@ -38,6 +40,7 @@ const PrimaryTextArea = ({
           defaultValue={value}
         />
       </div>
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 };
