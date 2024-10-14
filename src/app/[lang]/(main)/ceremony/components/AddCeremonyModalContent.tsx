@@ -12,18 +12,25 @@ import BigFileInput from "@/components/input/image/BigFileInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import CeremonyPackage from "@/data/models/ceremonyPackage";
+
 import IconButton from "@/components/button/IconButton";
 import SecondaryThinButton from "@/components/button/SecondaryThinButton";
 import PrimaryCurrencyInput from "@/components/input/PrimaryCurrencyInput";
 import SecondaryWithIconButton from "@/components/button/SecondaryWithIconButton";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import { Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import ceremonyValidation from "../validation/ceremony_validation";
 import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
+import ceremonyDocumentationValidation from "../validation/ceremony_documentation_validation";
+import {
+  CeremonyPackageRequest,
+  CeremonyPackagesRequest,
+} from "@/data/models/ceremony/request/ceremony_package_request";
+import { Ceremony } from "@/data/models/ceremony/response/ceremony";
+import ceremonyPackagesValidation from "../validation/ceremony_package_validation";
 
 interface AddCeremonyModalProps {
   // PROGRESS
@@ -32,6 +39,7 @@ interface AddCeremonyModalProps {
   loading: boolean;
 
   // CEREMONY
+  ceremony: Ceremony | undefined;
   ceremonyRequest: CeremonyRequest;
   handleCeremonySubmit: (ceremonyRequest: CeremonyRequest) => void;
 
@@ -48,9 +56,14 @@ interface AddCeremonyModalProps {
   ) => void;
 
   // PACKAGE
-  ceremonyPackages: CeremonyPackage[];
-  setCeremonyPackages: (value: CeremonyPackage[]) => void;
-  setSelectedCeremonyPackage: (value: CeremonyPackage | undefined) => void;
+  ceremonyPackagesRequest: CeremonyPackagesRequest;
+  setCeremonyPackagesRequest: (value: CeremonyPackagesRequest) => void;
+  setSelectedCeremonyPackageRequest: (
+    value: CeremonyPackageRequest | undefined
+  ) => void;
+  handleCeremonyPackagesSubmit: (
+    ceremonyPackagesRequest: CeremonyPackagesRequest
+  ) => void;
 }
 
 const AddCeremonyModalContent = ({
@@ -59,6 +72,7 @@ const AddCeremonyModalContent = ({
   setProgress,
 
   // CEREMONY
+  ceremony,
   ceremonyRequest,
   handleCeremonySubmit,
   loading,
@@ -72,9 +86,10 @@ const AddCeremonyModalContent = ({
   setSelectedCeremonyCategory,
 
   // PACKAGE
-  ceremonyPackages,
-  setSelectedCeremonyPackage,
-  setCeremonyPackages,
+  ceremonyPackagesRequest,
+  setSelectedCeremonyPackageRequest,
+  setCeremonyPackagesRequest,
+  handleCeremonyPackagesSubmit,
 }: AddCeremonyModalProps) => {
   const { allCeremonyCategory } = useCeremonyCategory();
 
@@ -115,7 +130,7 @@ const AddCeremonyModalContent = ({
                   : "text-center text-xs"
               }
             >
-              Paket
+              Paket (Opsional)
             </div>
           </div>
           <div className="overflow-hidden rounded-full bg-gray-200">
@@ -137,7 +152,11 @@ const AddCeremonyModalContent = ({
             suppressHydrationWarning={true}
           >
             {({ errors, handleChange, values, setValues, handleSubmit }) => (
-              <Form>
+              <Form
+                onSubmit={() => {
+                  handleCeremonySubmit(values);
+                }}
+              >
                 <div className="flex flex-col space-y-4">
                   <PrimaryInput
                     label="Nama Upacara"
@@ -188,118 +207,145 @@ const AddCeremonyModalContent = ({
         {/* DOCUMENTATION */}
         {progress > 50 && progress < 90 ? (
           <Formik
-            initialValues={ceremonyRequest}
-            onSubmit={handleCeremonySubmit}
-            validationSchema={ceremonyValidation}
+            initialValues={ceremonyDocumentationRequest}
+            onSubmit={handleCeremonyDocumentationSubmit}
+            validationSchema={ceremonyDocumentationValidation}
             suppressHydrationWarning={true}
           >
-            <Form>
-              <BigFileInput onChange={(e) => {}} src="" />
-              <div className="flex flex-row space-x-4 mt-6">
-                {progress > 50 && !ceremonyRequest.title ? (
-                  <SecondaryWithIconButton
-                    label="Kembali"
-                    className="w-full"
-                    onClick={() => {
-                      setProgress(progress - 33.33);
-                    }}
-                    icon={ChevronDoubleLeftIcon}
-                  />
-                ) : null}
-                <PrimaryWithIconButton
-                  label="Selanjutnya"
-                  className={progress > 50 ? "w-full" : ""}
-                  onClick={() => {
-                    setProgress(progress + 33.33);
+            {({ handleSubmit, setFieldValue, values }) => (
+              <Form
+                onSubmit={() => {
+                  handleCeremonyDocumentationSubmit(values);
+                }}
+              >
+                <BigFileInput
+                  onChange={(e) => {
+                    setFieldValue("photo", e);
                   }}
-                  icon={ChevronDoubleRightIcon}
                 />
-              </div>
-            </Form>
+                <div className="flex flex-row space-x-4 mt-6">
+                  {progress > 50 && !ceremonyRequest.title ? (
+                    <SecondaryWithIconButton
+                      label="Kembali"
+                      className="w-full"
+                      onClick={() => {
+                        setProgress(progress - 33.33);
+                      }}
+                      icon={ChevronDoubleLeftIcon}
+                    />
+                  ) : null}
+                  <PrimaryWithIconButton
+                    label="Selanjutnya"
+                    loading={loading}
+                    className={progress > 50 ? "w-full" : ""}
+                    onClick={() => {
+                      handleSubmit();
+                    }}
+                    icon={ChevronDoubleRightIcon}
+                  />
+                </div>
+              </Form>
+            )}
           </Formik>
         ) : null}
 
         {progress > 90 ? (
-          <div className="flex flex-col">
-            {ceremonyPackages.map((ceremonyPackage, index) => (
-              <div key={ceremonyPackage.id} className="mb-6">
-                <div className="flex flex-row justify-between">
-                  <p className="capitalize font-bold mb-4">Paket {index + 1}</p>
-
-                  {ceremonyPackages.length > 1 ? (
-                    <IconButton
-                      icon={TrashIcon}
-                      onClick={() => {
-                        setSelectedCeremonyPackage(ceremonyPackage);
-                      }}
-                      color="red"
-                    />
-                  ) : null}
-                </div>
-                <div className="flex flex-col space-y-4">
-                  <PrimaryInput
-                    label="Nama Paket"
-                    value={ceremonyPackage.title}
-                    onChange={(e) => {}}
-                    placeholder="Masukkan nama paket"
-                  />
-
-                  <PrimaryCurrencyInput
-                    label="Harga Paket"
-                    setValue={(e) => {}}
-                    value=""
-                    placeholder="Masukkan harga paket"
-                  />
-
-                  <PrimaryTextEditor
-                    label="Deskripsi Paket"
-                    onChange={(e) => {}}
-                    value={ceremonyPackage.description}
-                  />
-
-                  {ceremonyPackages[ceremonyPackages.length - 1] ===
-                  ceremonyPackage ? (
-                    <SecondaryThinButton
-                      onClick={() => {
-                        setCeremonyPackages(
-                          ceremonyPackages.concat([
-                            {
-                              id: `${new Date()}`,
-                              title: "",
-                              description: "",
-                              price: "0",
-                            },
-                          ])
-                        );
-                      }}
-                      label="Klik disini untuk tambah jenis paket"
-                      icon={PlusIcon}
-                    />
-                  ) : null}
-                </div>
-              </div>
-            ))}
-            <div className="flex flex-row space-x-4 mt-6">
-              {progress > 50 ? (
-                <SecondaryWithIconButton
-                  label="Kembali"
-                  className="w-full"
-                  onClick={() => {
-                    setProgress(progress - 33.33);
-                  }}
-                  icon={ChevronDoubleLeftIcon}
-                />
-              ) : null}
-              <PrimaryWithIconButton
-                label="Selanjutnya"
-                className={progress > 50 ? "w-full" : ""}
-                onClick={() => {
-                  setProgress(progress + 33.33);
+          <Formik
+            initialValues={ceremonyPackagesRequest}
+            validationSchema={ceremonyPackagesValidation}
+            onSubmit={handleCeremonyPackagesSubmit}
+          >
+            {({ values, errors, handleSubmit, handleChange }) => (
+              <Form
+                onSubmit={() => {
+                  handleSubmit();
                 }}
-                icon={ChevronDoubleRightIcon}
-              />
-            </div>
-          </div>
+              >
+                <FieldArray name="package">
+                  {({ remove, push }) => (
+                    <div className="flex flex-col">
+                      {values.package.map((ceremonyPackage, index) => (
+                        <div key={ceremonyPackage.id} className="mb-6">
+                          <div className="flex justify-between">
+                            <p className="capitalize font-bold mb-4">
+                              Paket {index + 1}
+                            </p>
+                            {values.package.length > 1 && (
+                              <IconButton
+                                icon={TrashIcon}
+                                onClick={() => remove(index)}
+                                color="red"
+                              />
+                            )}
+                          </div>
+
+                          <div className="flex flex-col space-y-4">
+                            <PrimaryInput
+                              label="Nama Paket"
+                              value={values.package[index].name}
+                              error={(errors?.package?.[index] as any)?.name}
+                              onChange={handleChange(`package.${index}.name`)}
+                              placeholder="Masukkan nama paket"
+                            />
+
+                            <PrimaryCurrencyInput
+                              label="Harga Paket"
+                              value={values.package[index].price}
+                              error={(errors?.package?.[index] as any)?.price}
+                              setValue={handleChange(`package.${index}.price`)}
+                              placeholder="Masukkan harga paket"
+                            />
+
+                            <PrimaryTextEditor
+                              label="Deskripsi Paket"
+                              value={values.package[index].description}
+                              error={
+                                (errors?.package?.[index] as any)?.description
+                              }
+                              onChange={handleChange(
+                                `package.${index}.description`
+                              )}
+                            />
+                          </div>
+
+                          {/* Add button to add more packages */}
+                          {index === values.package.length - 1 && (
+                            <SecondaryThinButton
+                              className="mt-2"
+                              onClick={() =>
+                                push({
+                                  id: `${new Date()}`,
+                                  name: "",
+                                  description: "",
+                                  price: 0,
+                                  ceremonyServiceId: ceremony?.id ?? "",
+                                })
+                              }
+                              label="Klik disini untuk tambah jenis paket"
+                              icon={PlusIcon}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </FieldArray>
+
+                {/* Buttons */}
+                <div className="flex flex-row space-x-4 mt-6">
+                  <PrimaryWithIconButton
+                    label="Selanjutnya"
+                    className={progress > 50 ? "w-full" : ""}
+                    loading={loading}
+                    onClick={() => {
+                      handleSubmit();
+                    }}
+                    icon={ChevronDoubleRightIcon}
+                  />
+                </div>
+              </Form>
+            )}
+          </Formik>
         ) : null}
       </div>
     </div>

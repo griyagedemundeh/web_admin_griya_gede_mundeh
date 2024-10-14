@@ -7,6 +7,10 @@ import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import { useCentralStore } from "@/store";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
+import {
+  CeremonyPackageRequest,
+  CeremonyPackagesRequest,
+} from "@/data/models/ceremony/request/ceremony_package_request";
 
 interface AddCeremonyModalProps {
   open: boolean;
@@ -17,9 +21,6 @@ interface AddCeremonyModalProps {
   setSelectedCeremonyCategory: (
     value: DropdownFilterItemProps | undefined
   ) => void;
-  ceremonyPackages: CeremonyPackage[];
-  setCeremonyPackages: (value: CeremonyPackage[]) => void;
-  setSelectedCeremonyPackage: (value: CeremonyPackage | undefined) => void;
 }
 
 const AddCeremonyModal = ({
@@ -29,9 +30,6 @@ const AddCeremonyModal = ({
   setProgress,
   selectedCeremonyCategory,
   setSelectedCeremonyCategory,
-  ceremonyPackages,
-  setSelectedCeremonyPackage,
-  setCeremonyPackages,
 }: AddCeremonyModalProps): ReactElement => {
   const { setIsLoading, isLoading } = useCentralStore();
   const {
@@ -39,6 +37,9 @@ const AddCeremonyModal = ({
     isAddCeremonySuccess,
     ceremony,
     addCeremonyDocumentation,
+    isAddCeremonyDocumentationSuccess,
+    addCeremonyPackages,
+    isAddCeremonyPackagesSuccess,
   } = useCeremony();
 
   const [ceremonyRequest, setCeremonyRequest] = useState<CeremonyRequest>({
@@ -65,6 +66,31 @@ const AddCeremonyModal = ({
     addCeremonyDocumentation(ceremonyDocumentRequest);
   };
 
+  const handleAddCeremonyPackeges = (
+    ceremonyPackagesRequest: CeremonyPackagesRequest
+  ) => {
+    setIsLoading(true);
+    addCeremonyPackages(ceremonyPackagesRequest);
+  };
+
+  const [ceremonyPackages, setCeremonyPackages] =
+    useState<CeremonyPackagesRequest>();
+  const [selectedCeremonyPackage, setSelectedCeremonyPackage] =
+    useState<CeremonyPackageRequest>();
+
+  const removeCeremonyPackage = () => {
+    setCeremonyPackages({
+      package:
+        ceremonyPackages?.package?.filter(
+          (item) => item.id !== selectedCeremonyPackage?.id
+        ) ?? [],
+    });
+  };
+
+  useEffect(() => {
+    removeCeremonyPackage();
+  }, [selectedCeremonyPackage]);
+
   useEffect(() => {
     if (isAddCeremonySuccess) {
       setProgress(progress + 33.33);
@@ -78,8 +104,33 @@ const AddCeremonyModal = ({
         ...ceremonyDocumentationRequest,
         ceremonyServiceId: ceremony?.id as number,
       });
+
+      setCeremonyPackages({
+        package: [
+          {
+            id: `${new Date()}`,
+            name: "",
+            price: 0,
+            description: "",
+            ceremonyServiceId: ceremony?.id ?? "",
+          },
+        ],
+      });
     }
-  }, [isAddCeremonySuccess, ceremony]);
+
+    if (isAddCeremonyDocumentationSuccess) {
+      setProgress(progress + 33.33);
+    }
+
+    if (isAddCeremonyPackagesSuccess) {
+      setOpen(false);
+    }
+  }, [
+    isAddCeremonySuccess,
+    isAddCeremonyDocumentationSuccess,
+    isAddCeremonyPackagesSuccess,
+    ceremony,
+  ]);
 
   return (
     <Modal title="Tambah Upacara Agama" isOpen={open} setIsOpen={setOpen}>
@@ -87,18 +138,20 @@ const AddCeremonyModal = ({
         progress={progress}
         loading={isLoading}
         // CEREMONY
+        ceremony={ceremony}
         ceremonyRequest={ceremonyRequest}
         handleCeremonySubmit={handleAddCeremony}
         // DOCUMENTATION
         ceremonyDocumentationRequest={ceremonyDocumentationRequest}
         handleCeremonyDocumentationSubmit={handleAddCeremonyDocumentation}
         // PACKAGE
-        ceremonyPackages={ceremonyPackages}
+        ceremonyPackagesRequest={ceremonyPackages ?? { package: [] }}
         selectedCeremonyCategory={selectedCeremonyCategory}
-        setCeremonyPackages={setCeremonyPackages}
+        setCeremonyPackagesRequest={setCeremonyPackages}
         setProgress={setProgress}
         setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-        setSelectedCeremonyPackage={setSelectedCeremonyPackage}
+        setSelectedCeremonyPackageRequest={setSelectedCeremonyPackage}
+        handleCeremonyPackagesSubmit={handleAddCeremonyPackeges}
       />
     </Modal>
   );

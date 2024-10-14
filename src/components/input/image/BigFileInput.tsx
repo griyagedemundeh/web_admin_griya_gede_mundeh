@@ -5,7 +5,7 @@ import BigImageCropper from "./BigImageCropper";
 interface BigFileInputProps {
   name?: string;
   label?: string;
-  src: string;
+  src?: string;
   onChange?: (file: File) => void;
 }
 

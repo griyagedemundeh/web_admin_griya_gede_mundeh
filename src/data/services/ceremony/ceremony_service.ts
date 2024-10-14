@@ -10,6 +10,8 @@ import {
 import { ICeremonyService } from "./ceremony_service_interface";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
 import CeremonyDocumentation from "@/data/models/ceremony/response/ceremony_documentation";
+import { CeremonyPackagesRequest } from "@/data/models/ceremony/request/ceremony_package_request";
+import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 
 export class CeremonyService implements ICeremonyService {
   BASE_ENDPOINT: string = "/admin/ceremony";
@@ -72,6 +74,28 @@ export class CeremonyService implements ICeremonyService {
       console.error("====================================");
       console.error(
         "ERROR ADD CEREMONY DOCUMENTATION --> ",
+        error.response.data.message
+      );
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
+  // PACKAGE
+  async addPackages(
+    request: CeremonyPackagesRequest
+  ): Promise<ApiResponse<CeremonyPackage[]>> {
+    const uri = `${this.BASE_ENDPOINT}/package/create`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<CeremonyPackage[]>> =
+        await api.post(uri, request);
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<CeremonyPackage[]>> | any) {
+      console.error("====================================");
+      console.error(
+        "ERROR ADD CEREMONY PACKAGE --> ",
         error.response.data.message
       );
       console.error("====================================");

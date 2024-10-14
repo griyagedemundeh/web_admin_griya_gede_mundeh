@@ -1,12 +1,14 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
+import { CeremonyPackagesRequest } from "@/data/models/ceremony/request/ceremony_package_request";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import {
   Ceremony,
   CeremonyInList,
 } from "@/data/models/ceremony/response/ceremony";
 import CeremonyDocumentation from "@/data/models/ceremony/response/ceremony_documentation";
+import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 import { CeremonyService } from "@/data/services/ceremony/ceremony_service";
 import { AxiosError } from "axios";
 import { useQuery, UseQueryResult } from "react-query";
@@ -72,6 +74,25 @@ export const addCeremonyDocumentation = async (
         throw error;
       }
     );
+
+  return response;
+};
+
+// PACKAGE
+export const addCeremonyPackages = async (
+  request: CeremonyPackagesRequest
+): Promise<ApiResponse<CeremonyPackage[]>> => {
+  const response = await ceremonyService
+    .addPackages(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<CeremonyPackage[]>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} ADD CEREMONY PACKAGE `, error);
+      console.error("====================================");
+      throw error;
+    });
 
   return response;
 };

@@ -24,28 +24,29 @@ const ToolbarButton = ({
   className?: string;
   disabled?: boolean;
 }) => (
-  <button
+  <div
     onClick={onClick}
     className={
       className +
-      " p-2 rounded hover:bg-gray-200 focus:outline-none focus:bg-gray-200"
+      " p-2 rounded hover:bg-gray-200 focus:outline-none focus:bg-gray-200 hover:cursor-pointer"
     }
-    disabled={disabled}
   >
     {icon}
-  </button>
+  </div>
 );
 
 interface PrimaryTextEditorProps {
   label?: string;
   value: string;
-  onChange: React.FormEventHandler<HTMLDivElement>;
+  onChange: (value: string) => void;
+  error?: string;
 }
 
 const PrimaryTextEditor = ({
   label,
   onChange,
   value,
+  error,
 }: PrimaryTextEditorProps) => {
   const editor = useEditor({
     editable: true,
@@ -66,7 +67,11 @@ const PrimaryTextEditor = ({
         defaultProtocol: "https",
       }),
     ],
-    content: "",
+    content: value,
+    onUpdate: ({ editor }) => {
+      const updatedContent = editor.getHTML();
+      onChange(updatedContent);
+    },
   });
 
   const setLink = useCallback(() => {
@@ -154,12 +159,11 @@ const PrimaryTextEditor = ({
 
           <EditorContent
             editor={editor}
-            value={value}
-            onChange={onChange}
             className="p-3 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary1 overflow-hidden"
           />
         </div>
       </div>
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 };

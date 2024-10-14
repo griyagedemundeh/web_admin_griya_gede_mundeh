@@ -125,22 +125,6 @@ export default function CeremonyPage({
   const [progress, setProgress] = useState<number>(33.33);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const [ceremonyPackages, setCeremonyPackages] = useState<CeremonyPackage[]>([
-    { id: `${new Date()}`, title: "", price: "0", description: "" },
-  ]);
-  const [selectedCeremonyPackage, setSelectedCeremonyPackage] =
-    useState<CeremonyPackage>();
-
-  const removeCeremonyPackage = () => {
-    setCeremonyPackages(
-      ceremonyPackages.filter((item) => item.id !== selectedCeremonyPackage?.id)
-    );
-  };
-
-  useEffect(() => {
-    removeCeremonyPackage();
-  }, [selectedCeremonyPackage]);
-
   return (
     <>
       <h1 className="font-bold text-xl mb-8">Upacara Agama</h1>
@@ -195,15 +179,12 @@ export default function CeremonyPage({
 
       {/* Dialog Add Ceremony*/}
       <AddCeremonyModal
-        ceremonyPackages={ceremonyPackages}
         open={open}
         progress={progress}
         selectedCeremonyCategory={selectedCeremonyCategory}
-        setCeremonyPackages={setCeremonyPackages}
         setOpen={setOpen}
         setProgress={setProgress}
         setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-        setSelectedCeremonyPackage={setSelectedCeremonyPackage}
       />
       {/* Dialog Detail Ceremony*/}
       {/* <DetailCeremonyModal
