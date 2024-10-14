@@ -18,13 +18,15 @@ import IconButton from "@/components/button/IconButton";
 
 import CeremonyPackage from "@/data/models/ceremonyPackage";
 import AddCeremonyModal from "./components/AddCeremonyModal";
-import Ceremony from "@/data/models/ceremony";
+
 import { categories, ceremonies, status } from "@/utils/dummyData";
 import DetailCeremonyModal from "./components/DetailCeremonyModal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import SwitchInput from "@/components/input/SwitchInput";
+import { useCeremony } from "@/hooks/ceremony/use_ceremony";
+import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
 
 export default function CeremonyPage({
   params: { lang },
@@ -40,7 +42,9 @@ export default function CeremonyPage({
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const columns = useMemo<ColumnDef<Ceremony>[]>(
+  const { allCeremony } = useCeremony();
+
+  const columns = useMemo<ColumnDef<CeremonyInList>[]>(
     () => [
       {
         header: "Upacara Agama",
@@ -49,7 +53,7 @@ export default function CeremonyPage({
             <div className="flex flex-row space-x-4 items-center">
               <Image
                 alt={info.row.original.title}
-                src={info.row.original.thumbnailUrl}
+                src={info.row.original.ceremonyDocumentation[0].photo}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
@@ -69,26 +73,26 @@ export default function CeremonyPage({
         header: "Kategori",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.kategori}
+            {info.row.original.ceremonyCategory.name}
           </div>
         ),
       },
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+      // {
+      //   header: "Status",
+      //   cell: (info) => (
+      //     <SwitchInput
+      //       label={
+      //         info.row.original.status ? (
+      //           <span className="font-medium text-gray-900">Aktif</span>
+      //         ) : (
+      //           <span className="font-medium text-gray-400">Non-Aktif</span>
+      //         )
+      //       }
+      //       value={info.row.original.status}
+      //       onChange={(e) => {}}
+      //     />
+      //   ),
+      // },
       {
         header: "Aksi",
         cell: (info) => (
@@ -146,44 +150,44 @@ export default function CeremonyPage({
       <PrimaryTable
         title="Upacara Agama"
         mainActionTitle="Tambah Upacara Agama"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-            <DropdownFilter
-              label="Kategori"
-              selectedItem={selectedCeremonyCategory}
-              setSelectedItem={setSelectedCeremonyCategory}
-              icon={TagIcon}
-              items={categories}
-            />
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
+        //     <DropdownFilter
+        //       label="Kategori"
+        //       selectedItem={selectedCeremonyCategory}
+        //       setSelectedItem={setSelectedCeremonyCategory}
+        //       icon={TagIcon}
+        //       items={categories}
+        //     />
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari Upacara"
-              className="w-full"
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari Upacara"
+        //       className="w-full"
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         mainActionOnClick={() => {
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        data={allCeremony?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -206,7 +210,7 @@ export default function CeremonyPage({
         setSelectedCeremonyPackage={setSelectedCeremonyPackage}
       />
       {/* Dialog Detail Ceremony*/}
-      <DetailCeremonyModal
+      {/* <DetailCeremonyModal
         ceremonyCategories={categories}
         ceremonyPackages={ceremonyPackages}
         open={openDetail}
@@ -217,10 +221,10 @@ export default function CeremonyPage({
         setProgress={setProgress}
         setSelectedCeremonyCategory={setSelectedCeremonyCategory}
         setSelectedCeremonyPackage={setSelectedCeremonyPackage}
-      />
+      /> */}
 
       {/* Delete Dialog */}
-      <AlertDangerModal
+      {/* <AlertDangerModal
         onRightClick={() => {
           setOpenDelete(false);
         }}
@@ -230,7 +234,7 @@ export default function CeremonyPage({
         description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
     </>
   );
 }

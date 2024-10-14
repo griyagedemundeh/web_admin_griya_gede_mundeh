@@ -44,16 +44,17 @@ const DetailCeremonyModal = ({
       setOpen={setOpen}
       title="Detail Upacara Agama"
       content={
-        <AddCeremonyModalContent
-          ceremonyCategories={ceremonyPackages}
-          ceremonyPackages={ceremonyPackages}
-          progress={progress}
-          selectedCeremonyCategory={selectedCeremonyCategory}
-          setCeremonyPackages={setCeremonyPackages}
-          setProgress={setProgress}
-          setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-          setSelectedCeremonyPackage={setSelectedCeremonyPackage}
-        />
+        // <AddCeremonyModalContent
+        //   ceremonyCategories={ceremonyPackages}
+        //   ceremonyPackages={ceremonyPackages}
+        //   progress={progress}
+        //   selectedCeremonyCategory={selectedCeremonyCategory}
+        //   setCeremonyPackages={setCeremonyPackages}
+        //   setProgress={setProgress}
+        //   setSelectedCeremonyCategory={setSelectedCeremonyCategory}
+        //   setSelectedCeremonyPackage={setSelectedCeremonyPackage}
+        // />
+        <div></div>
       }
       bottomAction={
         <>
