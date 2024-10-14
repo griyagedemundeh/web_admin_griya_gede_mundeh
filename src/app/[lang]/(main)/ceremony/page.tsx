@@ -1,32 +1,18 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  MagnifyingGlassIcon,
-  TagIcon,
-} from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
-import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-
-import IconButton from "@/components/button/IconButton";
-
 import CeremonyPackage from "@/data/models/ceremonyPackage";
 import AddCeremonyModal from "./components/AddCeremonyModal";
-
-import { categories, ceremonies, status } from "@/utils/dummyData";
-import DetailCeremonyModal from "./components/DetailCeremonyModal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import SwitchInput from "@/components/input/SwitchInput";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
+import Images from "@/constants/images";
 
 export default function CeremonyPage({
   params: { lang },
@@ -51,14 +37,26 @@ export default function CeremonyPage({
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
-              <Image
-                alt={info.row.original.title}
-                src={info.row.original.ceremonyDocumentation[0].photo}
-                className="h-10 w-10 rounded-full bg-gray-50 object-cover"
-                height={40}
-                width={40}
-                objectFit="cover"
-              />
+              {(info.row.original?.ceremonyDocumentation?.length ?? 0) > 0 &&
+              info.row.original?.ceremonyDocumentation !== undefined ? (
+                <Image
+                  alt={info.row.original.title}
+                  src={info.row.original.ceremonyDocumentation[0].photo ?? ""}
+                  className="h-10 w-10 rounded-full bg-gray-50 object-cover"
+                  height={40}
+                  width={40}
+                  objectFit="cover"
+                />
+              ) : (
+                <Image
+                  alt={info.row.original.title}
+                  src={Images.dummyProfile}
+                  className="h-10 w-10 rounded-full bg-gray-50 object-cover"
+                  height={40}
+                  width={40}
+                  objectFit="cover"
+                />
+              )}
               <div>
                 <p className="font-bold">{info.row.original.title}</p>
                 {/* <p className="text-xs text-gray-500 text-ellipsis line-clamp-1">
@@ -124,7 +122,6 @@ export default function CeremonyPage({
     []
   );
 
-  const [data, setData] = useState(() => ceremonies);
   const [progress, setProgress] = useState<number>(33.33);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -198,7 +195,6 @@ export default function CeremonyPage({
 
       {/* Dialog Add Ceremony*/}
       <AddCeremonyModal
-        ceremonyCategories={categories}
         ceremonyPackages={ceremonyPackages}
         open={open}
         progress={progress}

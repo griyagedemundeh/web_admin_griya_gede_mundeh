@@ -8,7 +8,7 @@ import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useCentralStore } from "@/store";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
 import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
-import PhotoProfileInput from "@/components/input/PhotoProfileInput";
+import PhotoProfileInput from "@/components/input/image/profile/PhotoProfileInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import editCeremonyCategoryValidation from "../validation/edit_admin_validation";
 import { urlToFile } from "@/utils";
@@ -76,7 +76,7 @@ const DetailCeremonyCategoryModal = ({
         setIsOpen={setOpenDetail}
       >
         <Formik
-          initialValues={data}
+          initialValues={{ ...data, icon: fileFromApi as File }}
           onSubmit={(values) => handleEditAdmin(values)}
           validationSchema={editCeremonyCategoryValidation}
         >
@@ -87,7 +87,7 @@ const DetailCeremonyCategoryModal = ({
                   <PhotoProfileInput
                     src={data.icon as string}
                     onChange={(file) => {
-                      setFieldValue("icon", fileFromApi ?? file);
+                      setFieldValue("icon", file);
                     }}
                   />
                   <PrimaryInput

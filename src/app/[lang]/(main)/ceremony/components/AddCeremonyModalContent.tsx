@@ -8,7 +8,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import DropdownInput from "@/components/dropdown/DropdownInput";
-import BigFileInput from "@/components/input/BigFileInput";
+import BigFileInput from "@/components/input/image/BigFileInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
@@ -23,30 +23,55 @@ import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import ceremonyValidation from "../validation/ceremony_validation";
 import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
+import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
 
 interface AddCeremonyModalProps {
+  // PROGRESS
   progress: number;
   setProgress: (value: number) => void;
+  loading: boolean;
+
+  // CEREMONY
   ceremonyRequest: CeremonyRequest;
   handleCeremonySubmit: (ceremonyRequest: CeremonyRequest) => void;
-  ceremonyCategories: DropdownFilterItemProps[];
+
+  // DOCUMENTATION
+  ceremonyDocumentationRequest: CeremonyDocumentationRequest;
+  handleCeremonyDocumentationSubmit: (
+    ceremonyDocumentationRequest: CeremonyDocumentationRequest
+  ) => void;
+
+  // CATEGORY
   selectedCeremonyCategory: DropdownFilterItemProps | undefined;
   setSelectedCeremonyCategory: (
     value: DropdownFilterItemProps | undefined
   ) => void;
+
+  // PACKAGE
   ceremonyPackages: CeremonyPackage[];
   setCeremonyPackages: (value: CeremonyPackage[]) => void;
   setSelectedCeremonyPackage: (value: CeremonyPackage | undefined) => void;
 }
 
 const AddCeremonyModalContent = ({
+  // PROGRESS
   progress,
   setProgress,
+
+  // CEREMONY
   ceremonyRequest,
   handleCeremonySubmit,
-  ceremonyCategories,
+  loading,
+
+  // DOCUMENTATION
+  ceremonyDocumentationRequest,
+  handleCeremonyDocumentationSubmit,
+
+  // CATEGORY
   selectedCeremonyCategory,
   setSelectedCeremonyCategory,
+
+  // PACKAGE
   ceremonyPackages,
   setSelectedCeremonyPackage,
   setCeremonyPackages,
@@ -103,6 +128,7 @@ const AddCeremonyModalContent = ({
       </div>
 
       <div className="px-6 my-6 ">
+        {/* CEREMONY */}
         {progress < 50 ? (
           <Formik
             initialValues={ceremonyRequest}
@@ -110,7 +136,7 @@ const AddCeremonyModalContent = ({
             validationSchema={ceremonyValidation}
             suppressHydrationWarning={true}
           >
-            {({ errors, handleChange, handleSubmit, values }) => (
+            {({ errors, handleChange, values, setValues, handleSubmit }) => (
               <Form>
                 <div className="flex flex-col space-y-4">
                   <PrimaryInput
@@ -126,7 +152,13 @@ const AddCeremonyModalContent = ({
                     label="Kategori Upacara"
                     placeholder="Pilih Kategori Upacara"
                     selectedItem={selectedCeremonyCategory}
-                    setSelectedItem={setSelectedCeremonyCategory}
+                    setSelectedItem={(e) => {
+                      setSelectedCeremonyCategory(e);
+                      setValues({
+                        ...values,
+                        ceremonyCategoryId: e?.id as string,
+                      });
+                    }}
                   />
 
                   <PrimaryTextArea
@@ -140,9 +172,10 @@ const AddCeremonyModalContent = ({
                 <div className="flex flex-row justify-end mt-6 space-x-4">
                   <PrimaryWithIconButton
                     label="Selanjutnya"
+                    loading={loading}
                     className={progress > 50 ? "w-full" : ""}
                     onClick={() => {
-                      setProgress(progress + 33.33);
+                      handleSubmit();
                     }}
                     icon={ChevronDoubleRightIcon}
                   />
@@ -151,36 +184,45 @@ const AddCeremonyModalContent = ({
             )}
           </Formik>
         ) : null}
+
+        {/* DOCUMENTATION */}
         {progress > 50 && progress < 90 ? (
-          <div>
-            <BigFileInput onChange={(e) => {}} value={""} />
-            <div className="flex flex-row space-x-4 mt-6">
-              {progress > 50 ? (
-                <SecondaryWithIconButton
-                  label="Kembali"
-                  className="w-full"
+          <Formik
+            initialValues={ceremonyRequest}
+            onSubmit={handleCeremonySubmit}
+            validationSchema={ceremonyValidation}
+            suppressHydrationWarning={true}
+          >
+            <Form>
+              <BigFileInput onChange={(e) => {}} src="" />
+              <div className="flex flex-row space-x-4 mt-6">
+                {progress > 50 && !ceremonyRequest.title ? (
+                  <SecondaryWithIconButton
+                    label="Kembali"
+                    className="w-full"
+                    onClick={() => {
+                      setProgress(progress - 33.33);
+                    }}
+                    icon={ChevronDoubleLeftIcon}
+                  />
+                ) : null}
+                <PrimaryWithIconButton
+                  label="Selanjutnya"
+                  className={progress > 50 ? "w-full" : ""}
                   onClick={() => {
-                    setProgress(progress - 33.33);
+                    setProgress(progress + 33.33);
                   }}
-                  icon={ChevronDoubleLeftIcon}
+                  icon={ChevronDoubleRightIcon}
                 />
-              ) : null}
-              <PrimaryWithIconButton
-                label="Selanjutnya"
-                className={progress > 50 ? "w-full" : ""}
-                onClick={() => {
-                  setProgress(progress + 33.33);
-                }}
-                icon={ChevronDoubleRightIcon}
-              />
-            </div>
-          </div>
+              </div>
+            </Form>
+          </Formik>
         ) : null}
 
         {progress > 90 ? (
           <div className="flex flex-col">
             {ceremonyPackages.map((ceremonyPackage, index) => (
-              <div key={ceremonyPackage.id}>
+              <div key={ceremonyPackage.id} className="mb-6">
                 <div className="flex flex-row justify-between">
                   <p className="capitalize font-bold mb-4">Paket {index + 1}</p>
 
@@ -209,95 +251,12 @@ const AddCeremonyModalContent = ({
                     placeholder="Masukkan harga paket"
                   />
 
-                  <PrimaryTextEditor />
+                  <PrimaryTextEditor
+                    label="Deskripsi Paket"
+                    onChange={(e) => {}}
+                    value={ceremonyPackage.description}
+                  />
 
-                  {/* <div className="col-span-full">
-                    <label
-                      htmlFor="cover-photo"
-                      className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-                    >
-                      Deskripsi Paket
-                    </label>
-                    <div className="scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white">
-                      <div className="w-full mt-4 p-4 bg-white border border-gray-300 rounded-lg">
-                        
-                        <div className="flex space-x-2 border-b border-gray-300 pb-2 mb-2">
-                          <ToolbarButton
-                            icon={<b>B</b>}
-                            onClick={() => {
-                              editor?.chain().focus().toggleBold().run();
-                            }}
-                            className={
-                              editor?.isActive("bold") ? "bg-gray-200" : ""
-                            }
-                          />
-                          <ToolbarButton
-                            icon={<i>I</i>}
-                            onClick={() =>
-                              editor?.chain().focus().toggleItalic().run()
-                            }
-                            className={
-                              editor?.isActive("italic") ? "bg-gray-200" : ""
-                            }
-                          />
-                          <ToolbarButton
-                            icon={<u>U</u>}
-                            onClick={() =>
-                              editor?.chain().focus().toggleUnderline().run()
-                            }
-                            className={
-                              editor?.isActive("underline") ? "bg-gray-200" : ""
-                            }
-                          />
-                          <ToolbarButton
-                            icon="🔗"
-                            onClick={setLink}
-                            className={
-                              editor?.isActive("link") ? "bg-gray-200" : ""
-                            }
-                          />
-                          <ToolbarButton
-                            icon="⭕"
-                            onClick={() =>
-                              editor?.chain().focus().toggleBulletList().run()
-                            }
-                            className={
-                              editor?.isActive("bulletList")
-                                ? "bg-gray-200"
-                                : ""
-                            }
-                          />
-                          <ToolbarButton
-                            icon="🔢"
-                            onClick={() =>
-                              editor?.chain().focus().toggleOrderedList().run()
-                            }
-                            className={
-                              editor?.isActive("orderedList")
-                                ? "bg-gray-200"
-                                : ""
-                            }
-                          />
-                          <ToolbarButton
-                            icon="↶"
-                            onClick={() => editor?.chain().focus().undo().run()}
-                            disabled={!editor?.can().undo()}
-                          />
-                          <ToolbarButton
-                            icon="↷"
-                            onClick={() => editor?.chain().focus().redo().run()}
-                            disabled={!editor?.can().redo()}
-                          />
-                        </div>
-
-                       
-                        <EditorContent
-                          editor={editor}
-                          className="p-3 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary1 overflow-hidden"
-                        />
-                      </div>
-                    </div>
-                  </div> */}
                   {ceremonyPackages[ceremonyPackages.length - 1] ===
                   ceremonyPackage ? (
                     <SecondaryThinButton

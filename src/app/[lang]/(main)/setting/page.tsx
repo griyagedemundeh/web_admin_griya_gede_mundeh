@@ -4,7 +4,7 @@ import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryCard from "@/components/card/PrimaryCard";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import SettingTabs from "./components/SettingTabs";
-import BigFileInput from "@/components/input/BigFileInput";
+import BigFileInput from "@/components/input/image/BigFileInput";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import { useState } from "react";

@@ -66,6 +66,7 @@ const PhotoProfileInput = ({
       type: blob.type,
       lastModified: Date.now(),
     });
+
     if (onChange) onChange(file);
   };
 

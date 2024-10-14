@@ -1,6 +1,6 @@
 type CeremonyRequest = {
   title: string;
-  ceremonyCategoryId: string;
+  ceremonyCategoryId: string | number;
   description: string;
 };
 

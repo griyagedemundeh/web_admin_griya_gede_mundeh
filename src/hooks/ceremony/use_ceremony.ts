@@ -4,16 +4,19 @@ import { AxiosError } from "axios";
 
 import {
   addCeremony as addCeremonyBridge,
+  addCeremonyDocumentation as addCeremonyDocumentationBridge,
   // deleteCeremony as deleteCeremonyBridge,
   // editCeremony as editCeremonyBridge,
   useGetAllCeremonyQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Ceremony } from "@/data/models/ceremony/response/ceremony";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import { statusMessage } from "@/utils";
 import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
+import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
+import CeremonyDocumentation from "@/data/models/ceremony/response/ceremony_documentation";
 
 interface IUseCeremony {
   addCeremony: UseMutateFunction<
@@ -22,6 +25,12 @@ interface IUseCeremony {
     CeremonyRequest,
     unknown
   >;
+  allCeremony: ApiResponse<CeremonyInList[]> | undefined;
+  isLoadingAddCeremony: boolean;
+  isAddCeremonySuccess: boolean;
+  isAddCeremonyError: boolean;
+  ceremony: Ceremony | undefined;
+
   // editCeremony: UseMutateFunction<
   //   ApiResponse<Ceremony>,
   //   unknown,
@@ -39,10 +48,18 @@ interface IUseCeremony {
   //   },
   //   unknown
   // >;
-  allCeremony: ApiResponse<CeremonyInList[]> | undefined;
-  isLoadingAddCeremony: boolean;
-  isAddCeremonySuccess: boolean;
-  isAddCeremonyError: boolean;
+
+  // DOCUMENTATION
+  addCeremonyDocumentation: UseMutateFunction<
+    ApiResponse<CeremonyDocumentation>,
+    unknown,
+    CeremonyDocumentationRequest,
+    unknown
+  >;
+  isLoadingAddCeremonyDocumentation: boolean;
+  isAddCeremonyDocumentationSuccess: boolean;
+  isAddCeremonyDocumentationError: boolean;
+
   // isLoadingEditCeremony: boolean;
   // isEditCeremonySuccess: boolean;
   // isEditCeremonyError: boolean;
@@ -53,6 +70,8 @@ interface IUseCeremony {
 
 export const useCeremony = (): IUseCeremony => {
   const { setIsLoading } = useCentralStore();
+
+  const [ceremony, setCeremony] = useState<Ceremony>();
 
   const {
     data: allCeremony,
@@ -70,10 +89,28 @@ export const useCeremony = (): IUseCeremony => {
     isError: isAddCeremonyError,
   } = useMutation(addCeremonyBridge, {
     onSuccess: async (value) => {
+      setCeremony(value.data);
+
       statusMessage({ message: value.message, status: "success" });
 
       setIsLoading(false);
-      // window.location.reload();
+    },
+    onError: async (error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
+      setIsLoading(false);
+      statusMessage({ message: error, status: "error" });
+    },
+  });
+
+  const {
+    mutate: addCeremonyDocumentation,
+    isLoading: isLoadingAddCeremonyDocumentation,
+    isSuccess: isAddCeremonyDocumentationSuccess,
+    isError: isAddCeremonyDocumentationError,
+  } = useMutation(addCeremonyDocumentationBridge, {
+    onSuccess: async (value) => {
+      statusMessage({ message: value.message, status: "success" });
+
+      setIsLoading(false);
     },
     onError: async (error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
       setIsLoading(false);
@@ -134,11 +171,20 @@ export const useCeremony = (): IUseCeremony => {
   }, [isAllCeremonyLoading, isAllCeremonyError]);
 
   return {
+    // CEREMONY
     addCeremony,
     allCeremony,
     isLoadingAddCeremony,
     isAddCeremonySuccess,
     isAddCeremonyError,
+    ceremony,
+
+    // DOCUMENTATION
+    addCeremonyDocumentation,
+    isAddCeremonyDocumentationError,
+    isAddCeremonyDocumentationSuccess,
+    isLoadingAddCeremonyDocumentation,
+
     // editCeremony,
     // isEditCeremonyError,
     // isEditCeremonySuccess,

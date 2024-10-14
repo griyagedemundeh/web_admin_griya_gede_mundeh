@@ -1,25 +1,18 @@
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SecondaryWithIconButton from "@/components/button/SecondaryWithIconButton";
 import CeremonyPackage from "@/data/models/ceremonyPackage";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import {
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
-} from "@heroicons/react/20/solid";
-
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import AddCeremonyModalContent from "./AddCeremonyModalContent";
-import PrimaryModal from "@/components/modal/PrimaryModal";
 import Modal from "@/components/modal/Modal";
-import { Form, Formik } from "formik";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
+import { useCentralStore } from "@/store";
+import { useCeremony } from "@/hooks/ceremony/use_ceremony";
+import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
 
 interface AddCeremonyModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   progress: number;
   setProgress: (value: number) => void;
-  ceremonyCategories: DropdownFilterItemProps[];
   selectedCeremonyCategory: DropdownFilterItemProps | undefined;
   setSelectedCeremonyCategory: (
     value: DropdownFilterItemProps | undefined
@@ -34,29 +27,73 @@ const AddCeremonyModal = ({
   setOpen,
   progress,
   setProgress,
-  ceremonyCategories,
   selectedCeremonyCategory,
   setSelectedCeremonyCategory,
   ceremonyPackages,
   setSelectedCeremonyPackage,
   setCeremonyPackages,
 }: AddCeremonyModalProps): ReactElement => {
+  const { setIsLoading, isLoading } = useCentralStore();
+  const {
+    addCeremony,
+    isAddCeremonySuccess,
+    ceremony,
+    addCeremonyDocumentation,
+  } = useCeremony();
+
   const [ceremonyRequest, setCeremonyRequest] = useState<CeremonyRequest>({
     title: "",
     ceremonyCategoryId: "",
     description: "",
   });
 
-  const handleAddCeremony = (ceremonyRequest: CeremonyRequest) => {};
+  const [ceremonyDocumentationRequest, setCeremonyDocumentationRequest] =
+    useState<CeremonyDocumentationRequest>({
+      ceremonyServiceId: ceremony?.id as number,
+      photo: null,
+    });
+
+  const handleAddCeremony = (ceremonyRequest: CeremonyRequest) => {
+    setIsLoading(true);
+    addCeremony(ceremonyRequest);
+  };
+
+  const handleAddCeremonyDocumentation = (
+    ceremonyDocumentRequest: CeremonyDocumentationRequest
+  ) => {
+    setIsLoading(true);
+    addCeremonyDocumentation(ceremonyDocumentRequest);
+  };
+
+  useEffect(() => {
+    if (isAddCeremonySuccess) {
+      setProgress(progress + 33.33);
+      setCeremonyRequest({
+        ceremonyCategoryId: ceremony?.ceremonyCategoryId ?? "",
+        description: ceremony?.description ?? "",
+        title: ceremony?.title ?? "",
+      });
+
+      setCeremonyDocumentationRequest({
+        ...ceremonyDocumentationRequest,
+        ceremonyServiceId: ceremony?.id as number,
+      });
+    }
+  }, [isAddCeremonySuccess, ceremony]);
 
   return (
     <Modal title="Tambah Upacara Agama" isOpen={open} setIsOpen={setOpen}>
       <AddCeremonyModalContent
+        progress={progress}
+        loading={isLoading}
+        // CEREMONY
         ceremonyRequest={ceremonyRequest}
         handleCeremonySubmit={handleAddCeremony}
-        ceremonyCategories={ceremonyCategories}
+        // DOCUMENTATION
+        ceremonyDocumentationRequest={ceremonyDocumentationRequest}
+        handleCeremonyDocumentationSubmit={handleAddCeremonyDocumentation}
+        // PACKAGE
         ceremonyPackages={ceremonyPackages}
-        progress={progress}
         selectedCeremonyCategory={selectedCeremonyCategory}
         setCeremonyPackages={setCeremonyPackages}
         setProgress={setProgress}
@@ -64,45 +101,6 @@ const AddCeremonyModal = ({
         setSelectedCeremonyPackage={setSelectedCeremonyPackage}
       />
     </Modal>
-    // <PrimaryModal
-    //   open={open}
-    //   setOpen={setOpen}
-    //   title="Tambah Upacara Agama"
-    //   content={
-    //     <AddCeremonyModalContent
-    //       ceremonyCategories={ceremonyCategories}
-    //       ceremonyPackages={ceremonyPackages}
-    //       progress={progress}
-    //       selectedCeremonyCategory={selectedCeremonyCategory}
-    //       setCeremonyPackages={setCeremonyPackages}
-    //       setProgress={setProgress}
-    //       setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-    //       setSelectedCeremonyPackage={setSelectedCeremonyPackage}
-    //     />
-    //   }
-    //   bottomAction={
-    // <>
-    //   {progress > 50 ? (
-    //     <SecondaryWithIconButton
-    //       label="Kembali"
-    //       className="w-full"
-    //       onClick={() => {
-    //         setProgress(progress - 33.33);
-    //       }}
-    //       icon={ChevronDoubleLeftIcon}
-    //     />
-    //   ) : null}
-    //   <PrimaryWithIconButton
-    //     label="Selanjutnya"
-    //     className={progress > 50 ? "w-full" : ""}
-    //     onClick={() => {
-    //       setProgress(progress + 33.33);
-    //     }}
-    //     icon={ChevronDoubleRightIcon}
-    //   />
-    // </>
-    //   }
-    // />
   );
 };
 

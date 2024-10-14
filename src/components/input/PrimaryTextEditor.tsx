@@ -38,9 +38,15 @@ const ToolbarButton = ({
 
 interface PrimaryTextEditorProps {
   label?: string;
+  value: string;
+  onChange: React.FormEventHandler<HTMLDivElement>;
 }
 
-const PrimaryTextEditor = ({ label }: PrimaryTextEditorProps) => {
+const PrimaryTextEditor = ({
+  label,
+  onChange,
+  value,
+}: PrimaryTextEditorProps) => {
   const editor = useEditor({
     editable: true,
     extensions: [
@@ -146,9 +152,10 @@ const PrimaryTextEditor = ({ label }: PrimaryTextEditorProps) => {
             />
           </div>
 
-          {/* Editable content area */}
           <EditorContent
             editor={editor}
+            value={value}
+            onChange={onChange}
             className="p-3 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary1 overflow-hidden"
           />
         </div>

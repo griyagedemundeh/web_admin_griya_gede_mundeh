@@ -1,5 +1,6 @@
 export type Ceremony = {
   id: number | string;
+  ceremonyCategoryId: number | string;
   title: string;
   description: string;
 };
@@ -11,15 +12,15 @@ type CeremonyCategory = {
 
 // Ceremony Package
 type CeremonyPackage = {
-  name: string;
-  description: string;
-  price: number;
-  isActive: number | boolean;
+  name?: string;
+  description?: string;
+  price?: number;
+  isActive?: number | boolean;
 };
 
 // Ceremony Documentation
 type CeremonyDocumentation = {
-  photo: string;
+  photo?: string | undefined;
 };
 
 // Ceremony
@@ -29,6 +30,6 @@ export type CeremonyInList = {
   description: string;
   isActive: number | boolean;
   ceremonyCategory: CeremonyCategory;
-  ceremonyPackages: CeremonyPackage[];
-  ceremonyDocumentation: CeremonyDocumentation[];
+  ceremonyPackages?: CeremonyPackage[] | undefined;
+  ceremonyDocumentation?: CeremonyDocumentation[] | undefined;
 };
