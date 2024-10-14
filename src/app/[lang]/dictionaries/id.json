@@ -9,7 +9,7 @@
         "ceremonySchedule": "jadwal-upacara",
         "article": "artikel",
         "manager": "pengelola",
-        "user": "pengguna",
+        "member": "anggota",
         "ceremony": "upacara",
         "ceremonyCategory": "kategori-upacara"
     },
@@ -23,7 +23,7 @@
         "ceremonySchedule": "Jadwal Upacara",
         "article": "Artikel",
         "manager": "Pengelola",
-        "user": "Pengguna",
+        "member": "Anggota",
         "ceremony": "Upacara Agama",
         "ceremonyCategory": "Kategori Upacara Agama"
     }

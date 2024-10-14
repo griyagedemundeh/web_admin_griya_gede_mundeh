@@ -63,9 +63,9 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
     },
     {
       id: 2,
-      name: t.label.user,
-      href: `/user`,
-      initial: getInitials(t.label.user),
+      name: t.label.member,
+      href: `/member`,
+      initial: getInitials(t.label.member),
       current: false,
     },
     {
