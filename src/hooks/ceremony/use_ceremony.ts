@@ -215,6 +215,9 @@ export const useCeremony = (): IUseCeremony => {
     isAddCeremonySuccess,
     isAddCeremonyError,
     ceremony,
+    // isDeleteCeremonyError,
+    // isDeleteCeremonySuccess,
+    // isLoadingDeleteCeremony,
 
     // DOCUMENTATION
     addCeremonyDocumentation,

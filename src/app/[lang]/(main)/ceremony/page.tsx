@@ -4,15 +4,16 @@ import { getDictionary, Locale } from "../../dictionaries";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import CeremonyPackage from "@/data/models/ceremonyPackage";
+
 import AddCeremonyModal from "./components/AddCeremonyModal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
 import Images from "@/constants/images";
+import DeleteCeremonyModal from "./components/DeleteCeremonyModal";
 
 export default function CeremonyPage({
   params: { lang },
@@ -106,12 +107,18 @@ export default function CeremonyPage({
                 }}
               />
 
-              <IconBackgroundButton
+              {/* <IconBackgroundButton
                 icon={TrashIcon}
                 colorBackground="rose"
                 colorIcon="red"
                 onClick={() => {
                   setOpenDelete(true);
+                }}
+              /> */}
+              <DeleteCeremonyModal
+                data={{
+                  name: info.row.original.title,
+                  id: info.row.original.id,
                 }}
               />
             </div>

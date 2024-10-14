@@ -1,4 +1,3 @@
-import CeremonyPackage from "@/data/models/ceremonyPackage";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import React, { ReactElement, useEffect, useState } from "react";
 import AddCeremonyModalContent from "./AddCeremonyModalContent";
