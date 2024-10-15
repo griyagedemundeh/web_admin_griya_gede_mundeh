@@ -3,6 +3,7 @@ import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import { useCentralStore } from "@/store";
+import { useMember } from "@/hooks/member/use_member";
 
 interface DeleteMemberModalProps {
   data: { id: number | string; fullName: string };
@@ -10,7 +11,7 @@ interface DeleteMemberModalProps {
 
 const DeleteMemberModal = ({ data }: DeleteMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
-  // const { deleteAdmin } = useAdmin();
+  const { deleteMember } = useMember();
 
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -18,7 +19,7 @@ const DeleteMemberModal = ({ data }: DeleteMemberModalProps) => {
     setOpenDelete(false);
     setIsLoading(true);
     // sesuaikan dengan Member
-    // deleteAdmin({ id: data.id });
+    deleteMember({ id: data.id });
   };
 
   return (

@@ -14,12 +14,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
 import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import DummyUser from "@/data/models/user";
 import Images from "@/constants/images";
 import AddMemberModal from "./components/AddMemberModal";
-import AdminRequest from "@/data/models/admin/request/admin_request";
 import DetailMemberModal from "./components/DetailMemberModal";
 import DeleteMemberModal from "./components/DeleteMemberModal";
+import MemberRequest from "@/data/models/member/request/member_request";
+import Member from "@/data/models/member/response/member";
+import { useMember } from "@/hooks/member/use_member";
 
 export default function UserPage({
   params: { lang },
@@ -30,20 +31,22 @@ export default function UserPage({
   const [open, setOpen] = useState(false);
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
+  const { allMember } = useMember();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Tolong sesuaikan dengan MemberRequest
-  const [adminRequest, setAdminRequest] = useState<AdminRequest>({
+  const [memberRequest, setMemberRequest] = useState<MemberRequest>({
     email: "",
     fullName: "",
     password: "",
     passwordConfirm: "",
     phoneNumber: "",
+    address: "",
   });
 
   // Tolong ubah Dummy User ini pakai model Member
-  const columns = useMemo<ColumnDef<DummyUser>[]>(
+  const columns = useMemo<ColumnDef<Member>[]>(
     () => [
       {
         header: "Nama Anggota",
@@ -51,14 +54,16 @@ export default function UserPage({
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
-                alt={info.row.original.name}
-                src={info.row.original.avatarUrl ?? Images.dummyProfile}
+                alt={info.row.original.user.fullName}
+                src={info.row.original.user.avatarUrl ?? Images.dummyProfile}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
                 objectFit="cover"
               />
-              <p className="font-bold">{info.row.original.name}</p>
+              <p className="font-bold">
+                {info.row.original.user.fullName ?? "-"}
+              </p>
             </div>
           </div>
         ),
@@ -67,7 +72,7 @@ export default function UserPage({
         header: "Email",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.email}
+            {info.row.original.user.email ?? "-"}
           </div>
         ),
       },
@@ -75,7 +80,7 @@ export default function UserPage({
         header: "No.Hp",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.phone}
+            {info.row.original.user.phoneNumber ?? "-"}
           </div>
         ),
       },
@@ -102,21 +107,24 @@ export default function UserPage({
             <div className="flex flex-row space-x-2">
               <DetailMemberModal
                 // sesuaikan dengan id Member
-                id={1}
+                id={info.row.original.id} // Ensure info.row.original has an id
                 data={{
                   // Sesuaikan dengan Member
-                  fullName: "",
-                  phoneNumber: "",
+                  fullName: info.row.original.user.fullName,
+                  phoneNumber: info.row.original.user.phoneNumber,
                   password: "",
                   passwordConfirm: "",
-                  email: "",
+                  email: info.row.original.user.email,
+                  address: info.row.original.memberAddress.address ?? "fika",
+                  // address: info.row.original.address.address,
+                  // address: info.row.original.user
                 }}
               />
               <DeleteMemberModal
                 data={{
                   // sesuaikan dengan member
-                  fullName: "",
-                  id: "",
+                  fullName: info.row.original.user.fullName,
+                  id: info.row.original.id,
                 }}
               />
             </div>
@@ -164,7 +172,7 @@ export default function UserPage({
         }}
         columns={columns}
         // Ubah [] dengan data allMember
-        data={[]}
+        data={allMember?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -175,7 +183,7 @@ export default function UserPage({
 
       {/* Dialog Add Member*/}
       {/* Tolong sesuaikan dengan MemberRequest */}
-      <AddMemberModal open={open} setOpen={setOpen} data={adminRequest} />
+      <AddMemberModal open={open} setOpen={setOpen} data={memberRequest} />
 
       {/* Confirmation Dialog */}
       {/* <AlertConfirmationModal

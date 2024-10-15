@@ -7,39 +7,38 @@ import { UserPlusIcon } from "@heroicons/react/20/solid";
 import Modal from "@/components/modal/Modal";
 import { useCentralStore } from "@/store";
 import memberValidation from "../validation/member_validation";
-import AdminRequest from "@/data/models/admin/request/admin_request";
+import { useMember } from "@/hooks/member/use_member";
+import MemberRequest from "@/data/models/member/request/member_request";
 
 interface AddMemberModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   // tolong ubah dengan MemberRequest
-  data: AdminRequest;
+  data: MemberRequest;
 }
 
 const AddMemberModal = ({ open, setOpen, data }: AddMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
   // sesuaikan dengan useMember()
-  // const { addAdmin, isAddAdminSuccess, isAddAdminError } = useAdmin();
+  const { addMember, isAddMemberSuccess, isAddMemberError } = useMember();
 
   // buat dengan menyesuaikan untuk Member
-  // const handleAddAdmin = (anggotaRequest: AdminRequest) => {
-  //   setIsLoading(true);
-  //   addAdmin(anggotaRequest);
-  //   setOpen(false);
-  // };
-
-  const handleAddMember = () => {};
+  const handleAddMember = (anggotaRequest: MemberRequest) => {
+    setIsLoading(true);
+    addMember(anggotaRequest);
+    setOpen(false);
+  };
 
   // Sesuaikan dengan Member
-  // useEffect(() => {
-  //   if (isAddAdminSuccess) {
-  //     setOpen(false);
-  //   }
+  useEffect(() => {
+    if (isAddMemberSuccess) {
+      setOpen(false);
+    }
 
-  //   if (isAddAdminError) {
-  //     setOpen(true);
-  //   }
-  // }, [isAddAdminSuccess, isAddAdminError]);
+    if (isAddMemberError) {
+      setOpen(true);
+    }
+  }, [isAddMemberSuccess, isAddMemberError]);
 
   return (
     <Modal title="Tambah Anggota" isOpen={open} setIsOpen={setOpen}>
@@ -84,8 +83,11 @@ const AddMemberModal = ({ open, setOpen, data }: AddMemberModalProps) => {
                 <PrimaryInput
                   label="Alamat Utama"
                   // Tolong diadjust dengan validation memberValidation
-                  onChange={(e) => {}}
-                  value={""}
+                  value={values.address}
+                  placeholder="Masukkan Alamat Utama"
+                  error={errors.address ?? undefined}
+                  onChange={handleChange("address")}
+                  // onChange={(e) => {}}
                   className="w-full"
                 />
                 <PrimaryInput
