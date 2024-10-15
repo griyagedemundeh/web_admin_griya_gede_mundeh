@@ -1,3 +1,5 @@
+import CeremonyCategory from "./ceremony_category";
+
 export type Ceremony = {
   id: number | string;
   ceremonyCategoryId: number | string;
@@ -5,10 +7,10 @@ export type Ceremony = {
   description: string;
 };
 
-// Ceremony Category
-type CeremonyCategory = {
-  name: string;
-};
+// // Ceremony Category
+// type CeremonyCategory = {
+//   name: string;
+// };
 
 // Ceremony Package
 type CeremonyPackage = {
@@ -20,7 +22,10 @@ type CeremonyPackage = {
 
 // Ceremony Documentation
 type CeremonyDocumentation = {
-  photo?: string | undefined;
+  id: number | string;
+  photo: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 // Ceremony

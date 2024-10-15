@@ -4,7 +4,7 @@ import { getDictionary, Locale } from "../../dictionaries";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import AddCeremonyModal from "./components/AddCeremonyModal";
@@ -14,6 +14,8 @@ import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
 import Images from "@/constants/images";
 import DeleteCeremonyModal from "./components/DeleteCeremonyModal";
+import ListDataRequest from "@/data/models/base/list_data_request";
+import DetailCeremonyModal from "./components/DetailCeremonyModal";
 
 export default function CeremonyPage({
   params: { lang },
@@ -24,12 +26,19 @@ export default function CeremonyPage({
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
-  const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
-    useState<DropdownFilterItemProps>();
+
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
+  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
+    limit: 100,
+    page: 1,
+  });
   const { allCeremony } = useCeremony();
+
+  useEffect(() => {
+    setCurrentPage(allCeremony?.meta?.currentPage ?? 1);
+  }, [allCeremony]);
 
   const columns = useMemo<ColumnDef<CeremonyInList>[]>(
     () => [
@@ -97,24 +106,32 @@ export default function CeremonyPage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
+              <DetailCeremonyModal
+                id={info.row.original.id}
+                category={{
+                  id: info.row.original.ceremonyCategory.id,
+                  name: info.row.original.ceremonyCategory.name,
+                  description: info.row.original.ceremonyCategory.description,
+                }}
+                data={{
+                  title: info.row.original.title,
+                  ceremonyCategoryId: info.row.original.ceremonyCategory.id,
+                  description: info.row.original.description,
+                }}
+                documentation={{
+                  id:
+                    (info.row.original.ceremonyDocumentation?.length ?? 0) >
+                      0 && info.row.original.ceremonyDocumentation !== undefined
+                      ? info.row.original?.ceremonyDocumentation[0].id
+                      : "",
+                  photo:
+                    (info.row.original.ceremonyDocumentation?.length ?? 0) >
+                      0 && info.row.original.ceremonyDocumentation !== undefined
+                      ? info.row.original?.ceremonyDocumentation[0].photo
+                      : "",
                 }}
               />
 
-              {/* <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
-                }}
-              /> */}
               <DeleteCeremonyModal
                 data={{
                   name: info.row.original.title,
@@ -129,7 +146,6 @@ export default function CeremonyPage({
     []
   );
 
-  const [progress, setProgress] = useState<number>(33.33);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   return (
@@ -179,20 +195,12 @@ export default function CeremonyPage({
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={10}
-        isCommon={true}
+        totalPage={allCeremony?.meta?.total}
+        limitPage={listDataRequest.limit}
       />
 
       {/* Dialog Add Ceremony*/}
-      <AddCeremonyModal
-        open={open}
-        progress={progress}
-        selectedCeremonyCategory={selectedCeremonyCategory}
-        setOpen={setOpen}
-        setProgress={setProgress}
-        setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-      />
+      <AddCeremonyModal open={open} setOpen={setOpen} />
       {/* Dialog Detail Ceremony*/}
       {/* <DetailCeremonyModal
         ceremonyCategories={categories}

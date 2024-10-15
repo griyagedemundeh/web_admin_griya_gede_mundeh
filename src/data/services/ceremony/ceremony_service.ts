@@ -51,6 +51,25 @@ export class CeremonyService implements ICeremonyService {
     }
   }
 
+  async deleteCeremony({
+    id,
+  }: {
+    id: number | string;
+  }): Promise<ApiResponse<null>> {
+    const uri = `${this.BASE_ENDPOINT}/${id}`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<null>> = await api.delete(uri);
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<null>> | any) {
+      console.error("====================================");
+      console.error("ERROR DELETE CEREMONY --> ", error.response.data.message);
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
   // DOCUMENTATION
   async addDocumentation(
     request: CeremonyDocumentationRequest

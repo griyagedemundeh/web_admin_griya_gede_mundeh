@@ -19,6 +19,8 @@ export interface ICeremonyService {
     request: ListDataRequest
   ): Promise<ApiResponse<CeremonyInList[]>>;
 
+  deleteCeremony({ id }: { id: number | string }): Promise<ApiResponse<null>>;
+
   // Documentation
   addDocumentation(
     request: CeremonyDocumentationRequest

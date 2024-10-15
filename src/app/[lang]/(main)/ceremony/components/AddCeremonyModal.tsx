@@ -1,36 +1,25 @@
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import React, { ReactElement, useEffect, useState } from "react";
-import AddCeremonyModalContent from "./AddCeremonyModalContent";
+
 import Modal from "@/components/modal/Modal";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import { useCentralStore } from "@/store";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
-import {
-  CeremonyPackageRequest,
-  CeremonyPackagesRequest,
-} from "@/data/models/ceremony/request/ceremony_package_request";
+import { CeremonyPackagesRequest } from "@/data/models/ceremony/request/ceremony_package_request";
+import CeremonyModalContent from "./CeremonyModalContent";
 
 interface AddCeremonyModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-  progress: number;
-  setProgress: (value: number) => void;
-  selectedCeremonyCategory: DropdownFilterItemProps | undefined;
-  setSelectedCeremonyCategory: (
-    value: DropdownFilterItemProps | undefined
-  ) => void;
 }
 
 const AddCeremonyModal = ({
   open,
   setOpen,
-  progress,
-  setProgress,
-  selectedCeremonyCategory,
-  setSelectedCeremonyCategory,
 }: AddCeremonyModalProps): ReactElement => {
   const { setIsLoading, isLoading } = useCentralStore();
+  const [progress, setProgress] = useState<number>(33.33);
   const {
     addCeremony,
     isAddCeremonySuccess,
@@ -40,6 +29,9 @@ const AddCeremonyModal = ({
     addCeremonyPackages,
     isAddCeremonyPackagesSuccess,
   } = useCeremony();
+
+  const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
+    useState<DropdownFilterItemProps>();
 
   const [ceremonyRequest, setCeremonyRequest] = useState<CeremonyRequest>({
     title: "",
@@ -74,21 +66,6 @@ const AddCeremonyModal = ({
 
   const [ceremonyPackages, setCeremonyPackages] =
     useState<CeremonyPackagesRequest>();
-  const [selectedCeremonyPackage, setSelectedCeremonyPackage] =
-    useState<CeremonyPackageRequest>();
-
-  const removeCeremonyPackage = () => {
-    setCeremonyPackages({
-      package:
-        ceremonyPackages?.package?.filter(
-          (item) => item.id !== selectedCeremonyPackage?.id
-        ) ?? [],
-    });
-  };
-
-  useEffect(() => {
-    removeCeremonyPackage();
-  }, [selectedCeremonyPackage]);
 
   useEffect(() => {
     if (isAddCeremonySuccess) {
@@ -133,7 +110,7 @@ const AddCeremonyModal = ({
 
   return (
     <Modal title="Tambah Upacara Agama" isOpen={open} setIsOpen={setOpen}>
-      <AddCeremonyModalContent
+      <CeremonyModalContent
         progress={progress}
         loading={isLoading}
         // CEREMONY
@@ -146,10 +123,8 @@ const AddCeremonyModal = ({
         // PACKAGE
         ceremonyPackagesRequest={ceremonyPackages ?? { package: [] }}
         selectedCeremonyCategory={selectedCeremonyCategory}
-        setCeremonyPackagesRequest={setCeremonyPackages}
         setProgress={setProgress}
         setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-        setSelectedCeremonyPackageRequest={setSelectedCeremonyPackage}
         handleCeremonyPackagesSubmit={handleAddCeremonyPackeges}
       />
     </Modal>

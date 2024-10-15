@@ -25,14 +25,14 @@ import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
 import ceremonyDocumentationValidation from "../validation/ceremony_documentation_validation";
-import {
-  CeremonyPackageRequest,
-  CeremonyPackagesRequest,
-} from "@/data/models/ceremony/request/ceremony_package_request";
+import { CeremonyPackagesRequest } from "@/data/models/ceremony/request/ceremony_package_request";
 import { Ceremony } from "@/data/models/ceremony/response/ceremony";
 import ceremonyPackagesValidation from "../validation/ceremony_package_validation";
 
-interface AddCeremonyModalProps {
+interface CeremonyModalProps {
+  // DETAIL
+  isDetail?: boolean;
+
   // PROGRESS
   progress: number;
   setProgress: (value: number) => void;
@@ -57,16 +57,15 @@ interface AddCeremonyModalProps {
 
   // PACKAGE
   ceremonyPackagesRequest: CeremonyPackagesRequest;
-  setCeremonyPackagesRequest: (value: CeremonyPackagesRequest) => void;
-  setSelectedCeremonyPackageRequest: (
-    value: CeremonyPackageRequest | undefined
-  ) => void;
   handleCeremonyPackagesSubmit: (
     ceremonyPackagesRequest: CeremonyPackagesRequest
   ) => void;
 }
 
-const AddCeremonyModalContent = ({
+const CeremonyModalContent = ({
+  // DETAIL
+  isDetail,
+
   // PROGRESS
   progress,
   setProgress,
@@ -87,10 +86,8 @@ const AddCeremonyModalContent = ({
 
   // PACKAGE
   ceremonyPackagesRequest,
-  setSelectedCeremonyPackageRequest,
-  setCeremonyPackagesRequest,
   handleCeremonyPackagesSubmit,
-}: AddCeremonyModalProps) => {
+}: CeremonyModalProps) => {
   const { allCeremonyCategory } = useCeremonyCategory();
 
   const [categories, setCategories] = useState<DropdownFilterItemProps[]>([]);
@@ -188,17 +185,40 @@ const AddCeremonyModalContent = ({
                     placeholder="Masukkan deskripsi singkat upacaramu disini"
                   />
                 </div>
-                <div className="flex flex-row justify-end mt-6 space-x-4">
-                  <PrimaryWithIconButton
-                    label="Selanjutnya"
-                    loading={loading}
-                    className={progress > 50 ? "w-full" : ""}
-                    onClick={() => {
-                      handleSubmit();
-                    }}
-                    icon={ChevronDoubleRightIcon}
-                  />
-                </div>
+
+                {isDetail ? (
+                  <div className="flex flex-row justify-end mt-6 space-x-4">
+                    <PrimaryWithIconButton
+                      label="Simpan Perubahan"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        // handleSubmit();
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                    <PrimaryWithIconButton
+                      label="Selanjutnya"
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        setProgress(progress + 33.33);
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-row justify-end mt-6 space-x-4">
+                    <PrimaryWithIconButton
+                      label="Selanjutnya"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        handleSubmit();
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                  </div>
+                )}
               </Form>
             )}
           </Formik>
@@ -219,12 +239,13 @@ const AddCeremonyModalContent = ({
                 }}
               >
                 <BigFileInput
+                  src={ceremonyDocumentationRequest.photoUrl}
                   onChange={(e) => {
                     setFieldValue("photo", e);
                   }}
                 />
                 <div className="flex flex-row space-x-4 mt-6">
-                  {progress > 50 && !ceremonyRequest.title ? (
+                  {progress > 50 && isDetail ? (
                     <SecondaryWithIconButton
                       label="Kembali"
                       className="w-full"
@@ -352,4 +373,4 @@ const AddCeremonyModalContent = ({
   );
 };
 
-export default AddCeremonyModalContent;
+export default CeremonyModalContent;

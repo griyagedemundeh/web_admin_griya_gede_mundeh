@@ -11,14 +11,14 @@ interface DeleteCeremonyModalProps {
 
 const DeleteCeremonyModal = ({ data }: DeleteCeremonyModalProps) => {
   const { setIsLoading } = useCentralStore();
-  // const { deleteCeremonyCategory } = useCeremony();
+  const { deleteCeremony } = useCeremony();
 
   const [openDelete, setOpenDelete] = useState(false);
 
   const handleDelete = () => {
     setOpenDelete(false);
     setIsLoading(true);
-    // deleteCeremonyCategory({ id: data.id });
+    deleteCeremony({ id: data.id });
   };
 
   return (
