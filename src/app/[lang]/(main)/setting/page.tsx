@@ -17,7 +17,7 @@ const ProfileSettingsContent = () => (
           <BigFileInput
             label="Upload Logo Griya"
             onChange={(e) => {}}
-            value={""}
+            src={""}
           />
         </div>
 
@@ -97,7 +97,7 @@ const AdminProfileSettingContent = () => (
           <BigFileInput
             label="Upload Photo Profile"
             onChange={(e) => {}}
-            value={""}
+            src={""}
           />
         </div>
 
