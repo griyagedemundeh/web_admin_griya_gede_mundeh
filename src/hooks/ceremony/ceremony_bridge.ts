@@ -119,6 +119,29 @@ export const addCeremonyDocumentation = async (
 
   return response;
 };
+export const editDocumentation = async ({
+  id,
+  request,
+}: {
+  id: number | string;
+  request: CeremonyDocumentationRequest;
+}): Promise<ApiResponse<CeremonyDocumentation>> => {
+  const response = await ceremonyService
+    .editDocumentation({ id, request })
+    .then(async (value) => {
+      return value;
+    })
+    .catch(
+      (error: AxiosError<ApiResponse<CeremonyDocumentation>> | unknown) => {
+        console.error("====================================");
+        console.error(`${TAG_ERROR} EDIT CEREMONY DOCUMENTATION `, error);
+        console.error("====================================");
+        throw error;
+      }
+    );
+
+  return response;
+};
 
 // PACKAGE
 export const addCeremonyPackages = async (
@@ -132,6 +155,44 @@ export const addCeremonyPackages = async (
     .catch((error: AxiosError<ApiResponse<CeremonyPackage[]>> | unknown) => {
       console.error("====================================");
       console.error(`${TAG_ERROR} ADD CEREMONY PACKAGE `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const editCeremonyPackages = async (
+  request: CeremonyPackagesRequest
+): Promise<ApiResponse<CeremonyPackage[]>> => {
+  const response = await ceremonyService
+    .editPackages(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<CeremonyPackage[]>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} EDIT CEREMONY PACKAGE `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const deleteCeremonyPackage = async ({
+  id,
+}: {
+  id: number | string;
+}): Promise<ApiResponse<null>> => {
+  const response = await ceremonyService
+    .deletePackage({ id: id })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<null>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} DELETE PACKAGE `, error);
       console.error("====================================");
       throw error;
     });

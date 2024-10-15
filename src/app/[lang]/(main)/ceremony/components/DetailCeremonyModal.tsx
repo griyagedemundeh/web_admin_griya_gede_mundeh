@@ -32,7 +32,13 @@ const DetailCeremonyModal = ({
   const [open, setOpen] = useState(false);
   const { setIsLoading, isLoading } = useCentralStore();
   const [progress, setProgress] = useState<number>(33.33);
-  const { ceremony, editCeremony } = useCeremony();
+  const {
+    editCeremony,
+    editCeremonyDocumentation,
+    editCeremonyPackages,
+    deleteCeremonyPackage,
+    addCeremonyDocumentation,
+  } = useCeremony();
 
   const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
     useState<DropdownFilterItemProps>({
@@ -58,24 +64,30 @@ const DetailCeremonyModal = ({
   };
 
   const handleEditCeremonyDocumentation = (
-    ceremonyDocumentionRequest: CeremonyDocumentationRequest
+    ceremonyDocumentationRequest: CeremonyDocumentationRequest
   ) => {
-    // console.log("====================================");
-    // console.log("DATA ---->>> ", ceremonyDocumentionRequest);
-    // console.log("====================================");
     setIsLoading(true);
-    // addCeremonyDocumentation(ceremonyDocumentRequest);
+
+    if (documentation.id !== "") {
+      editCeremonyDocumentation({
+        id: documentation.id,
+        request: ceremonyDocumentationRequest,
+      });
+      return;
+    }
+
+    addCeremonyDocumentation(ceremonyDocumentationRequest);
   };
 
   const handleEditCeremonyPackeges = (
     ceremonyPackagesRequest: CeremonyPackagesRequest
   ) => {
     setIsLoading(true);
-    // addCeremonyPackages(ceremonyPackagesRequest);
+    editCeremonyPackages(ceremonyPackagesRequest);
   };
 
   const [ceremonyPackages, setCeremonyPackages] =
-    useState<CeremonyPackagesRequest>();
+    useState<CeremonyPackagesRequest>({ packages: [] });
 
   const getFile = async () => {
     const file = await urlToFile({
@@ -95,9 +107,9 @@ const DetailCeremonyModal = ({
     getFile();
 
     setCeremonyPackages({
-      package: packages as any,
+      packages: packages as any,
     });
-  }, [ceremony]);
+  }, []);
 
   return (
     <>
@@ -113,6 +125,7 @@ const DetailCeremonyModal = ({
       <Modal title="Detail Upacara Agama" isOpen={open} setIsOpen={setOpen}>
         <CeremonyModalContent
           isDetail={true}
+          ceremonyId={id}
           loading={isLoading}
           progress={progress}
           setProgress={setProgress}
@@ -122,7 +135,7 @@ const DetailCeremonyModal = ({
             setSelectedCeremonyCategory(value as DropdownFilterItemProps);
           }}
           // CEREMONY
-          ceremony={ceremony}
+
           ceremonyRequest={ceremonyRequest}
           handleCeremonySubmit={handleEditCeremony}
           // DOCUMENTATION
@@ -130,21 +143,23 @@ const DetailCeremonyModal = ({
           handleCeremonyDocumentationSubmit={handleEditCeremonyDocumentation}
           // PACKAGE
           ceremonyPackagesRequest={
-            ceremonyPackages?.package !== undefined
+            ceremonyPackages?.packages.length > 0
               ? ceremonyPackages
               : {
-                  package: [
+                  packages: [
                     {
-                      id: `${new Date()}`,
                       name: "",
                       price: 0,
                       description: "",
-                      ceremonyServiceId: ceremony?.id ?? "",
+                      ceremonyServiceId: id as number,
                     },
                   ],
                 }
           }
           handleCeremonyPackagesSubmit={handleEditCeremonyPackeges}
+          deleteCeremonyPackage={async (id) => {
+            deleteCeremonyPackage({ id: id });
+          }}
         />
       </Modal>
     </>

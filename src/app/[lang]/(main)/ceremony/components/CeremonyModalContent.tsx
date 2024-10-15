@@ -33,6 +33,7 @@ import ceremonyPackagesValidation from "../validation/ceremony_package_validatio
 interface CeremonyModalProps {
   // DETAIL
   isDetail?: boolean;
+  ceremonyId?: number | string;
 
   // PROGRESS
   progress: number;
@@ -40,7 +41,7 @@ interface CeremonyModalProps {
   loading: boolean;
 
   // CEREMONY
-  ceremony: Ceremony | undefined;
+  ceremony?: Ceremony | undefined;
   ceremonyRequest: CeremonyRequest;
   handleCeremonySubmit: (ceremonyRequest: CeremonyRequest) => void;
 
@@ -61,11 +62,13 @@ interface CeremonyModalProps {
   handleCeremonyPackagesSubmit: (
     ceremonyPackagesRequest: CeremonyPackagesRequest
   ) => void;
+  deleteCeremonyPackage?: (id: number | string) => Promise<void>;
 }
 
 const CeremonyModalContent = ({
   // DETAIL
   isDetail,
+  ceremonyId,
 
   // PROGRESS
   progress,
@@ -88,6 +91,7 @@ const CeremonyModalContent = ({
   // PACKAGE
   ceremonyPackagesRequest,
   handleCeremonyPackagesSubmit,
+  deleteCeremonyPackage,
 }: CeremonyModalProps) => {
   const { allCeremonyCategory } = useCeremonyCategory();
 
@@ -268,7 +272,6 @@ const CeremonyModalContent = ({
                     />
                     <PrimaryWithIconButton
                       label="Selanjutnya"
-                      loading={loading}
                       className={progress > 50 ? "w-full" : ""}
                       onClick={() => {
                         setProgress(progress + 33.33);
@@ -306,19 +309,44 @@ const CeremonyModalContent = ({
                   handleSubmit();
                 }}
               >
-                <FieldArray name="package">
+                <FieldArray name="packages">
                   {({ remove, push }) => (
                     <div className="flex flex-col">
-                      {values?.package?.map((ceremonyPackage, index) => (
-                        <div key={ceremonyPackage.id} className="mb-6">
+                      {values?.packages?.map((ceremonyPackage, index) => (
+                        <div key={`${index}`} className="mb-6">
                           <div className="flex justify-between">
                             <p className="capitalize font-bold mb-4">
                               Paket {index + 1}
                             </p>
-                            {values.package.length > 1 && (
+                            {(values.packages.length > 1 || isDetail) && (
                               <IconButton
                                 icon={TrashIcon}
-                                onClick={() => remove(index)}
+                                onClick={async () => {
+                                  if (
+                                    isDetail &&
+                                    deleteCeremonyPackage &&
+                                    ceremonyPackagesRequest.packages[0].name !==
+                                      ""
+                                  ) {
+                                    await deleteCeremonyPackage(
+                                      ceremonyPackage.id ?? 0
+                                    );
+                                    remove(index);
+
+                                    if (values.packages.length === 0) {
+                                      push({
+                                        name: "",
+                                        description: "",
+                                        price: 0,
+                                        ceremonyServiceId: ceremonyId as number,
+                                      });
+                                    }
+
+                                    return;
+                                  }
+
+                                  remove(index);
+                                }}
                                 color="red"
                               />
                             )}
@@ -327,45 +355,45 @@ const CeremonyModalContent = ({
                           <div className="flex flex-col space-y-4">
                             <PrimaryInput
                               label="Nama Paket"
-                              value={values.package[index].name}
-                              error={(errors?.package?.[index] as any)?.name}
-                              onChange={handleChange(`package.${index}.name`)}
+                              value={values.packages[index].name}
+                              error={(errors?.packages?.[index] as any)?.name}
+                              onChange={handleChange(`packages.${index}.name`)}
                               placeholder="Masukkan nama paket"
                             />
 
                             <PrimaryCurrencyInput
                               label="Harga Paket"
-                              value={values.package[index].price}
-                              error={(errors?.package?.[index] as any)?.price}
-                              setValue={handleChange(`package.${index}.price`)}
+                              value={values.packages[index].price}
+                              error={(errors?.packages?.[index] as any)?.price}
+                              setValue={handleChange(`packages.${index}.price`)}
                               placeholder="Masukkan harga paket"
                             />
 
                             <PrimaryTextEditor
                               label="Deskripsi Paket"
-                              value={values.package[index].description}
+                              value={values.packages[index].description}
                               error={
-                                (errors?.package?.[index] as any)?.description
+                                (errors?.packages?.[index] as any)?.description
                               }
                               onChange={handleChange(
-                                `package.${index}.description`
+                                `packages.${index}.description`
                               )}
                             />
                           </div>
 
                           {/* Add button to add more packages */}
-                          {index === values.package.length - 1 && (
+                          {index === values.packages.length - 1 && (
                             <SecondaryThinButton
                               className="mt-2"
-                              onClick={() =>
+                              unSubmit={true}
+                              onClick={() => {
                                 push({
-                                  id: `${new Date()}`,
                                   name: "",
                                   description: "",
                                   price: 0,
-                                  ceremonyServiceId: ceremony?.id ?? "",
-                                })
-                              }
+                                  ceremonyServiceId: ceremonyId as number,
+                                });
+                              }}
                               label="Klik disini untuk tambah jenis paket"
                               icon={PlusIcon}
                             />
@@ -400,10 +428,9 @@ const CeremonyModalContent = ({
                     />
                     <PrimaryWithIconButton
                       label="Selanjutnya"
-                      loading={loading}
                       className={progress > 50 ? "w-full" : ""}
                       onClick={() => {
-                        setProgress(progress + 33.33);
+                        window.location.reload();
                       }}
                       icon={ChevronDoubleRightIcon}
                     />

@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 const ceremonyPackagesValidation = Yup.object().shape({
-  package: Yup.array().of(
+  packages: Yup.array().of(
     Yup.object().shape({
       name: Yup.string().required("Nama Paket Upacara Agama harus diisi!"),
       price: Yup.number().required("Harga Paket Upacara Agama harus diisi!"),

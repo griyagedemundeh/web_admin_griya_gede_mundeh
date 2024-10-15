@@ -45,4 +45,8 @@ export interface ICeremonyService {
   addPackages(
     request: CeremonyPackagesRequest
   ): Promise<ApiResponse<CeremonyPackage[]>>;
+  editPackages(
+    request: CeremonyPackagesRequest
+  ): Promise<ApiResponse<CeremonyPackage[]>>;
+  deletePackage({ id }: { id: number | string }): Promise<ApiResponse<null>>;
 }

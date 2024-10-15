@@ -1,5 +1,5 @@
 export type CeremonyPackageRequest = {
-  id: string;
+  id?: string;
   name: string;
   ceremonyServiceId: number | string;
   description: string;
@@ -7,5 +7,5 @@ export type CeremonyPackageRequest = {
 };
 
 export type CeremonyPackagesRequest = {
-  package: CeremonyPackageRequest[];
+  packages: CeremonyPackageRequest[];
 };

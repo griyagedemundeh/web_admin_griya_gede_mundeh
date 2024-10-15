@@ -5,8 +5,11 @@ import {
   addCeremony as addCeremonyBridge,
   deleteCeremony as deleteCeremonyBridge,
   editCeremony as editCeremonyBridge,
+  editDocumentation as editCeremonyDocumentationBridged,
   addCeremonyDocumentation as addCeremonyDocumentationBridge,
   addCeremonyPackages as addCeremonyPackagesBridge,
+  editCeremonyPackages as editCeremonyPackagesBridge,
+  deleteCeremonyPackage as deleteCeremonyPackageBridge,
   useGetAllCeremonyQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
@@ -59,24 +62,6 @@ interface IUseCeremony {
 
   ceremony: Ceremony | undefined;
 
-  // editCeremony: UseMutateFunction<
-  //   ApiResponse<Ceremony>,
-  //   unknown,
-  //   {
-  //     id: number | string;
-  //     request: CeremonyRequest;
-  //   },
-  //   unknown
-  // >;
-  // deleteCeremony: UseMutateFunction<
-  //   ApiResponse<null>,
-  //   unknown,
-  //   {
-  //     id: number | string;
-  //   },
-  //   unknown
-  // >;
-
   // DOCUMENTATION
   addCeremonyDocumentation: UseMutateFunction<
     ApiResponse<CeremonyDocumentation>,
@@ -87,6 +72,18 @@ interface IUseCeremony {
   isLoadingAddCeremonyDocumentation: boolean;
   isAddCeremonyDocumentationSuccess: boolean;
   isAddCeremonyDocumentationError: boolean;
+  editCeremonyDocumentation: UseMutateFunction<
+    ApiResponse<CeremonyDocumentation>,
+    unknown,
+    {
+      id: number | string;
+      request: CeremonyDocumentationRequest;
+    },
+    unknown
+  >;
+  isLoadingEditCeremonyDocumentation: boolean;
+  isEditCeremonyDocumentationSuccess: boolean;
+  isEditCeremonyDocumentationError: boolean;
 
   // PACKAGE
   addCeremonyPackages: UseMutateFunction<
@@ -98,6 +95,26 @@ interface IUseCeremony {
   isLoadingAddCeremonyPackages: boolean;
   isAddCeremonyPackagesSuccess: boolean;
   isAddCeremonyPackagesError: boolean;
+  editCeremonyPackages: UseMutateFunction<
+    ApiResponse<CeremonyPackage[]>,
+    unknown,
+    CeremonyPackagesRequest,
+    unknown
+  >;
+  isLoadingEditCeremonyPackages: boolean;
+  isEditCeremonyPackagesSuccess: boolean;
+  isEditCeremonyPackagesError: boolean;
+  deleteCeremonyPackage: UseMutateFunction<
+    ApiResponse<null>,
+    unknown,
+    {
+      id: number | string;
+    },
+    unknown
+  >;
+  isLoadingDeleteCeremonyPackage: boolean;
+  isDeleteCeremonyPackageSuccess: boolean;
+  isDeleteCeremonyPackageError: boolean;
 }
 
 export const useCeremony = (): IUseCeremony => {
@@ -191,6 +208,23 @@ export const useCeremony = (): IUseCeremony => {
     },
   });
 
+  const {
+    mutate: editCeremonyDocumentation,
+    isLoading: isLoadingEditCeremonyDocumentation,
+    isSuccess: isEditCeremonyDocumentationSuccess,
+    isError: isEditCeremonyDocumentationError,
+  } = useMutation(editCeremonyDocumentationBridged, {
+    onSuccess: async (value) => {
+      statusMessage({ message: value.message, status: "success" });
+      refecthAllCeremony();
+      setIsLoading(false);
+    },
+    onError: async (error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
+      setIsLoading(false);
+      statusMessage({ message: error, status: "error" });
+    },
+  });
+
   // PACKAGES
   const {
     mutate: addCeremonyPackages,
@@ -211,50 +245,43 @@ export const useCeremony = (): IUseCeremony => {
     },
   });
 
-  // EDIT
-  // const {
-  //   mutate: editCeremony,
-  //   isLoading: isLoadingEditCeremony,
-  //   isSuccess: isEditCeremonySuccess,
-  //   isError: isEditCeremonyError,
-  // } = useMutation(editCeremonyBridge, {
-  //   onSuccess: async (value) => {
-  //     statusMessage({ message: value.message, status: "success" });
+  const {
+    mutate: editCeremonyPackages,
+    isLoading: isLoadingEditCeremonyPackages,
+    isSuccess: isEditCeremonyPackagesSuccess,
+    isError: isEditCeremonyPackagesError,
+  } = useMutation(editCeremonyPackagesBridge, {
+    onSuccess: async (value) => {
+      statusMessage({ message: value.message, status: "success" });
+      setIsLoading(false);
+    },
+    onError: async (
+      error: AxiosError<ApiResponse<CeremonyPackage[]>> | unknown
+    ) => {
+      setIsLoading(false);
+      statusMessage({ message: error, status: "error" });
+    },
+  });
 
-  //     setIsLoading(false);
-  //     window.location.reload();
-  //   },
-  //   onError: async (
-  //     error: AxiosError<ApiResponse<Ceremony>> | unknown
-  //   ) => {
-  //     setIsLoading(false);
-  //     statusMessage({ message: error, status: "error" });
-  //   },
-  // });
+  const {
+    mutate: deleteCeremonyPackage,
+    isLoading: isLoadingDeleteCeremonyPackage,
+    isSuccess: isDeleteCeremonyPackageSuccess,
+    isError: isDeleteCeremonyPackageError,
+  } = useMutation(deleteCeremonyPackageBridge, {
+    onSuccess: async (value) => {
+      refecthAllCeremony();
 
-  // DELETE
-  // const {
-  //   mutate: deleteCeremony,
-  //   isLoading: isLoadingDeleteCeremony,
-  //   isSuccess: isDeleteCeremonySuccess,
-  //   isError: isDeleteCeremonyError,
-  // } = useMutation(deleteCeremonyBridge, {
-  //   onSuccess: async (value) => {
-  //     refecthAllCeremony();
+      statusMessage({ message: value.message, status: "success" });
 
-  //     statusMessage({ message: value.message, status: "success" });
+      setIsLoading(false);
+    },
+    onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
+      setIsLoading(false);
+      statusMessage({ message: error, status: "error" });
+    },
+  });
 
-  //     setIsLoading(false);
-
-  //     window.location.reload();
-  //   },
-  //   onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
-  //     setIsLoading(false);
-  //     statusMessage({ message: error, status: "error" });
-  //   },
-  // });
-
-  //
   useEffect(() => {
     setIsLoading(isAllCeremonyLoading);
 
@@ -285,20 +312,23 @@ export const useCeremony = (): IUseCeremony => {
     isAddCeremonyDocumentationError,
     isAddCeremonyDocumentationSuccess,
     isLoadingAddCeremonyDocumentation,
+    editCeremonyDocumentation,
+    isEditCeremonyDocumentationError,
+    isEditCeremonyDocumentationSuccess,
+    isLoadingEditCeremonyDocumentation,
 
     // PACKAGES
     addCeremonyPackages,
     isAddCeremonyPackagesError,
     isAddCeremonyPackagesSuccess,
     isLoadingAddCeremonyPackages,
-
-    // editCeremony,
-    // isEditCeremonyError,
-    // isEditCeremonySuccess,
-    // isLoadingEditCeremony,
-    // deleteCeremony,
-    // isDeleteCeremonyError,
-    // isDeleteCeremonySuccess,
-    // isLoadingDeleteCeremony,
+    editCeremonyPackages,
+    isEditCeremonyPackagesError,
+    isEditCeremonyPackagesSuccess,
+    isLoadingEditCeremonyPackages,
+    deleteCeremonyPackage,
+    isDeleteCeremonyPackageError,
+    isDeleteCeremonyPackageSuccess,
+    isLoadingDeleteCeremonyPackage,
   };
 };

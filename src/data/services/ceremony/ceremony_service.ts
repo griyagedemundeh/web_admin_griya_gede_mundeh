@@ -131,7 +131,15 @@ export class CeremonyService implements ICeremonyService {
     id: number | string;
     request: CeremonyDocumentationRequest;
   }): Promise<ApiResponse<CeremonyDocumentation>> {
+    console.log("====================================");
+    console.log("adssadsad --->>>", { id, request });
+    console.log("====================================");
+
     const uri = `${this.BASE_ENDPOINT}/documentation/${id}`;
+
+    console.log("====================================");
+    console.log("URL --->>> ", uri);
+    console.log("====================================");
 
     const data = new FormData();
     data.append("photo", request.photo as File);
@@ -173,6 +181,44 @@ export class CeremonyService implements ICeremonyService {
         "ERROR ADD CEREMONY PACKAGE --> ",
         error.response.data.message
       );
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+  async editPackages(
+    request: CeremonyPackagesRequest
+  ): Promise<ApiResponse<CeremonyPackage[]>> {
+    const uri = `${this.BASE_ENDPOINT}/package`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<CeremonyPackage[]>> =
+        await api.patch(uri, request);
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<CeremonyPackage[]>> | any) {
+      console.error("====================================");
+      console.error(
+        "ERROR EDIT CEREMONY PACKAGE --> ",
+        error.response.data.message
+      );
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+  async deletePackage({
+    id,
+  }: {
+    id: number | string;
+  }): Promise<ApiResponse<null>> {
+    const uri = `${this.BASE_ENDPOINT}/package/${id}`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<null>> = await api.delete(uri);
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<null>> | any) {
+      console.error("====================================");
+      console.error("ERROR DELETE PACKAGE --> ", error.response.data.message);
       console.error("====================================");
       throw error.response.data.message;
     }

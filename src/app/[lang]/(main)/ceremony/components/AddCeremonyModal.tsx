@@ -82,7 +82,7 @@ const AddCeremonyModal = ({
       });
 
       setCeremonyPackages({
-        package: [
+        packages: [
           {
             id: `${new Date()}`,
             name: "",
@@ -121,7 +121,7 @@ const AddCeremonyModal = ({
         ceremonyDocumentationRequest={ceremonyDocumentationRequest}
         handleCeremonyDocumentationSubmit={handleAddCeremonyDocumentation}
         // PACKAGE
-        ceremonyPackagesRequest={ceremonyPackages ?? { package: [] }}
+        ceremonyPackagesRequest={ceremonyPackages ?? { packages: [] }}
         selectedCeremonyCategory={selectedCeremonyCategory}
         setProgress={setProgress}
         setSelectedCeremonyCategory={setSelectedCeremonyCategory}
