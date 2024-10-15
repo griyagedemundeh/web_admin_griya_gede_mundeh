@@ -11,6 +11,7 @@ interface SideBarProps {
   navigations: BasicNavigation[];
   navigationAdmin: BasicNavigation[];
 }
+``;
 
 const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
   const pathName = usePathname();
@@ -38,7 +39,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                       <item.icon
                         aria-hidden="true"
                         className={classNames(
-                          pathName.includes(item.href.toLocaleLowerCase())
+                          pathName.endsWith(item.href.toLocaleLowerCase())
                             ? "text-primary1"
                             : "text-gray-400 group-hover:text-primary1",
                           "h-6 w-6 shrink-0"
@@ -68,7 +69,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                     >
                       <span
                         className={classNames(
-                          pathName.includes(item.href.toLocaleLowerCase())
+                          pathName.endsWith(item.href.toLocaleLowerCase())
                             ? "border-primary1 text-primary1"
                             : "border-gray-200 text-gray-400 group-hover:border-primary1 group-hover:text-primary1",
                           "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"

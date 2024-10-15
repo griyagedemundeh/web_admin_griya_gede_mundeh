@@ -6,7 +6,7 @@ import { UserPlusIcon } from "@heroicons/react/20/solid";
 import Modal from "@/components/modal/Modal";
 import { useCentralStore } from "@/store";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
-import PhotoProfileInput from "@/components/input/PhotoProfileInput";
+import PhotoProfileInput from "@/components/input/image/profile/PhotoProfileInput";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
 import ceremonyCategoryValidation from "../validation/ceremony_category_validation";
 import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";

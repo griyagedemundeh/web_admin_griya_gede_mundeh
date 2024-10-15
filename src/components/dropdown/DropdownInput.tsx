@@ -52,14 +52,14 @@ const DropdownInput = ({
             {items.map((item) => {
               return (
                 <MenuItem key={item.id}>
-                  <button
+                  <div
                     onClick={() => {
                       setSelectedItem(item);
                     }}
-                    className="inline-block w-full text-start rounded-sm px-4 py-2 transition duration-200 ease-linear transform text-sm text-gray-700 data-[focus]:font-bold data-[focus]:bg-yellow-50 data-[focus]:border-l-primary1 data-[focus]:border-l-4 data-[focus]:text-gray-900"
+                    className="inline-block w-full text-start rounded-sm px-4 py-2 transition duration-200 ease-linear transform text-sm text-gray-700 data-[focus]:font-bold data-[focus]:bg-yellow-50 data-[focus]:border-l-primary1 data-[focus]:border-l-4 data-[focus]:text-gray-900 hover:cursor-pointer"
                   >
                     {item.title}
-                  </button>
+                  </div>
                 </MenuItem>
               );
             })}

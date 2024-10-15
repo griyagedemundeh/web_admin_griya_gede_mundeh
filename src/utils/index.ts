@@ -82,7 +82,10 @@ export async function urlToFile({
   const response = await fetch(proxyUrl);
 
   const blob = await response.blob();
-  const file = new File([blob], fileName, { type: mimeType ?? "image/png" });
+  const file = new File([blob], fileName, {
+    type: mimeType ?? blob.type,
+    lastModified: Date.now(),
+  });
 
   return file;
 }

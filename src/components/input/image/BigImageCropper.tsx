@@ -1,8 +1,8 @@
+import PrimaryButton from "@/components/button/PrimaryButton";
+import SecondaryButton from "@/components/button/SecondaryButton";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.min.css";
 import { useEffect, useRef, useState } from "react";
-import SecondaryButton from "../button/SecondaryButton";
-import PrimaryButton from "../button/PrimaryButton";
 
 interface Props {
   src: string;
@@ -16,7 +16,7 @@ interface HTMLImageElementWithCropper extends HTMLImageElement {
   cropper?: Cropper;
 }
 
-export default function ImageCropper({
+export default function BigImageCropper({
   src,
   maxWidth,
   maxHeight,
@@ -30,7 +30,6 @@ export default function ImageCropper({
     if (cropperRef.current) {
       //   console.log('cropperRef.current', cropperRef.current);
       const cropper = new Cropper(cropperRef.current, {
-        aspectRatio: 1 / 1,
         viewMode: 1,
         cropBoxResizable: true,
         data: {
@@ -86,11 +85,12 @@ export default function ImageCropper({
             src={src}
             alt="Image to crop"
             onLoad={handleImageLoad}
-            className="w-40 h-40 rounded-full"
+            className="rounded-lg"
           />
           <div className="flex justify-end w-full pt-6 space-x-3 border-t">
             <SecondaryButton
               label="Batal"
+              unSubmit={true}
               onClick={() => {
                 handleCancel();
 
@@ -100,15 +100,15 @@ export default function ImageCropper({
               }}
             />
 
-            <PrimaryButton label="Simpan" onClick={handleCrop} />
+            <PrimaryButton
+              unSubmit={true}
+              label="Simpan"
+              onClick={handleCrop}
+            />
           </div>
         </div>
       ) : (
-        <img
-          src={src}
-          alt="Image"
-          className="w-28 h-28 rounded-full object-cover"
-        />
+        <img src={src} alt="Image" className="rounded-lg object-cover" />
       )}
     </div>
   );

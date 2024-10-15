@@ -8,7 +8,7 @@ import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category"
 import { ICeremonyCategoryService } from "./ceremony_category_service_interface";
 
 export class CeremonyCategoryService implements ICeremonyCategoryService {
-  BASE_CATEGORY_ENDPOINT: string = "/ceremony/category";
+  BASE_CATEGORY_ENDPOINT: string = "/admin/ceremony/category";
 
   async addCeremonyCategory(
     request: CeremonyCategoryRequest

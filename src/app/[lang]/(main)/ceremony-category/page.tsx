@@ -118,32 +118,32 @@ export default function CeremonyCategoryPage({
       <PrimaryTable
         title="Kategori Upacara Agama"
         mainActionTitle="Tambah Kategori Upacara Agama"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari Kategori Upacara Agama"
-              className="w-full"
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari Kategori Upacara Agama"
+        //       className="w-full"
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         mainActionOnClick={() => {
           setOpen(true);
         }}
