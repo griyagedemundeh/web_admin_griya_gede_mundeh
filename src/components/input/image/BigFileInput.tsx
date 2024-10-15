@@ -118,11 +118,7 @@ const BigFileInput = ({ onChange, src, label, name }: BigFileInputProps) => {
   } else if (src) {
     content = (
       <div className="flex flex-col items-center">
-        <img
-          src={src}
-          alt="Image"
-          className="w-28 h-28 rounded-full object-cover"
-        />
+        <img src={src} alt="Image" className="rounded-lg object-cover w-full" />
         <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 h-10 mt-2">
           <label
             htmlFor="upload"
@@ -158,45 +154,6 @@ const BigFileInput = ({ onChange, src, label, name }: BigFileInputProps) => {
           />
         </div>
       </div>
-      // <div className="col-span-full">
-      //   {label ? (
-      //     <label
-      //       htmlFor="upload"
-      //       className="block text-sm font-medium leading-6 text-gray-900"
-      //     >
-      //       {label}
-      //     </label>
-      //   ) : null}
-      //   <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 bg-gray-50">
-      //     <div className="text-center">
-      //       <PhotoIcon
-      //         aria-hidden="true"
-      //         className="mx-auto h-12 w-12 text-gray-300"
-      //       />
-      //       <div className="mt-4 flex text-sm leading-6 text-gray-600">
-      //         <label
-      //           htmlFor="file-upload"
-      //           className="relative cursor-pointer rounded-md bg-gray-50 font-semibold text-primary1 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary1 focus-within:ring-offset-2 hover:text-primary2"
-      //           onDragOver={handleDragOver}
-      //           onDrop={handleDrop}
-      //         >
-      //           <p>Unggah Gambar</p>
-      //           <input
-      //             id="upload"
-      //             type="file"
-      //             className="sr-only"
-      //             accept="image/png, image/jpeg"
-      //             onChange={onSelectFile}
-      //           />
-      //         </label>
-      //         <p className="pl-1">atau seret dan lepas</p>
-      //       </div>
-      //       <p className="text-xs leading-5 text-gray-600">
-      //         PNG, JPG, GIF sampai dengan 5MB
-      //       </p>
-      //     </div>
-      //   </div>
-      // </div>
     );
   } else {
     content = (

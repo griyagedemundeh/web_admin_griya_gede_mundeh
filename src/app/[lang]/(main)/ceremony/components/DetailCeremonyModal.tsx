@@ -1,8 +1,5 @@
-import PrimaryInput from "@/components/input/PrimaryInput";
-import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import { PencilIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import Modal from "@/components/modal/Modal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useCentralStore } from "@/store";
@@ -15,12 +12,14 @@ import { CeremonyPackagesRequest } from "@/data/models/ceremony/request/ceremony
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category";
 import CeremonyDocumentation from "@/data/models/ceremony/response/ceremony_documentation";
+import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 
 interface DetailCeremonyModalProps {
   id: number | string;
   data: CeremonyRequest;
   category: CeremonyCategory;
   documentation: CeremonyDocumentation;
+  packages: CeremonyPackage[];
 }
 
 const DetailCeremonyModal = ({
@@ -28,19 +27,12 @@ const DetailCeremonyModal = ({
   id,
   category,
   documentation,
+  packages,
 }: DetailCeremonyModalProps) => {
   const [open, setOpen] = useState(false);
   const { setIsLoading, isLoading } = useCentralStore();
   const [progress, setProgress] = useState<number>(33.33);
-  const {
-    addCeremony,
-    isAddCeremonySuccess,
-    ceremony,
-    addCeremonyDocumentation,
-    isAddCeremonyDocumentationSuccess,
-    addCeremonyPackages,
-    isAddCeremonyPackagesSuccess,
-  } = useCeremony();
+  const { ceremony, editCeremony } = useCeremony();
 
   const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
     useState<DropdownFilterItemProps>({
@@ -56,27 +48,30 @@ const DetailCeremonyModal = ({
 
   const [ceremonyDocumentationRequest, setCeremonyDocumentationRequest] =
     useState<CeremonyDocumentationRequest>({
-      ceremonyServiceId: ceremony?.id as number,
+      ceremonyServiceId: id as number,
       photo: null,
     });
 
-  const handleAddCeremony = (ceremonyRequest: CeremonyRequest) => {
+  const handleEditCeremony = (ceremonyRequest: CeremonyRequest) => {
     setIsLoading(true);
-    addCeremony(ceremonyRequest);
+    editCeremony({ id: id, request: ceremonyRequest });
   };
 
-  const handleAddCeremonyDocumentation = (
-    ceremonyDocumentRequest: CeremonyDocumentationRequest
+  const handleEditCeremonyDocumentation = (
+    ceremonyDocumentionRequest: CeremonyDocumentationRequest
   ) => {
+    // console.log("====================================");
+    // console.log("DATA ---->>> ", ceremonyDocumentionRequest);
+    // console.log("====================================");
     setIsLoading(true);
-    addCeremonyDocumentation(ceremonyDocumentRequest);
+    // addCeremonyDocumentation(ceremonyDocumentRequest);
   };
 
-  const handleAddCeremonyPackeges = (
+  const handleEditCeremonyPackeges = (
     ceremonyPackagesRequest: CeremonyPackagesRequest
   ) => {
     setIsLoading(true);
-    addCeremonyPackages(ceremonyPackagesRequest);
+    // addCeremonyPackages(ceremonyPackagesRequest);
   };
 
   const [ceremonyPackages, setCeremonyPackages] =
@@ -90,7 +85,7 @@ const DetailCeremonyModal = ({
 
     setCeremonyDocumentationRequest({
       ...ceremonyDocumentationRequest,
-      ceremonyServiceId: ceremony?.id as number,
+      ceremonyServiceId: id as number,
       photo: file,
       photoUrl: documentation.photo,
     });
@@ -99,41 +94,10 @@ const DetailCeremonyModal = ({
   useEffect(() => {
     getFile();
 
-    if (isAddCeremonySuccess) {
-      setProgress(progress + 33.33);
-      setCeremonyRequest({
-        ceremonyCategoryId: ceremony?.ceremonyCategoryId ?? "",
-        description: ceremony?.description ?? "",
-        title: ceremony?.title ?? "",
-      });
-
-      setCeremonyPackages({
-        package: [
-          {
-            id: `${new Date()}`,
-            name: "",
-            price: 0,
-            description: "",
-            ceremonyServiceId: ceremony?.id ?? "",
-          },
-        ],
-      });
-    }
-
-    if (isAddCeremonyDocumentationSuccess) {
-      setProgress(progress + 33.33);
-    }
-
-    if (isAddCeremonyPackagesSuccess) {
-      setOpen(false);
-    }
-  }, [
-    isAddCeremonySuccess,
-    isAddCeremonyDocumentationSuccess,
-    isAddCeremonyPackagesSuccess,
-    ceremony,
-    documentation,
-  ]);
+    setCeremonyPackages({
+      package: packages as any,
+    });
+  }, [ceremony]);
 
   return (
     <>
@@ -146,7 +110,7 @@ const DetailCeremonyModal = ({
           setOpen(true);
         }}
       />
-      <Modal title="Tambah Upacara Agama" isOpen={open} setIsOpen={setOpen}>
+      <Modal title="Detail Upacara Agama" isOpen={open} setIsOpen={setOpen}>
         <CeremonyModalContent
           isDetail={true}
           loading={isLoading}
@@ -160,13 +124,27 @@ const DetailCeremonyModal = ({
           // CEREMONY
           ceremony={ceremony}
           ceremonyRequest={ceremonyRequest}
-          handleCeremonySubmit={handleAddCeremony}
+          handleCeremonySubmit={handleEditCeremony}
           // DOCUMENTATION
           ceremonyDocumentationRequest={ceremonyDocumentationRequest}
-          handleCeremonyDocumentationSubmit={handleAddCeremonyDocumentation}
+          handleCeremonyDocumentationSubmit={handleEditCeremonyDocumentation}
           // PACKAGE
-          ceremonyPackagesRequest={ceremonyPackages ?? { package: [] }}
-          handleCeremonyPackagesSubmit={handleAddCeremonyPackeges}
+          ceremonyPackagesRequest={
+            ceremonyPackages?.package !== undefined
+              ? ceremonyPackages
+              : {
+                  package: [
+                    {
+                      id: `${new Date()}`,
+                      name: "",
+                      price: 0,
+                      description: "",
+                      ceremonyServiceId: ceremony?.id ?? "",
+                    },
+                  ],
+                }
+          }
+          handleCeremonyPackagesSubmit={handleEditCeremonyPackeges}
         />
       </Modal>
     </>

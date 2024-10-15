@@ -27,7 +27,7 @@ const PrimaryWithIconButton = ({
       disabled={loading}
       className={
         className +
-        " inline-flex justify-center rounded-md bg-primary1 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary1 sm:col-start-2 space-x-2 disabled:bg-orange-300 disabled:cursor-not-allowed"
+        " inline-flex justify-center items-center rounded-md bg-primary1 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary1 sm:col-start-2 space-x-2 disabled:bg-orange-300 disabled:cursor-not-allowed"
       }
     >
       <Icon aria-hidden="true" className="-mr-0.5 h-5 w-5" color="white" />

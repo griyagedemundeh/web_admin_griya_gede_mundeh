@@ -3,10 +3,10 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import { AxiosError } from "axios";
 import {
   addCeremony as addCeremonyBridge,
+  deleteCeremony as deleteCeremonyBridge,
+  editCeremony as editCeremonyBridge,
   addCeremonyDocumentation as addCeremonyDocumentationBridge,
   addCeremonyPackages as addCeremonyPackagesBridge,
-  deleteCeremony as deleteCeremonyBridge,
-  // editCeremony as editCeremonyBridge,
   useGetAllCeremonyQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
@@ -44,6 +44,19 @@ interface IUseCeremony {
   isLoadingDeleteCeremony: boolean;
   isDeleteCeremonySuccess: boolean;
   isDeleteCeremonyError: boolean;
+  editCeremony: UseMutateFunction<
+    ApiResponse<Ceremony>,
+    unknown,
+    {
+      id: number | string;
+      request: CeremonyRequest;
+    },
+    unknown
+  >;
+  isLoadingEditCeremony: boolean;
+  isEditCeremonySuccess: boolean;
+  isEditCeremonyError: boolean;
+
   ceremony: Ceremony | undefined;
 
   // editCeremony: UseMutateFunction<
@@ -85,10 +98,6 @@ interface IUseCeremony {
   isLoadingAddCeremonyPackages: boolean;
   isAddCeremonyPackagesSuccess: boolean;
   isAddCeremonyPackagesError: boolean;
-
-  // isLoadingEditCeremony: boolean;
-  // isEditCeremonySuccess: boolean;
-  // isEditCeremonyError: boolean;
 }
 
 export const useCeremony = (): IUseCeremony => {
@@ -140,6 +149,23 @@ export const useCeremony = (): IUseCeremony => {
       window.location.reload();
     },
     onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
+      setIsLoading(false);
+      statusMessage({ message: error, status: "error" });
+    },
+  });
+
+  const {
+    mutate: editCeremony,
+    isLoading: isLoadingEditCeremony,
+    isSuccess: isEditCeremonySuccess,
+    isError: isEditCeremonyError,
+  } = useMutation(editCeremonyBridge, {
+    onSuccess: async (value) => {
+      statusMessage({ message: value.message, status: "success" });
+      refecthAllCeremony();
+      setIsLoading(false);
+    },
+    onError: async (error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
       setIsLoading(false);
       statusMessage({ message: error, status: "error" });
     },
@@ -249,6 +275,10 @@ export const useCeremony = (): IUseCeremony => {
     isDeleteCeremonyError,
     isDeleteCeremonySuccess,
     isLoadingDeleteCeremony,
+    editCeremony,
+    isEditCeremonyError,
+    isEditCeremonySuccess,
+    isLoadingEditCeremony,
 
     // DOCUMENTATION
     addCeremonyDocumentation,

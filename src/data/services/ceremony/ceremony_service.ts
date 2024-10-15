@@ -70,6 +70,30 @@ export class CeremonyService implements ICeremonyService {
     }
   }
 
+  async editCeremony({
+    id,
+    request,
+  }: {
+    id: number | string;
+    request: CeremonyRequest;
+  }): Promise<ApiResponse<Ceremony>> {
+    const uri = `${this.BASE_ENDPOINT}/${id}`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<Ceremony>> = await api.patch(
+        uri,
+        request
+      );
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<Ceremony>> | any) {
+      console.error("====================================");
+      console.error("ERROR EDIT CEREMONY --> ", error.response.data.message);
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
   // DOCUMENTATION
   async addDocumentation(
     request: CeremonyDocumentationRequest
@@ -83,6 +107,38 @@ export class CeremonyService implements ICeremonyService {
     try {
       const response: AxiosResponse<ApiResponse<CeremonyDocumentation>> =
         await api.post(uri, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<CeremonyDocumentation>> | any) {
+      console.error("====================================");
+      console.error(
+        "ERROR ADD CEREMONY DOCUMENTATION --> ",
+        error.response.data.message
+      );
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async editDocumentation({
+    id,
+    request,
+  }: {
+    id: number | string;
+    request: CeremonyDocumentationRequest;
+  }): Promise<ApiResponse<CeremonyDocumentation>> {
+    const uri = `${this.BASE_ENDPOINT}/documentation/${id}`;
+
+    const data = new FormData();
+    data.append("photo", request.photo as File);
+
+    try {
+      const response: AxiosResponse<ApiResponse<CeremonyDocumentation>> =
+        await api.patch(uri, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

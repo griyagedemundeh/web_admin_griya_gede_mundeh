@@ -16,6 +16,7 @@ import Images from "@/constants/images";
 import DeleteCeremonyModal from "./components/DeleteCeremonyModal";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import DetailCeremonyModal from "./components/DetailCeremonyModal";
+import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 
 export default function CeremonyPage({
   params: { lang },
@@ -130,6 +131,9 @@ export default function CeremonyPage({
                       ? info.row.original?.ceremonyDocumentation[0].photo
                       : "",
                 }}
+                packages={
+                  info.row.original.ceremonyPackages as CeremonyPackage[]
+                }
               />
 
               <DeleteCeremonyModal

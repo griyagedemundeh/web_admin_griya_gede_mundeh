@@ -72,6 +72,28 @@ export const deleteCeremony = async ({
   return response;
 };
 
+export const editCeremony = async ({
+  id,
+  request,
+}: {
+  id: number | string;
+  request: CeremonyRequest;
+}): Promise<ApiResponse<Ceremony>> => {
+  const response = await ceremonyService
+    .editCeremony({ id, request })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<Ceremony>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} EDIT CEREMONY `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
 export const useGetAllCeremonyQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<CeremonyInList[]>, unknown> =>

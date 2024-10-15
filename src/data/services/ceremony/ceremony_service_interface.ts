@@ -21,10 +21,25 @@ export interface ICeremonyService {
 
   deleteCeremony({ id }: { id: number | string }): Promise<ApiResponse<null>>;
 
+  editCeremony({
+    id,
+    request,
+  }: {
+    id: number | string;
+    request: CeremonyRequest;
+  }): Promise<ApiResponse<Ceremony>>;
+
   // Documentation
   addDocumentation(
     request: CeremonyDocumentationRequest
   ): Promise<ApiResponse<CeremonyDocumentation>>;
+  editDocumentation({
+    id,
+    request,
+  }: {
+    id: number | string;
+    request: CeremonyDocumentationRequest;
+  }): Promise<ApiResponse<CeremonyDocumentation>>;
 
   // Package
   addPackages(

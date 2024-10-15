@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import {
+  CheckIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
   PlusIcon,
@@ -193,9 +194,9 @@ const CeremonyModalContent = ({
                       loading={loading}
                       className={progress > 50 ? "w-full" : ""}
                       onClick={() => {
-                        // handleSubmit();
+                        handleSubmit();
                       }}
-                      icon={ChevronDoubleRightIcon}
+                      icon={CheckIcon}
                     />
                     <PrimaryWithIconButton
                       label="Selanjutnya"
@@ -239,32 +240,55 @@ const CeremonyModalContent = ({
                 }}
               >
                 <BigFileInput
-                  src={ceremonyDocumentationRequest.photoUrl}
+                  src={ceremonyDocumentationRequest.photoUrl ?? ""}
                   onChange={(e) => {
                     setFieldValue("photo", e);
                   }}
                 />
-                <div className="flex flex-row space-x-4 mt-6">
-                  {progress > 50 && isDetail ? (
-                    <SecondaryWithIconButton
-                      label="Kembali"
-                      className="w-full"
+                {isDetail ? (
+                  <div className="flex flex-row space-x-4 mt-6">
+                    {progress > 50 ? (
+                      <SecondaryWithIconButton
+                        label="Kembali"
+                        className="w-full"
+                        onClick={() => {
+                          setProgress(progress - 33.33);
+                        }}
+                        icon={ChevronDoubleLeftIcon}
+                      />
+                    ) : null}
+                    <PrimaryWithIconButton
+                      label="Simpan Perubahan"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
                       onClick={() => {
-                        setProgress(progress - 33.33);
+                        handleSubmit();
                       }}
-                      icon={ChevronDoubleLeftIcon}
+                      icon={CheckIcon}
                     />
-                  ) : null}
-                  <PrimaryWithIconButton
-                    label="Selanjutnya"
-                    loading={loading}
-                    className={progress > 50 ? "w-full" : ""}
-                    onClick={() => {
-                      handleSubmit();
-                    }}
-                    icon={ChevronDoubleRightIcon}
-                  />
-                </div>
+                    <PrimaryWithIconButton
+                      label="Selanjutnya"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        setProgress(progress + 33.33);
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-row space-x-4 mt-6">
+                    <PrimaryWithIconButton
+                      label="Selanjutnya"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        handleSubmit();
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                  </div>
+                )}
               </Form>
             )}
           </Formik>
@@ -285,7 +309,7 @@ const CeremonyModalContent = ({
                 <FieldArray name="package">
                   {({ remove, push }) => (
                     <div className="flex flex-col">
-                      {values.package.map((ceremonyPackage, index) => (
+                      {values?.package?.map((ceremonyPackage, index) => (
                         <div key={ceremonyPackage.id} className="mb-6">
                           <div className="flex justify-between">
                             <p className="capitalize font-bold mb-4">
@@ -353,17 +377,50 @@ const CeremonyModalContent = ({
                 </FieldArray>
 
                 {/* Buttons */}
-                <div className="flex flex-row space-x-4 mt-6">
-                  <PrimaryWithIconButton
-                    label="Selanjutnya"
-                    className={progress > 50 ? "w-full" : ""}
-                    loading={loading}
-                    onClick={() => {
-                      handleSubmit();
-                    }}
-                    icon={ChevronDoubleRightIcon}
-                  />
-                </div>
+                {isDetail ? (
+                  <div className="flex flex-row space-x-4 mt-6">
+                    {progress > 50 ? (
+                      <SecondaryWithIconButton
+                        label="Kembali"
+                        className="w-full"
+                        onClick={() => {
+                          setProgress(progress - 33.33);
+                        }}
+                        icon={ChevronDoubleLeftIcon}
+                      />
+                    ) : null}
+                    <PrimaryWithIconButton
+                      label="Simpan Perubahan"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        handleSubmit();
+                      }}
+                      icon={CheckIcon}
+                    />
+                    <PrimaryWithIconButton
+                      label="Selanjutnya"
+                      loading={loading}
+                      className={progress > 50 ? "w-full" : ""}
+                      onClick={() => {
+                        setProgress(progress + 33.33);
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-row space-x-4 mt-6">
+                    <PrimaryWithIconButton
+                      label="Selanjutnya"
+                      className={progress > 50 ? "w-full" : ""}
+                      loading={loading}
+                      onClick={() => {
+                        handleSubmit();
+                      }}
+                      icon={ChevronDoubleRightIcon}
+                    />
+                  </div>
+                )}
               </Form>
             )}
           </Formik>
