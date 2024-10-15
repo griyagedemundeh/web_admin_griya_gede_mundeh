@@ -1,5 +1,4 @@
 import PrimaryInput from "@/components/input/PrimaryInput";
-import AdminRequest from "@/data/models/admin/request/admin_request";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
@@ -13,34 +12,35 @@ import Modal from "@/components/modal/Modal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useCentralStore } from "@/store";
 import editMemberValidation from "../validation/edit_member_validation";
+import { useMember } from "@/hooks/member/use_member";
+import MemberRequest from "@/data/models/member/request/member_request";
 
 interface DetailMemberModalProps {
   id: number | string;
-  data: AdminRequest;
+  data: MemberRequest;
 }
 
 const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
-  // const { editAdmin, isEditAdminSuccess, isEditAdminError } = useAdmin();
+  const { editMember, isEditMemberSuccess, isEditMemberError } = useMember();
 
   const [openDetail, setOpenDetail] = useState(false);
 
-  const handleEditMember = () => {};
-  // const handleEditAdmin = (adminRequest: AdminRequest) => {
-  //   setIsLoading(true);
-  //   editAdmin({ id, request: adminRequest });
-  //   setOpenDetail(false);
-  // };
+  const handleEditMember = (anggotaRequest: MemberRequest) => {
+    setIsLoading(true);
+    editMember({ id, request: anggotaRequest });
+    setOpenDetail(false);
+  };
 
-  // useEffect(() => {
-  //   if (isEditAdminSuccess) {
-  //     setOpenDetail(false);
-  //   }
+  useEffect(() => {
+    if (isEditMemberSuccess) {
+      setOpenDetail(false);
+    }
 
-  //   if (isEditAdminError) {
-  //     setOpenDetail(true);
-  //   }
-  // }, [isEditAdminSuccess, isEditAdminError]);
+    if (isEditMemberError) {
+      setOpenDetail(true);
+    }
+  }, [isEditMemberSuccess, isEditMemberError]);
 
   return (
     <>
@@ -54,7 +54,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
         }}
       />
       <Modal
-        title="Detail Pengelola"
+        title="Detail Member"
         isOpen={openDetail}
         setIsOpen={setOpenDetail}
       >
@@ -72,7 +72,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Nama Lengkap"
                     value={values.fullName}
-                    placeholder="Masukkan nama lengkap admin"
+                    placeholder="Masukkan nama lengkap member"
                     error={errors.fullName ?? undefined}
                     onChange={handleChange("fullName")}
                     className="w-full"
@@ -81,7 +81,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     label="Email"
                     isOptional={true}
                     value={values.email}
-                    placeholder="Masukkan email admin"
+                    placeholder="Masukkan email member"
                     error={errors.email ?? undefined}
                     onChange={handleChange("email")}
                     className="w-full"
@@ -90,7 +90,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="No.Handphone"
                     value={values.phoneNumber}
-                    placeholder="Masukkan no hp admin"
+                    placeholder="Masukkan no hp member"
                     error={errors.phoneNumber ?? undefined}
                     onChange={handleChange("phoneNumber")}
                     className="w-full"
@@ -98,8 +98,12 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <div className="flex flex-row space-x-2 items-end w-full">
                     <PrimaryInput
                       label="Alamat Utama"
-                      onChange={(e) => {}}
-                      value={""}
+                      // onChange={(e) => {}}
+                      onChange={handleChange("address")}
+                      placeholder="Masukkan alamat member"
+                      error={errors.address ?? undefined}
+                      value={values.address}
+                      // value={"AKU Ingin"}
                       className="w-full"
                     />
 
@@ -113,7 +117,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Password"
                     value={values.password}
-                    placeholder="Masukkan password admin"
+                    placeholder="Masukkan password member"
                     error={errors.password ?? undefined}
                     onChange={handleChange("password")}
                     type="password"
@@ -122,7 +126,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Konfirmasi Password"
                     value={values.passwordConfirm}
-                    placeholder="Masukkan konfirmasi password admin"
+                    placeholder="Masukkan konfirmasi password member"
                     error={errors.passwordConfirm ?? undefined}
                     onChange={handleChange("passwordConfirm")}
                     type="password"
