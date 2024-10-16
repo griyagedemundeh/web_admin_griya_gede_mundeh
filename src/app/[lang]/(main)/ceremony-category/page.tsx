@@ -1,18 +1,9 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
-import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconButton from "@/components/button/IconButton";
-import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import AddCeremonyCategoryModal from "./components/AddCeremonyCategoryModal";
 import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
@@ -20,7 +11,6 @@ import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category";
 import Images from "@/constants/images";
 import DetailCeremonyCategoryModal from "./components/DetailCeremonyCategoryModal";
-
 import DeleteCeremonyCategoryModal from "./components/DeleteCeremonyCategoryModal";
 
 export default function CeremonyCategoryPage({
@@ -32,9 +22,6 @@ export default function CeremonyCategoryPage({
   const [open, setOpen] = useState(false);
 
   const { allCeremonyCategory } = useCeremonyCategory();
-
-  const [selectedStatusItem, setSelectedStatusItem] =
-    useState<DropdownFilterItemProps>();
 
   const [ceremonyCategoryRequest, setCeremonyCategoryRequest] =
     useState<CeremonyCategoryRequest>({
@@ -164,19 +151,6 @@ export default function CeremonyCategoryPage({
         data={ceremonyCategoryRequest}
         setData={setCeremonyCategoryRequest}
       />
-
-      {/* Confirmation Dialog */}
-      {/* <AlertConfirmationModal
-        onRightClick={() => {
-          setOpenActiveConfirmation(false);
-        }}
-        open={openActiveConfirmation}
-        setOpen={setOpenActiveConfirmation}
-        title="Konfirmasi"
-        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      /> */}
     </>
   );
 }

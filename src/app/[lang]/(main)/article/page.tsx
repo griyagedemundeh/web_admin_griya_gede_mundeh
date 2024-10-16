@@ -86,22 +86,22 @@ export default function ArticlePage({
           </div>
         ),
       },
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+      // {
+      //   header: "Status",
+      //   cell: (info) => (
+      //     <SwitchInput
+      //       label={
+      //         info.row.original.status ? (
+      //           <span className="font-medium text-gray-900">Aktif</span>
+      //         ) : (
+      //           <span className="font-medium text-gray-400">Non-Aktif</span>
+      //         )
+      //       }
+      //       value={info.row.original.status}
+      //       onChange={(e) => {}}
+      //     />
+      //   ),
+      // },
       {
         header: "Aksi",
         cell: (info) => (
@@ -139,45 +139,45 @@ export default function ArticlePage({
       <PrimaryTable
         title="Artikel"
         mainActionTitle="Tambah Artikel"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
-            <PrimaryDatePicker
-              setValue={(value) => {}}
-              value={[new Date(), new Date()]}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
+        //     <PrimaryDatePicker
+        //       setValue={(value) => {}}
+        //       value={[new Date(), new Date()]}
+        //     />
 
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <DropdownFilter
-              label="Kategori"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={TagIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Kategori"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={TagIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari artikel"
-              className="w-full"
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari artikel"
+        //       className="w-full"
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         mainActionOnClick={() => {
           setOpen(true);
         }}
@@ -192,7 +192,7 @@ export default function ArticlePage({
       />
 
       {/* Dialog Add User*/}
-      <UserModal
+      {/* <UserModal
         open={open}
         setOpen={setOpen}
         title="Tambah Pengguna"
@@ -203,10 +203,10 @@ export default function ArticlePage({
             icon={UserPlusIcon}
           />
         }
-      />
+      /> */}
 
       {/* Dialog Detail User*/}
-      <UserModal
+      {/* <UserModal
         open={openDetail}
         isForDetail={true}
         setOpen={setOpenDetail}
@@ -223,10 +223,10 @@ export default function ArticlePage({
             icon={PencilIcon}
           />
         }
-      />
+      /> */}
 
       {/* Delete Dialog */}
-      <AlertDangerModal
+      {/* <AlertDangerModal
         onRightClick={() => {
           setOpenDelete(false);
         }}
@@ -236,9 +236,9 @@ export default function ArticlePage({
         description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
       {/* Confirmation Dialog */}
-      <AlertConfirmationModal
+      {/* <AlertConfirmationModal
         onRightClick={() => {
           setOpenActiveConfirmation(false);
         }}
@@ -248,7 +248,7 @@ export default function ArticlePage({
         description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
         rightButtonLabel="Lanjutkan"
         leftButtonLabel="Batal"
-      />
+      /> */}
     </>
   );
 }
