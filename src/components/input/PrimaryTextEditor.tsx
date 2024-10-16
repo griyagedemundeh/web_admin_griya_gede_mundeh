@@ -100,7 +100,7 @@ const PrimaryTextEditor = ({
   }, [editor]);
 
   return (
-    <div className="col-span-full">
+    <div className="col-span-full w-full">
       {label && (
         <label
           htmlFor="cover-photo"

@@ -1,31 +1,14 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TagIcon,
-  UserPlusIcon,
-} from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
-import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconButton from "@/components/button/IconButton";
-import { articles, status } from "@/utils/dummyData";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
+import { articles } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SwitchInput from "@/components/input/SwitchInput";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-import UserModal from "./components/UserModal";
 import Article from "@/data/models/article";
-import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
+import AddArticleModal from "./components/AddArticleModal";
+import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
 
 export default function ArticlePage({
   params: { lang },
@@ -34,16 +17,14 @@ export default function ArticlePage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-
-  const [selectedStatusItem, setSelectedStatusItem] =
-    useState<DropdownFilterItemProps>();
 
   const [data, setData] = useState(() => articles);
-  const [active, setActive] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [articleCategoryRequest, setArticleCategoryRequest] =
+    useState<ArticleCategoryRequest>({
+      name: "",
+    });
 
   const columns = useMemo<ColumnDef<Article>[]>(
     () => [
@@ -74,7 +55,7 @@ export default function ArticlePage({
         header: "Tanggal Posting",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.postedDate.toISOString()}
+            {/* {info.row.original.postedDate.toISOString()} */}
           </div>
         ),
       },
@@ -107,7 +88,7 @@ export default function ArticlePage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
+              {/* <IconBackgroundButton
                 icon={PencilSquareIcon}
                 colorBackground="emerald"
                 className="bg-emerald-100"
@@ -124,7 +105,7 @@ export default function ArticlePage({
                 onClick={() => {
                   setOpenDelete(true);
                 }}
-              />
+              /> */}
             </div>
           </div>
         ),
@@ -191,64 +172,13 @@ export default function ArticlePage({
         isCommon={true}
       />
 
-      {/* Dialog Add User*/}
-      {/* <UserModal
+      {/* Dialog Add Article*/}
+      <AddArticleModal
         open={open}
         setOpen={setOpen}
-        title="Tambah Pengguna"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={UserPlusIcon}
-          />
-        }
-      /> */}
-
-      {/* Dialog Detail User*/}
-      {/* <UserModal
-        open={openDetail}
-        isForDetail={true}
-        setOpen={setOpenDetail}
-        activeUser={active}
-        setActiveUser={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        title="Detail Pengguna"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Perbarui"
-            onClick={() => {}}
-            icon={PencilIcon}
-          />
-        }
-      /> */}
-
-      {/* Delete Dialog */}
-      {/* <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      /> */}
-      {/* Confirmation Dialog */}
-      {/* <AlertConfirmationModal
-        onRightClick={() => {
-          setOpenActiveConfirmation(false);
-        }}
-        open={openActiveConfirmation}
-        setOpen={setOpenActiveConfirmation}
-        title="Konfirmasi"
-        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      /> */}
+        data={articleCategoryRequest}
+        setData={setArticleCategoryRequest}
+      />
     </>
   );
 }
