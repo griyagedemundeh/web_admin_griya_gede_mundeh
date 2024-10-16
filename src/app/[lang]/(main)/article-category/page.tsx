@@ -1,72 +1,39 @@
 "use client";
 
 import { getDictionary, Locale } from "../../dictionaries";
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { articles } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import Article from "@/data/models/article";
-import AddArticleModal from "./components/AddArticleModal";
+import AddArticleCategoryModal from "./components/AddArticleCategoryModal";
 import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
+import ArticleCategory from "@/data/models/article/response/article_category";
 
-export default function ArticlePage({
+export default function ArticleCategoryPage({
   params: { lang },
 }: {
   params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-
-  const [data, setData] = useState(() => articles);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const [articleCategoryRequest, setArticleCategoryRequest] =
     useState<ArticleCategoryRequest>({
       name: "",
     });
 
-  const columns = useMemo<ColumnDef<Article>[]>(
+  const columns = useMemo<ColumnDef<ArticleCategory>[]>(
     () => [
       {
-        header: "Judul Artikel",
+        header: "Judul Kategori Artikel",
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
-            <div className="flex flex-row space-x-4 items-center">
-              <Image
-                alt={info.row.original.title}
-                src={
-                  info.row.original.thumbnailString ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                }
-                className="h-10 w-10 rounded-md bg-gray-50 object-cover"
-                height={40}
-                width={40}
-                objectFit="cover"
-              />
-              <p className="text-gray-500 line-clamp-1 text-ellipsis pr-6">
-                {info.row.original.title}
-              </p>
-            </div>
+            <p className="text-gray-500 line-clamp-1 text-ellipsis pr-6">
+              {info.row.original.name}
+            </p>
           </div>
         ),
       },
-      {
-        header: "Tanggal Posting",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {/* {info.row.original.postedDate.toISOString()} */}
-          </div>
-        ),
-      },
-      {
-        header: "Kategori",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.kategori}
-          </div>
-        ),
-      },
+
       // {
       //   header: "Status",
       //   cell: (info) => (
@@ -116,10 +83,10 @@ export default function ArticlePage({
 
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Artikel</h1>
+      <h1 className="font-bold text-xl mb-8">Kategori Artikel</h1>
       <PrimaryTable
-        title="Artikel"
-        mainActionTitle="Tambah Artikel"
+        title="Kategori Artikel"
+        mainActionTitle="Tambah Kategori Artikel"
         // onFilterReset={() => {}}
         // filters={
         //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
@@ -163,7 +130,7 @@ export default function ArticlePage({
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        data={[]}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -172,13 +139,26 @@ export default function ArticlePage({
         isCommon={true}
       />
 
-      {/* Dialog Add Article*/}
-      <AddArticleModal
+      {/* Dialog Add Article Category */}
+      <AddArticleCategoryModal
         open={open}
         setOpen={setOpen}
         data={articleCategoryRequest}
         setData={setArticleCategoryRequest}
       />
+
+      {/* Confirmation Dialog */}
+      {/* <AlertConfirmationModal
+        onRightClick={() => {
+          setOpenActiveConfirmation(false);
+        }}
+        open={openActiveConfirmation}
+        setOpen={setOpenActiveConfirmation}
+        title="Konfirmasi"
+        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
+        rightButtonLabel="Lanjutkan"
+        leftButtonLabel="Batal"
+      /> */}
     </>
   );
 }

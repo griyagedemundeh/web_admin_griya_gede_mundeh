@@ -82,6 +82,13 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       initial: getInitials(t.label.ceremony),
       current: false,
     },
+    {
+      id: 3,
+      name: t.label.articleCategory,
+      href: `/article-category`,
+      initial: getInitials(t.label.articleCategory),
+      current: false,
+    },
   ];
   const userNavigation = [
     { name: "Your profile", href: "#" },

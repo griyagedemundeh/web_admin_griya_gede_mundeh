@@ -26,7 +26,7 @@ interface IUseMember {
   editMember: UseMutateFunction<
   //NEWW
   // ApiResponse<Member>,
-    ApiResponse<User>,
+    ApiResponse<User | MemberAddress>,
     unknown,
     {
       id: number | string;

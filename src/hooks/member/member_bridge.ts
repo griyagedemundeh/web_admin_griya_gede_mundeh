@@ -2,6 +2,7 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import MemberRequest from "@/data/models/member/request/member_request";
 import Member from "@/data/models/member/response/member";
+import MemberAddress from "@/data/models/user/response/address";
 import User from "@/data/models/user/response/user";
 import { MemberService } from "@/data/services/member/member_service";
 import { AxiosError } from "axios";
@@ -35,7 +36,7 @@ export const editMember = async ({
 }: {
   id: number | string;
   request: MemberRequest;
-  }): Promise<ApiResponse<User>> => {
+  }): Promise<ApiResponse<User | MemberAddress>> => {
   //NEWW
 // }): Promise<ApiResponse<Member>> => {
   const response = await authService
@@ -45,7 +46,7 @@ export const editMember = async ({
     })
     //NEWW
     // .catch((error: AxiosError<ApiResponse<Member>> | unknown) => {
-      .catch((error: AxiosError<ApiResponse<User>> | unknown) => {
+      .catch((error: AxiosError<ApiResponse<User | MemberAddress>> | unknown) => {
       console.error("====================================");
       console.error(`${TAG_ERROR} EDIT Member `, error);
       console.error("====================================");

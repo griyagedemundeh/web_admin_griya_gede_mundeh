@@ -6,6 +6,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import api from "@/configs/api";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import User from "@/data/models/user/response/user";
+import MemberAddress from "@/data/models/user/response/address";
 
 export class MemberService implements IMemberService {
   async addMember(request: MemberRequest): Promise<ApiResponse<Member>> {
@@ -49,13 +50,13 @@ export class MemberService implements IMemberService {
   }: {
     id: number | string;
     request: MemberRequest;
-    }): Promise<ApiResponse<User>> {
+    }): Promise<ApiResponse<User | MemberAddress>> {
     //NEWW
   // }): Promise<ApiResponse<Member>> {
     const uri = `/admin/member/${id}`;
 
     try {
-      const response: AxiosResponse<ApiResponse<User>> = await api.patch(
+      const response: AxiosResponse<ApiResponse<User | MemberAddress>> = await api.patch(
       //NEWW
       // const response: AxiosResponse<ApiResponse<Member>> = await api.patch(
         uri,
@@ -63,8 +64,8 @@ export class MemberService implements IMemberService {
       );
 
       return response.data;
-      } catch (error: AxiosError<ApiResponse<User>> | any) {
-      //NEWW
+      } catch (error: AxiosError<ApiResponse<User | MemberAddress>> | any) {
+      //NEWW  
     // } catch (error: AxiosError<ApiResponse<Member>> | any) {
       console.error("====================================");
       console.error("ERROR EDIT MEMBER --> ", error.response.data.message);
@@ -103,6 +104,6 @@ export class MemberService implements IMemberService {
       console.error("Error GET MEMBER BY ID -->", error.response.data.message);
       console.error("==================================");
       throw error.response.data.message;
-    }
+    }{{  }}
   }
 }
