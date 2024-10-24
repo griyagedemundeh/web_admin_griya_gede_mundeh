@@ -7,6 +7,9 @@ import PrimaryTable from "@/components/table/PrimaryTable";
 import AddArticleCategoryModal from "./components/AddArticleCategoryModal";
 import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
 import ArticleCategory from "@/data/models/article/response/article_category";
+import { useArticleCategory } from "@/hooks/article/use_article_category";
+import DetailArticleCategoryModal from "./components/DetailArticleCategoryModal";
+import DeleteArticleCategoryModal from "./components/DeleteArticleCategoryModal";
 
 export default function ArticleCategoryPage({
   params: { lang },
@@ -20,6 +23,8 @@ export default function ArticleCategoryPage({
     useState<ArticleCategoryRequest>({
       name: "",
     });
+
+  const { allArticleCategory } = useArticleCategory();
 
   const columns = useMemo<ColumnDef<ArticleCategory>[]>(
     () => [
@@ -55,6 +60,16 @@ export default function ArticleCategoryPage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
+              <DetailArticleCategoryModal
+                id={info.row.original.id}
+                data={{ name: info.row.original.name }}
+              />
+              <DeleteArticleCategoryModal
+                data={{
+                  name: info.row.original.name,
+                  id: info.row.original.id,
+                }}
+              />
               {/* <IconBackgroundButton
                 icon={PencilSquareIcon}
                 colorBackground="emerald"
@@ -130,7 +145,7 @@ export default function ArticleCategoryPage({
           setOpen(true);
         }}
         columns={columns}
-        data={[]}
+        data={allArticleCategory?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}

@@ -14,9 +14,11 @@ export class ArticleCategoryService implements IArticleCategoryService {
   ): Promise<ApiResponse<ArticleCategory>> {
     const uri = `${this.BASE_ENDPOINT}/create`;
 
+    const data = new FormData();
+    data.append("name", request.name);
     try {
       const response: AxiosResponse<ApiResponse<ArticleCategory>> =
-        await api.post(uri, request);
+        await api.post(uri, data);
 
       return response.data;
     } catch (error: AxiosError<ApiResponse<ArticleCategory>> | any) {
@@ -60,10 +62,12 @@ export class ArticleCategoryService implements IArticleCategoryService {
     request: ArticleCategoryRequest;
   }): Promise<ApiResponse<ArticleCategory>> {
     const uri = `${this.BASE_ENDPOINT}/${id}`;
-
+    const data = new FormData();
+    data.append("name", request.name);
+    data.append("isActive", "true")
     try {
       const response: AxiosResponse<ApiResponse<ArticleCategory>> =
-        await api.patch(uri, request);
+        await api.patch(uri, data);
 
       return response.data;
     } catch (error: AxiosError<ApiResponse<ArticleCategory>> | any) {
@@ -80,7 +84,7 @@ export class ArticleCategoryService implements IArticleCategoryService {
   async getAllArticleCategory(
     request: ListDataRequest
   ): Promise<ApiResponse<ArticleCategory[]>> {
-    const uri = `${this.BASE_ENDPOINT}`;
+    const uri = `article/category`;
 
     try {
       const response: AxiosResponse<ApiResponse<ArticleCategory[]>> =

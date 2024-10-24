@@ -71,7 +71,7 @@ const DetailCeremonyCategoryModal = ({
         }}
       />
       <Modal
-        title="Detail Pengelola"
+        title="Detail Kategori Upacara"
         isOpen={openDetail}
         setIsOpen={setOpenDetail}
       >

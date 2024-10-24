@@ -1,29 +1,28 @@
-import PrimaryInput from "@/components/input/PrimaryInput";
-import { Form, Formik } from "formik";
-import React, { ReactElement, useEffect, useState } from "react";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import Modal from "@/components/modal/Modal";
-import { useCentralStore } from "@/store";
-import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
-import BigFileInput from "@/components/input/image/BigFileInput";
-import DropdownInput from "@/components/dropdown/DropdownInput";
-import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
-import { useArticle } from "@/hooks/article/use_article";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import ArticleRequest from "@/data/models/article/request/article_request";
-import { addArticleCategory } from "@/hooks/article/article_category_bridge";
+import DetailArticleCategoryModal from "../../article-category/components/DetailArticleCategoryModal";
+import { useCentralStore } from "@/store";
+import { useArticle } from "@/hooks/article/use_article";
+import { ReactElement, useEffect, useState } from "react";
+import { urlToFile } from "@/utils";
+import Modal from "@/components/modal/Modal";
+import { Form, Formik } from "formik";
 import articleValidation from "../validation/article_validation";
-import { useArticleCategory } from "@/hooks/article/use_article_category";
-import { url } from "inspector";
+import BigFileInput from "@/components/input/image/BigFileInput";
+import PrimaryInput from "@/components/input/PrimaryInput";
+import DropdownInput from "@/components/dropdown/DropdownInput";
+import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
+import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
+import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
+import { CheckIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { useArticleCategory } from "@/hooks/article/use_article_category";
 
-interface AddArticleModalProps {
-  open: boolean;
+interface DetailArticleModalProps {
+  id: number | string;
+  data: ArticleRequest;
   setOpen: (value: boolean) => void;
   setData: (value: ArticleRequest) => void;
-  data: ArticleRequest;
+  open: boolean;
 
   // CATEGORY
   selectedArticleCategory: DropdownFilterItemProps | undefined;
@@ -32,64 +31,52 @@ interface AddArticleModalProps {
   ) => void;
 }
 
-const AddArticleModal = ({
-  open,
-  setOpen,
+const DetailArticleModal = ({
   data,
-  setData,
+  id,
+  //   setOpen,
+  //   setData,
+  //   open,
   selectedArticleCategory,
   setSelectedArticleCategory,
-}: // CATEGORY
-AddArticleModalProps): ReactElement => {
+}: DetailArticleModalProps) => {
   const { setIsLoading, isLoading } = useCentralStore();
+  const { editArticle, isEditArticleError, isEditArticleSucces } = useArticle();
+  const [openDetail, setOpenDetail] = useState(false);
 
-  const { addArticle, isAddArticleError, isAddArticleSuccess, article } =
-    useArticle();
+  const handleEditArticle = (article: ArticleRequest) => {
+    setIsLoading(true);
+    editArticle({ id, request: article });
+  };
 
   const [articleCategories, setCategory] = useState<DropdownFilterItemProps[]>(
     []
   );
 
+  const { allArticleCategory } = useArticleCategory();
   // Flag untuk memastikan kategori sudah dimuat
   const [isCategoryLoaded, setIsCategoryLoaded] = useState(false);
 
-  const { allArticleCategory } = useArticleCategory();
-  // const [articleRequest, setArticleRequest] = useState<ArticleRequest>({
-  //   title: "",
-  //   articleCategoryId: "",
-  //   content: "",
-  // });
-
-  const handleAddArticle = (articleRequest: ArticleRequest) => {
-    console.log("anjay");
-    setIsLoading(true);
-    addArticle(articleRequest);
-    setOpen(false);
+  const getFile = async () => {
+    if (typeof data.thumbnail === "string" && data.thumbnail) {
+      try {
+        const file = await urlToFile({
+          fileName: "thumbnail.png", // You can customize this
+          url: data.thumbnail,
+        });
+        console.log("File created from URL:", file);
+        return file;
+      } catch (error) {
+        console.error("Error converting URL to file:", error);
+      }
+    } else {
+      console.warn("No valid thumbnail URL to convert.");
+    }
   };
 
-  // useEffect(() => {
-  //   if (allArticleCategory?.data) {
-  //     setCategory((prevCategories) =>
-  //       prevCategories.concat(
-  //         allArticleCategory.data.map((category) => ({
-  //           id: category.id,
-  //           title: category.name,
-  //         }))
-  //       )
-  //     );
-  //   }
-  // }, [allArticleCategory?.data]);
-
-  // useEffect(() => {
-
-  //   if (isAddArticleSuccess) {
-  //     setOpen(false);
-  //   }
-
-  //   if (isAddArticleError) {
-  //     setOpen(true);
-  //   }
-  // }, [isAddArticleSuccess, isAddArticleError]);
+  useEffect(() => {
+    getFile();
+  }, [data.thumbnail]);
 
   // Fetch all categories once
   useEffect(() => {
@@ -104,27 +91,21 @@ AddArticleModalProps): ReactElement => {
     }
   }, [allArticleCategory?.data]);
 
-  // Effect untuk handle ketika artikel berhasil atau gagal ditambahkan
-  useEffect(() => {
-    if (isCategoryLoaded) {
-      if (isAddArticleSuccess) {
-        setOpen(false);
-        setIsLoading(false);
-      }
-
-      if (isAddArticleError) {
-        setOpen(true);
-        setIsLoading(false);
-      }
-    }
-  }, [isAddArticleSuccess, isAddArticleError, isCategoryLoaded]);
-
   return (
     <>
-      <Modal title="Detail Artikel" isOpen={open} setIsOpen={setOpen}>
+      <IconBackgroundButton
+        icon={PencilSquareIcon}
+        colorBackground="emerald"
+        className="bg-emerald-100"
+        colorIcon="green"
+        onClick={() => {
+          setOpenDetail(true);
+        }}
+      />
+      <Modal title="Edit Artikel" isOpen={openDetail} setIsOpen={setOpenDetail}>
         <Formik
           initialValues={data}
-          onSubmit={handleAddArticle}
+          onSubmit={handleEditArticle}
           validationSchema={articleValidation}
           suppressHydrationWarning={true}
         >
@@ -138,8 +119,8 @@ AddArticleModalProps): ReactElement => {
           }) => (
             <Form
               onSubmit={() => {
-                console.log(handleAddArticle);
-                handleAddArticle(values);
+                console.log(handleEditArticle);
+                handleEditArticle(values);
               }}
             >
               <div>
@@ -153,10 +134,12 @@ AddArticleModalProps): ReactElement => {
                         ? URL.createObjectURL(data.thumbnail)
                         : ""
                     }
+                    onChange={(file) => setFieldValue("thumbnail", file)}
                     // Handle file input correctly
-                    onChange={(e) => {
-                      setFieldValue("thumbnail", e);
-                    }}
+                    // onChange={(e) => {
+                    //   setFieldValue("thumbnail", e);
+                    // }}
+                    //////////////////////////
                     // src={data.thumbnail}
                     // onChange={(e) => {
                     //   setFieldValue("thumbnail", e);
@@ -185,6 +168,7 @@ AddArticleModalProps): ReactElement => {
                         ...values,
                         articleCategoryId: e?.id as string,
                       });
+                      console.log(e)
                     }}
                   />
                   <PrimaryTextEditor
@@ -198,9 +182,9 @@ AddArticleModalProps): ReactElement => {
                     label="Simpan"
                     onClick={() => {
                       console.log(handleSubmit, values);
-                      handleAddArticle(values);
+                      handleEditArticle(values);
                     }}
-                    icon={CheckCircleIcon}
+                    icon={CheckIcon}
                   />
                 </div>
               </div>
@@ -212,4 +196,4 @@ AddArticleModalProps): ReactElement => {
   );
 };
 
-export default AddArticleModal;
+export default DetailArticleModal;

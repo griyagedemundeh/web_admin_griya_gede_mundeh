@@ -1,11 +1,13 @@
 import PrimaryInput from "@/components/input/PrimaryInput";
 import { Form, Formik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import Modal from "@/components/modal/Modal";
 import { useCentralStore } from "@/store";
 import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
+import { useArticleCategory } from "@/hooks/article/use_article_category";
+import articleCategoryValidation from "../validation/article_category_validation";
 
 interface AddArticleCategoryModalProps {
   open: boolean;
@@ -21,36 +23,36 @@ const AddArticleCategoryModal = ({
   setData,
 }: AddArticleCategoryModalProps) => {
   const { setIsLoading } = useCentralStore();
-  // const {
-  //   addArticleCategory,
-  //   isAddArticleCategoryError,
-  //   isAddArticleCategorySuccess,
-  // } = useArticleCategory();
+  const {
+    addArticleCategory,
+    isAddArticleCategoryError,
+    isAddArticleCategorySucces,
+  } = useArticleCategory();
 
   const handleAddArticleCategory = (
-    ceremonyCategoryRequest: ArticleCategoryRequest
+    articleCategoryRequest: ArticleCategoryRequest
   ) => {
     setIsLoading(true);
-    // addArticleCategory({ ...ceremonyCategoryRequest, icon: data.icon });
+    addArticleCategory({ ...articleCategoryRequest });
     setOpen(false);
   };
 
-  // useEffect(() => {
-  //   if (isAddArticleCategorySuccess) {
-  //     setOpen(false);
-  //   }
+  useEffect(() => {
+    if (isAddArticleCategorySucces) {
+      setOpen(false);
+    }
 
-  //   if (isAddArticleCategoryError) {
-  //     setOpen(true);
-  //   }
-  // }, [isAddArticleCategorySuccess, isAddArticleCategoryError]);
+    if (isAddArticleCategoryError) {
+      setOpen(true);
+    }
+  }, [isAddArticleCategorySucces, isAddArticleCategoryError]);
 
   return (
     <Modal title="Tambah Kategori Artikel" isOpen={open} setIsOpen={setOpen}>
       <Formik
         initialValues={data}
         onSubmit={handleAddArticleCategory}
-        // validationSchema={ceremonyCategoryValidation}
+        validationSchema={articleCategoryValidation}
         suppressHydrationWarning={true}
       >
         {({ errors, handleChange, handleSubmit, values }) => (
