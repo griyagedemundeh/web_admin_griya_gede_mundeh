@@ -1,31 +1,20 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TagIcon,
-  UserPlusIcon,
-} from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
-import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconButton from "@/components/button/IconButton";
-import { articles, status } from "@/utils/dummyData";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SwitchInput from "@/components/input/SwitchInput";
-import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
-import UserModal from "./components/UserModal";
-import Article from "@/data/models/article";
-import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
+import AddArticleModal from "./components/AddArticleModal";
+import ListDataRequest from "@/data/models/base/list_data_request";
+import { useArticle } from "@/hooks/article/use_article";
+
+import ArticleRequest from "@/data/models/article/request/article_request";
+import DeleteArticleModal from "./components/DeleteArticleModal";
+import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
+import Images from "@/constants/images";
+import DetailArticleModal from "./components/DetailArticleModal";
+import { Article } from "@/data/models/article/response/article";
 
 export default function ArticlePage({
   params: { lang },
@@ -34,16 +23,30 @@ export default function ArticlePage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openActiveConfirmation, setOpenActiveConfirmation] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
 
-  const [selectedStatusItem, setSelectedStatusItem] =
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [articleRequest, setArticleRequest] = useState<ArticleRequest>({
+    articleCategoryId: "",
+    title: "",
+    thumbnail: null,
+    content: "",
+    isPublish: false,
+  });
+
+  const [selectedArticleCategory, setSelectedArticleCategory] =
     useState<DropdownFilterItemProps>();
 
-  const [data, setData] = useState(() => articles);
-  const [active, setActive] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
+    limit: 100,
+    page: 1,
+  });
+
+  const { allArticle } = useArticle();
+
+  useEffect(() => {
+    setCurrentPage(allArticle?.meta?.currentPage ?? 1);
+  }, [allArticle]);
 
   const columns = useMemo<ColumnDef<Article>[]>(
     () => [
@@ -52,17 +55,25 @@ export default function ArticlePage({
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
-              <Image
-                alt={info.row.original.title}
-                src={
-                  info.row.original.thumbnailString ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                }
-                className="h-10 w-10 rounded-md bg-gray-50 object-cover"
-                height={40}
-                width={40}
-                objectFit="cover"
-              />
+              {info.row.original?.thumbnail !== undefined ? (
+                <Image
+                  alt={info.row.original.title}
+                  src={info.row.original.thumbnail ?? ""}
+                  className="h-10 w-10 rounded-md bg-gray-50 object-cover"
+                  height={40}
+                  width={40}
+                  objectFit="cover"
+                />
+              ) : (
+                <Image
+                  alt={info.row.original.title}
+                  src={Images.dummyProfile}
+                  className="h-10 w-10 rounded-md bg-gray-50 object-cover"
+                  height={40}
+                  width={40}
+                  objectFit="cover"
+                />
+              )}
               <p className="text-gray-500 line-clamp-1 text-ellipsis pr-6">
                 {info.row.original.title}
               </p>
@@ -70,59 +81,64 @@ export default function ArticlePage({
           </div>
         ),
       },
+      //NEWWW
       {
         header: "Tanggal Posting",
-        cell: (info) => (
-          <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.postedDate.toISOString()}
-          </div>
-        ),
+        cell: (info) => {
+          const createdAt = info.row.original.createdAt;
+
+          // Check if createdAt exists and format it
+          const formattedDate = createdAt
+            ? new Date(createdAt).toLocaleString("id-ID", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })
+            : "null";
+          return (
+            <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              {formattedDate}
+            </div>
+          );
+        },
       },
       {
         header: "Kategori",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.kategori}
+            {/* <div
+              dangerouslySetInnerHTML={{
+                __html: info.row.original.articleCategory.name ?? "null",
+              }}
+            /> */}
+            {info.row.original.articleCategory?.name ?? "Tidak ada kategori"}
           </div>
         ),
       },
-      {
-        header: "Status",
-        cell: (info) => (
-          <SwitchInput
-            label={
-              info.row.original.status ? (
-                <span className="font-medium text-gray-900">Aktif</span>
-              ) : (
-                <span className="font-medium text-gray-400">Non-Aktif</span>
-              )
-            }
-            value={info.row.original.status}
-            onChange={(e) => {}}
-          />
-        ),
-      },
+
       {
         header: "Aksi",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
+              <DetailArticleModal
+                id={info.row.original.id}
+                data={{
+                  title: info.row.original.title,
+                  articleCategoryId: info.row.original.articleCategory
+                    ?.id as number,
+                  content: info.row.original.content ?? "",
+                  thumbnail: info.row.original.thumbnail ?? "",
                 }}
+                category={info.row.original.articleCategory}
               />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
+              <DeleteArticleModal
+                data={{
+                  title: info.row.original.title,
+                  id: info.row.original.id,
                 }}
               />
             </div>
@@ -139,115 +155,64 @@ export default function ArticlePage({
       <PrimaryTable
         title="Artikel"
         mainActionTitle="Tambah Artikel"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
-            <PrimaryDatePicker
-              setValue={(value) => {}}
-              value={[new Date(), new Date()]}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
+        //     <PrimaryDatePicker
+        //       setValue={(value) => {}}
+        //       value={[new Date(), new Date()]}
+        //     />
 
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <DropdownFilter
-              label="Kategori"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={TagIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Kategori"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={TagIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari artikel"
-              className="w-full"
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari artikel"
+        //       className="w-full"
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         mainActionOnClick={() => {
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        data={allArticle?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={10}
+        totalPage={allArticle?.meta?.total}
+        limitPage={listDataRequest.limit}
         isCommon={true}
       />
 
-      {/* Dialog Add User*/}
-      <UserModal
+      <AddArticleModal
         open={open}
         setOpen={setOpen}
-        title="Tambah Pengguna"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Simpan"
-            onClick={() => {}}
-            icon={UserPlusIcon}
-          />
-        }
-      />
-
-      {/* Dialog Detail User*/}
-      <UserModal
-        open={openDetail}
-        isForDetail={true}
-        setOpen={setOpenDetail}
-        activeUser={active}
-        setActiveUser={(e) => {
-          setActive(e);
-          setOpenActiveConfirmation(true);
-        }}
-        title="Detail Pengguna"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Perbarui"
-            onClick={() => {}}
-            icon={PencilIcon}
-          />
-        }
-      />
-
-      {/* Delete Dialog */}
-      <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      />
-      {/* Confirmation Dialog */}
-      <AlertConfirmationModal
-        onRightClick={() => {
-          setOpenActiveConfirmation(false);
-        }}
-        open={openActiveConfirmation}
-        setOpen={setOpenActiveConfirmation}
-        title="Konfirmasi"
-        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
+        data={articleRequest}
+        selectedArticleCategory={selectedArticleCategory}
+        setSelectedArticleCategory={setSelectedArticleCategory}
       />
     </>
   );

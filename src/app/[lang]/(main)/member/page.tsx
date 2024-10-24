@@ -115,9 +115,7 @@ export default function UserPage({
                   password: "",
                   passwordConfirm: "",
                   email: info.row.original.user.email,
-                  address: info.row.original.memberAddress.address ?? "fika",
-                  // address: info.row.original.address.address,
-                  // address: info.row.original.user
+                  address: info.row.original.memberAddress[0].address,
                 }}
               />
               <DeleteMemberModal

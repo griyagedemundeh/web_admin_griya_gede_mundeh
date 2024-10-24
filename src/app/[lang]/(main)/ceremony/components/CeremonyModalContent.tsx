@@ -149,7 +149,8 @@ const CeremonyModalContent = ({
         {progress < 50 ? (
           <Formik
             initialValues={ceremonyRequest}
-            onSubmit={handleCeremonySubmit}
+            onSubmit={
+              handleCeremonySubmit}
             validationSchema={ceremonyValidation}
             suppressHydrationWarning={true}
           >

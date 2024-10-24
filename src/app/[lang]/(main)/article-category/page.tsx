@@ -1,54 +1,40 @@
 "use client";
 
 import { getDictionary, Locale } from "../../dictionaries";
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import AddCeremonyCategoryModal from "./components/AddCeremonyCategoryModal";
-import CeremonyCategoryRequest from "@/data/models/ceremony/request/ceremony_category_request";
-import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
-import CeremonyCategory from "@/data/models/ceremony/response/ceremony_category";
-import Images from "@/constants/images";
-import DetailCeremonyCategoryModal from "./components/DetailCeremonyCategoryModal";
-import DeleteCeremonyCategoryModal from "./components/DeleteCeremonyCategoryModal";
+import AddArticleCategoryModal from "./components/AddArticleCategoryModal";
+import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
+import ArticleCategory from "@/data/models/article/response/article_category";
+import { useArticleCategory } from "@/hooks/article/use_article_category";
+import DetailArticleCategoryModal from "./components/DetailArticleCategoryModal";
+import DeleteArticleCategoryModal from "./components/DeleteArticleCategoryModal";
 
-export default function CeremonyCategoryPage({
+export default function ArticleCategoryPage({
   params: { lang },
 }: {
   params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-
-  const { allCeremonyCategory } = useCeremonyCategory();
-
-  const [ceremonyCategoryRequest, setCeremonyCategoryRequest] =
-    useState<CeremonyCategoryRequest>({
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [articleCategoryRequest, setArticleCategoryRequest] =
+    useState<ArticleCategoryRequest>({
       name: "",
-      icon: null,
-      description: "",
     });
 
-  const columnsCategories = useMemo<ColumnDef<CeremonyCategory>[]>(
+  const { allArticleCategory } = useArticleCategory();
+
+  const columns = useMemo<ColumnDef<ArticleCategory>[]>(
     () => [
       {
-        header: "Kategori Upacara Agama",
+        header: "Judul Kategori Artikel",
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
-            <div className="flex flex-row space-x-4 items-center">
-              <Image
-                alt={info.row.original.name}
-                src={info.row.original.icon ?? Images.dummyProfile}
-                className="h-10 w-10 rounded-full bg-gray-50 object-cover"
-                height={40}
-                width={40}
-                objectFit="cover"
-              />
-              <div>
-                <p className="font-bold">{info.row.original.name}</p>
-              </div>
-            </div>
+            <p className="text-gray-500 line-clamp-1 text-ellipsis pr-6">
+              {info.row.original.name}
+            </p>
           </div>
         ),
       },
@@ -74,15 +60,11 @@ export default function CeremonyCategoryPage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <DetailCeremonyCategoryModal
+              <DetailArticleCategoryModal
                 id={info.row.original.id}
-                data={{
-                  name: info.row.original.name,
-                  description: info.row.original.description,
-                  icon: info.row.original.icon ?? "",
-                }}
+                data={{ name: info.row.original.name }}
               />
-              <DeleteCeremonyCategoryModal
+              <DeleteArticleCategoryModal
                 data={{
                   name: info.row.original.name,
                   id: info.row.original.id,
@@ -96,18 +78,20 @@ export default function CeremonyCategoryPage({
     []
   );
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Kategori Upacara Agama</h1>
-
+      <h1 className="font-bold text-xl mb-8">Kategori Artikel</h1>
       <PrimaryTable
-        title="Kategori Upacara Agama"
-        mainActionTitle="Tambah Kategori Upacara Agama"
+        title="Kategori Artikel"
+        mainActionTitle="Tambah Kategori Artikel"
         // onFilterReset={() => {}}
         // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
+        //     <PrimaryDatePicker
+        //       setValue={(value) => {}}
+        //       value={[new Date(), new Date()]}
+        //     />
+
         //     <DropdownFilter
         //       label="Status"
         //       selectedItem={selectedStatusItem}
@@ -116,10 +100,18 @@ export default function CeremonyCategoryPage({
         //       items={status}
         //     />
 
+        //     <DropdownFilter
+        //       label="Kategori"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={TagIcon}
+        //       items={status}
+        //     />
+
         //     <PrimaryInput
         //       onChange={(e) => {}}
         //       value={""}
-        //       placeholder="Cari Kategori Upacara Agama"
+        //       placeholder="Cari artikel"
         //       className="w-full"
         //       trailing={
         //         <IconButton
@@ -134,8 +126,8 @@ export default function CeremonyCategoryPage({
         mainActionOnClick={() => {
           setOpen(true);
         }}
-        columns={columnsCategories}
-        data={allCeremonyCategory?.data ?? []}
+        columns={columns}
+        data={allArticleCategory?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -144,13 +136,26 @@ export default function CeremonyCategoryPage({
         isCommon={true}
       />
 
-      {/* Dialog Add Category */}
-      <AddCeremonyCategoryModal
+      {/* Dialog Add Article Category */}
+      <AddArticleCategoryModal
         open={open}
         setOpen={setOpen}
-        data={ceremonyCategoryRequest}
-        setData={setCeremonyCategoryRequest}
+        data={articleCategoryRequest}
+        setData={setArticleCategoryRequest}
       />
+
+      {/* Confirmation Dialog */}
+      {/* <AlertConfirmationModal
+        onRightClick={() => {
+          setOpenActiveConfirmation(false);
+        }}
+        open={openActiveConfirmation}
+        setOpen={setOpenActiveConfirmation}
+        title="Konfirmasi"
+        description="Apakah Anda yakin untuk menonaktifkan akun Katrina Hegmann?"
+        rightButtonLabel="Lanjutkan"
+        leftButtonLabel="Batal"
+      /> */}
     </>
   );
 }
