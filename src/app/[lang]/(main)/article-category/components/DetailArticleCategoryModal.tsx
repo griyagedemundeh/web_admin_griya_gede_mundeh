@@ -37,11 +37,11 @@ const DetailArticleCategoryModal = ({
   useEffect(() => {
     if (isEditArticleCategorySucces) {
       setOpenDetail(false);
-    } 
+    }
     if (isEditArticleCategoryError) {
       setOpenDetail(true);
     }
-    console.log("Jalan")
+    console.log("Jalan");
   }, [isEditArticleCategorySucces, isEditArticleCategoryError]);
 
   return (
@@ -50,6 +50,7 @@ const DetailArticleCategoryModal = ({
         icon={PencilSquareIcon}
         colorBackground="emerald"
         className="bg-emerald-100"
+        colorIcon="green"
         onClick={() => {
           setOpenDetail(true);
         }}

@@ -5,24 +5,19 @@ import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import Modal from "@/components/modal/Modal";
 import { useCentralStore } from "@/store";
-import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
 import BigFileInput from "@/components/input/image/BigFileInput";
 import DropdownInput from "@/components/dropdown/DropdownInput";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import { useArticle } from "@/hooks/article/use_article";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import ArticleRequest from "@/data/models/article/request/article_request";
-import { addArticleCategory } from "@/hooks/article/article_category_bridge";
 import articleValidation from "../validation/article_validation";
 import { useArticleCategory } from "@/hooks/article/use_article_category";
-import { url } from "inspector";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 interface AddArticleModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-  setData: (value: ArticleRequest) => void;
+
   data: ArticleRequest;
 
   // CATEGORY
@@ -36,29 +31,22 @@ const AddArticleModal = ({
   open,
   setOpen,
   data,
-  setData,
+
   selectedArticleCategory,
   setSelectedArticleCategory,
 }: // CATEGORY
 AddArticleModalProps): ReactElement => {
-  const { setIsLoading, isLoading } = useCentralStore();
+  const { setIsLoading } = useCentralStore();
 
   const { addArticle, isAddArticleError, isAddArticleSuccess, article } =
     useArticle();
 
-  const [articleCategories, setCategory] = useState<DropdownFilterItemProps[]>(
-    []
-  );
+  const [categories, setCategories] = useState<DropdownFilterItemProps[]>([]);
 
   // Flag untuk memastikan kategori sudah dimuat
   const [isCategoryLoaded, setIsCategoryLoaded] = useState(false);
 
   const { allArticleCategory } = useArticleCategory();
-  // const [articleRequest, setArticleRequest] = useState<ArticleRequest>({
-  //   title: "",
-  //   articleCategoryId: "",
-  //   content: "",
-  // });
 
   const handleAddArticle = (articleRequest: ArticleRequest) => {
     console.log("anjay");
@@ -67,34 +55,10 @@ AddArticleModalProps): ReactElement => {
     setOpen(false);
   };
 
-  // useEffect(() => {
-  //   if (allArticleCategory?.data) {
-  //     setCategory((prevCategories) =>
-  //       prevCategories.concat(
-  //         allArticleCategory.data.map((category) => ({
-  //           id: category.id,
-  //           title: category.name,
-  //         }))
-  //       )
-  //     );
-  //   }
-  // }, [allArticleCategory?.data]);
-
-  // useEffect(() => {
-
-  //   if (isAddArticleSuccess) {
-  //     setOpen(false);
-  //   }
-
-  //   if (isAddArticleError) {
-  //     setOpen(true);
-  //   }
-  // }, [isAddArticleSuccess, isAddArticleError]);
-
   // Fetch all categories once
   useEffect(() => {
     if (allArticleCategory?.data) {
-      setCategory(
+      setCategories(
         allArticleCategory.data.map((category) => ({
           id: category.id,
           title: category.name,
@@ -120,7 +84,7 @@ AddArticleModalProps): ReactElement => {
   }, [isAddArticleSuccess, isAddArticleError, isCategoryLoaded]);
 
   return (
-    <>
+    <div>
       <Modal title="Detail Artikel" isOpen={open} setIsOpen={setOpen}>
         <Formik
           initialValues={data}
@@ -157,10 +121,6 @@ AddArticleModalProps): ReactElement => {
                     onChange={(e) => {
                       setFieldValue("thumbnail", e);
                     }}
-                    // src={data.thumbnail}
-                    // onChange={(e) => {
-                    //   setFieldValue("thumbnail", e);
-                    // }}
                     label="Kover Artikel"
                   />
                   <PrimaryInput
@@ -172,7 +132,7 @@ AddArticleModalProps): ReactElement => {
                     onChange={handleChange("title")}
                   />
                   <DropdownInput
-                    items={articleCategories}
+                    items={categories}
                     label="Kategori Artikel"
                     placeholder="Pilih Kategori Artikel"
                     // selectedItem={{ id: "", title: "" }}
@@ -208,7 +168,7 @@ AddArticleModalProps): ReactElement => {
           )}
         </Formik>
       </Modal>
-    </>
+    </div>
   );
 };
 

@@ -135,7 +135,6 @@ const DetailCeremonyModal = ({
             setSelectedCeremonyCategory(value as DropdownFilterItemProps);
           }}
           // CEREMONY
-
           ceremonyRequest={ceremonyRequest}
           handleCeremonySubmit={handleEditCeremony}
           // DOCUMENTATION

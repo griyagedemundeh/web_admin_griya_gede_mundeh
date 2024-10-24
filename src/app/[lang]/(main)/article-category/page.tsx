@@ -70,24 +70,6 @@ export default function ArticleCategoryPage({
                   id: info.row.original.id,
                 }}
               />
-              {/* <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
-                }}
-              />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
-                }}
-              /> */}
             </div>
           </div>
         ),

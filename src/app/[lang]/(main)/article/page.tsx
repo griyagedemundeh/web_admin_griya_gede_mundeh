@@ -4,18 +4,17 @@ import { getDictionary, Locale } from "../../dictionaries";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { articles } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import AddArticleModal from "./components/AddArticleModal";
-import ArticleCategoryRequest from "@/data/models/article/request/article_category_request";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import { useArticle } from "@/hooks/article/use_article";
-import { ArticleinList } from "@/data/models/article/response/article";
+
 import ArticleRequest from "@/data/models/article/request/article_request";
 import DeleteArticleModal from "./components/DeleteArticleModal";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import Images from "@/constants/images";
 import DetailArticleModal from "./components/DetailArticleModal";
+import { Article } from "@/data/models/article/response/article";
 
 export default function ArticlePage({
   params: { lang },
@@ -25,14 +24,12 @@ export default function ArticlePage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const [data, setData] = useState(() => articles);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [articleRequest, setArticleRequest] = useState<ArticleRequest>({
     articleCategoryId: "",
     title: "",
-    // thumbnail: null,
-    // thumbnail: "",
+    thumbnail: null,
     content: "",
     isPublish: false,
   });
@@ -51,20 +48,17 @@ export default function ArticlePage({
     setCurrentPage(allArticle?.meta?.currentPage ?? 1);
   }, [allArticle]);
 
-  const columns = useMemo<ColumnDef<ArticleinList>[]>(
+  const columns = useMemo<ColumnDef<Article>[]>(
     () => [
       {
         header: "Judul Artikel",
         cell: (info) => (
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
-              {(info.row.original?.articleDocumentation?.length ?? 0) > 0 &&
-              info.row.original?.articleDocumentation !== undefined ? (
+              {info.row.original?.thumbnail !== undefined ? (
                 <Image
                   alt={info.row.original.title}
-                  src={
-                    info.row.original.articleDocumentation[0].thumbnail ?? ""
-                  }
+                  src={info.row.original.thumbnail ?? ""}
                   className="h-10 w-10 rounded-md bg-gray-50 object-cover"
                   height={40}
                   width={40}
@@ -74,16 +68,6 @@ export default function ArticlePage({
                 <Image
                   alt={info.row.original.title}
                   src={Images.dummyProfile}
-                  //NEWWWW
-                  // src={
-                  //   info.row.original.articleDocumentation.length > 0 &&
-                  //   info.row.original.articleDocumentation[0].thumbnail
-                  //     ? URL.createObjectURL(info.row.original.articleDocumentation[0].thumbnail!)
-                  //     : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                  // }
-                  // src={info.row.original.thumbnail ??
-                  //   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                  // }
                   className="h-10 w-10 rounded-md bg-gray-50 object-cover"
                   height={40}
                   width={40}
@@ -130,26 +114,11 @@ export default function ArticlePage({
                 __html: info.row.original.articleCategory.name ?? "null",
               }}
             /> */}
-            {info.row.original.articleCategory?.title ??  "Tidak ada kategori"} 
+            {info.row.original.articleCategory?.name ?? "Tidak ada kategori"}
           </div>
         ),
       },
-      // {
-      //   header: "Status",
-      //   cell: (info) => (
-      //     <SwitchInput
-      //       label={
-      //         info.row.original.status ? (
-      //           <span className="font-medium text-gray-900">Aktif</span>
-      //         ) : (
-      //           <span className="font-medium text-gray-400">Non-Aktif</span>
-      //         )
-      //       }
-      //       value={info.row.original.status}
-      //       onChange={(e) => {}}
-      //     />
-      //   ),
-      // },
+
       {
         header: "Aksi",
         cell: (info) => (
@@ -159,16 +128,12 @@ export default function ArticlePage({
                 id={info.row.original.id}
                 data={{
                   title: info.row.original.title,
-                  articleCategoryId: info.row.original.articleCategory?.name,
+                  articleCategoryId: info.row.original.articleCategory
+                    ?.id as number,
                   content: info.row.original.content ?? "",
-                  thumbnail: (info.row.original.articleDocumentation?.length ?? 0) >
-                  0 && info.row.original.articleDocumentation !== undefined
-                  ? info.row.original?.articleDocumentation[0].thumbnail : "",
-                  // thumbnail: info.row.original.articleDocumentation?.[0]?.thumbnail ?? null,
+                  thumbnail: info.row.original.thumbnail ?? "",
                 }}
-                setData={setArticleRequest}
-                selectedArticleCategory={selectedArticleCategory}
-                setSelectedArticleCategory={setSelectedArticleCategory}
+                category={info.row.original.articleCategory}
               />
               <DeleteArticleModal
                 data={{
@@ -176,24 +141,6 @@ export default function ArticlePage({
                   id: info.row.original.id,
                 }}
               />
-              {/* <IconBackgroundButton
-                icon={PencilSquareIcon}
-                colorBackground="emerald"
-                className="bg-emerald-100"
-                colorIcon="green"
-                onClick={() => {
-                  setOpenDetail(true);
-                }}
-              />
-
-              <IconBackgroundButton
-                icon={TrashIcon}
-                colorBackground="rose"
-                colorIcon="red"
-                onClick={() => {
-                  setOpenDelete(true);
-                }}
-              /> */}
             </div>
           </div>
         ),
@@ -264,7 +211,6 @@ export default function ArticlePage({
         open={open}
         setOpen={setOpen}
         data={articleRequest}
-        setData={setArticleRequest}
         selectedArticleCategory={selectedArticleCategory}
         setSelectedArticleCategory={setSelectedArticleCategory}
       />

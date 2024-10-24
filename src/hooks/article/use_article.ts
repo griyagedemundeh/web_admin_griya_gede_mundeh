@@ -1,9 +1,8 @@
 import ArticleRequest from "@/data/models/article/request/article_request";
-import { ArticleinList } from "@/data/models/article/response/article";
 import ApiResponse from "@/data/models/base/api-base-response";
 import { useCentralStore } from "@/store";
 import { useEffect, useState } from "react";
-import { UseMutateFunction, useMutation, UseMutationResult } from "react-query";
+import { UseMutateFunction, useMutation } from "react-query";
 import {
   addArticle as addArticleBridge,
   deleteArticle as deleteArticleBridge,
@@ -12,20 +11,20 @@ import {
 } from "./article_bridge";
 import { statusMessage } from "@/utils";
 import { AxiosError } from "axios";
-import { error } from "console";
+import { Article } from "@/data/models/article/response/article";
 
 interface IUseArticle {
   addArticle: UseMutateFunction<
-    ApiResponse<ArticleinList>,
+    ApiResponse<Article>,
     unknown,
     ArticleRequest,
     unknown
   >;
-  allArticle: ApiResponse<ArticleinList[]> | undefined;
+  allArticle: ApiResponse<Article[]> | undefined;
   isLoadingAddArticle: boolean;
   isAddArticleSuccess: boolean;
   isAddArticleError: boolean;
-  article: ArticleinList | undefined;
+  article: Article | undefined;
 
   //DELETE
   deleteArticle: UseMutateFunction<
@@ -42,7 +41,7 @@ interface IUseArticle {
 
   //EDIT
   editArticle: UseMutateFunction<
-    ApiResponse<ArticleinList>,
+    ApiResponse<Article>,
     unknown,
     {
       id: number | string;
@@ -58,7 +57,7 @@ interface IUseArticle {
 export const useArticle = (): IUseArticle => {
   const { setIsLoading } = useCentralStore();
 
-  const [article, setArticle] = useState<ArticleinList>();
+  const [article, setArticle] = useState<Article>();
 
   //GET ALL ARTICLE
   const {
@@ -80,10 +79,9 @@ export const useArticle = (): IUseArticle => {
       setArticle(value.data);
       statusMessage({ message: value.message, status: "success" });
       setIsLoading(false);
+      window.location.reload();
     },
-    onError: async (
-      error: AxiosError<ApiResponse<ArticleinList>> | unknown
-    ) => {
+    onError: async (error: AxiosError<ApiResponse<Article>> | unknown) => {
       setIsLoading(false);
       statusMessage({ message: error, status: "error" });
     },
@@ -110,22 +108,23 @@ export const useArticle = (): IUseArticle => {
   });
 
   //EDIT
-  const{
+  const {
     mutate: editArticle,
     isLoading: isLoadingEditArticle,
     isSuccess: isEditArticleSucces,
-    isError: isEditArticleError
+    isError: isEditArticleError,
   } = useMutation(editArticleBridge, {
-    onSuccess: async(value) => {
+    onSuccess: async (value) => {
       refecthAllArticle();
-      statusMessage({message: value.message, status: "success"});
+      statusMessage({ message: value.message, status: "success" });
       setIsLoading(false);
+      window.location.reload();
     },
-    onError: async(error: AxiosError<ApiResponse<ArticleinList>> | unknown) => {
+    onError: async (error: AxiosError<ApiResponse<Article>> | unknown) => {
       setIsLoading(false);
-      statusMessage({message: error, status: "error"});
+      statusMessage({ message: error, status: "error" });
     },
-  })
+  });
 
   useEffect(() => {
     setIsLoading(isAllArticleLoading);
@@ -151,6 +150,6 @@ export const useArticle = (): IUseArticle => {
     editArticle,
     isLoadingEditArticle,
     isEditArticleError,
-    isEditArticleSucces
+    isEditArticleSucces,
   };
 };

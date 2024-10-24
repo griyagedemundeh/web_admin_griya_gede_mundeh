@@ -1,8 +1,7 @@
 import ArticleRequest from "@/data/models/article/request/article_request";
-import DetailArticleCategoryModal from "../../article-category/components/DetailArticleCategoryModal";
 import { useCentralStore } from "@/store";
 import { useArticle } from "@/hooks/article/use_article";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { urlToFile } from "@/utils";
 import Modal from "@/components/modal/Modal";
 import { Form, Formik } from "formik";
@@ -16,46 +15,36 @@ import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import { CheckIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useArticleCategory } from "@/hooks/article/use_article_category";
+import ArticleCategory from "@/data/models/article/response/article_category";
 
 interface DetailArticleModalProps {
   id: number | string;
   data: ArticleRequest;
-  setOpen: (value: boolean) => void;
-  setData: (value: ArticleRequest) => void;
-  open: boolean;
-
-  // CATEGORY
-  selectedArticleCategory: DropdownFilterItemProps | undefined;
-  setSelectedArticleCategory: (
-    value: DropdownFilterItemProps | undefined
-  ) => void;
+  category: ArticleCategory | null;
 }
 
 const DetailArticleModal = ({
   data,
   id,
-  //   setOpen,
-  //   setData,
-  //   open,
-  selectedArticleCategory,
-  setSelectedArticleCategory,
+  category,
 }: DetailArticleModalProps) => {
-  const { setIsLoading, isLoading } = useCentralStore();
+  const { setIsLoading } = useCentralStore();
   const { editArticle, isEditArticleError, isEditArticleSucces } = useArticle();
   const [openDetail, setOpenDetail] = useState(false);
+  const { allArticleCategory } = useArticleCategory();
 
   const handleEditArticle = (article: ArticleRequest) => {
     setIsLoading(true);
     editArticle({ id, request: article });
   };
 
-  const [articleCategories, setCategory] = useState<DropdownFilterItemProps[]>(
-    []
-  );
+  const [categories, setCategories] = useState<DropdownFilterItemProps[]>([]);
 
-  const { allArticleCategory } = useArticleCategory();
-  // Flag untuk memastikan kategori sudah dimuat
-  const [isCategoryLoaded, setIsCategoryLoaded] = useState(false);
+  const [selectedArticleCategory, setSelectedArticleCategory] =
+    useState<DropdownFilterItemProps>({
+      id: category?.id ?? 0,
+      title: category?.name ?? "",
+    });
 
   const getFile = async () => {
     if (typeof data.thumbnail === "string" && data.thumbnail) {
@@ -78,16 +67,14 @@ const DetailArticleModal = ({
     getFile();
   }, [data.thumbnail]);
 
-  // Fetch all categories once
   useEffect(() => {
     if (allArticleCategory?.data) {
-      setCategory(
+      setCategories(
         allArticleCategory.data.map((category) => ({
           id: category.id,
           title: category.name,
         }))
       );
-      setIsCategoryLoaded(true); // Set flag ketika kategori telah dimuat
     }
   }, [allArticleCategory?.data]);
 
@@ -135,15 +122,6 @@ const DetailArticleModal = ({
                         : ""
                     }
                     onChange={(file) => setFieldValue("thumbnail", file)}
-                    // Handle file input correctly
-                    // onChange={(e) => {
-                    //   setFieldValue("thumbnail", e);
-                    // }}
-                    //////////////////////////
-                    // src={data.thumbnail}
-                    // onChange={(e) => {
-                    //   setFieldValue("thumbnail", e);
-                    // }}
                     label="Kover Artikel"
                   />
                   <PrimaryInput
@@ -155,20 +133,17 @@ const DetailArticleModal = ({
                     onChange={handleChange("title")}
                   />
                   <DropdownInput
-                    items={articleCategories}
+                    items={categories}
                     label="Kategori Artikel"
                     placeholder="Pilih Kategori Artikel"
-                    // selectedItem={{ id: "", title: "" }}
-                    //NEWWW
                     selectedItem={selectedArticleCategory}
                     className="w-full"
                     setSelectedItem={(e) => {
-                      setSelectedArticleCategory(e);
+                      setSelectedArticleCategory(e as DropdownFilterItemProps);
                       setValues({
                         ...values,
                         articleCategoryId: e?.id as string,
                       });
-                      console.log(e)
                     }}
                   />
                   <PrimaryTextEditor
