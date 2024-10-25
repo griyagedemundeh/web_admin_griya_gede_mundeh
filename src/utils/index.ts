@@ -79,9 +79,18 @@ export async function urlToFile({
   mimeType?: string;
 }) {
   const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
-  const response = await fetch(proxyUrl);
+  const response = await fetch(proxyUrl, {
+    headers: { "Content-Type": mimeType ?? "" },
+  });
 
-  const blob = await response.blob();
+  // Get the original blob
+  const originalBlob = await response.blob();
+
+  // If mimeType is specified, create a new blob with the desired type
+  const blob = mimeType
+    ? new Blob([originalBlob], { type: mimeType })
+    : originalBlob;
+
   const file = new File([blob], fileName, {
     type: mimeType ?? blob.type,
     lastModified: Date.now(),

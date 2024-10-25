@@ -31,15 +31,13 @@ const AddArticleModal = ({
   open,
   setOpen,
   data,
-
   selectedArticleCategory,
   setSelectedArticleCategory,
 }: // CATEGORY
 AddArticleModalProps): ReactElement => {
   const { setIsLoading } = useCentralStore();
 
-  const { addArticle, isAddArticleError, isAddArticleSuccess, article } =
-    useArticle();
+  const { addArticle, isAddArticleError, isAddArticleSuccess } = useArticle();
 
   const [categories, setCategories] = useState<DropdownFilterItemProps[]>([]);
 
@@ -102,22 +100,13 @@ AddArticleModalProps): ReactElement => {
           }) => (
             <Form
               onSubmit={() => {
-                console.log(handleAddArticle);
                 handleAddArticle(values);
               }}
             >
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   <BigFileInput
-                    //NEWWW
-                    src={
-                      typeof data.thumbnail === "string"
-                        ? data.thumbnail
-                        : data.thumbnail
-                        ? URL.createObjectURL(data.thumbnail)
-                        : ""
-                    }
-                    // Handle file input correctly
+                    src={data.thumbnail as string}
                     onChange={(e) => {
                       setFieldValue("thumbnail", e);
                     }}
@@ -135,8 +124,6 @@ AddArticleModalProps): ReactElement => {
                     items={categories}
                     label="Kategori Artikel"
                     placeholder="Pilih Kategori Artikel"
-                    // selectedItem={{ id: "", title: "" }}
-                    //NEWWW
                     selectedItem={selectedArticleCategory}
                     className="w-full"
                     setSelectedItem={(e) => {
@@ -151,13 +138,13 @@ AddArticleModalProps): ReactElement => {
                     label="Konten Artikel"
                     value={values.content}
                     onChange={handleChange("content")}
+                    error={errors.content ?? undefined}
                   />
                 </div>
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                   <PrimaryWithIconButton
                     label="Simpan"
                     onClick={() => {
-                      console.log(handleSubmit, values);
                       handleAddArticle(values);
                     }}
                     icon={CheckCircleIcon}

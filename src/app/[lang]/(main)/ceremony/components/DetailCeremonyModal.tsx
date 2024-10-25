@@ -93,6 +93,7 @@ const DetailCeremonyModal = ({
     const file = await urlToFile({
       fileName: "avatar.png",
       url: documentation.photo as string,
+      mimeType: "image/png",
     });
 
     setCeremonyDocumentationRequest({

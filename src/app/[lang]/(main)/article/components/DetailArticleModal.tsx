@@ -29,9 +29,19 @@ const DetailArticleModal = ({
   category,
 }: DetailArticleModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { editArticle, isEditArticleError, isEditArticleSucces } = useArticle();
+  const { editArticle, isEditArticleError, isEditArticleSuccess } =
+    useArticle();
   const [openDetail, setOpenDetail] = useState(false);
   const { allArticleCategory } = useArticleCategory();
+
+  const [articleRequest, setArticleRequest] = useState<ArticleRequest>({
+    articleCategoryId: data.articleCategoryId,
+    content: data.content,
+    title: data.title,
+    isPublish: data.isPublish ?? true,
+    thumbnail: data.thumbnail,
+    thumbnailUrl: "",
+  });
 
   const handleEditArticle = (article: ArticleRequest) => {
     setIsLoading(true);
@@ -47,25 +57,22 @@ const DetailArticleModal = ({
     });
 
   const getFile = async () => {
-    if (typeof data.thumbnail === "string" && data.thumbnail) {
-      try {
-        const file = await urlToFile({
-          fileName: "thumbnail.png", // You can customize this
-          url: data.thumbnail,
-        });
-        console.log("File created from URL:", file);
-        return file;
-      } catch (error) {
-        console.error("Error converting URL to file:", error);
-      }
-    } else {
-      console.warn("No valid thumbnail URL to convert.");
-    }
+    const file = await urlToFile({
+      fileName: "thumbnail.png",
+      url: data.thumbnail as string,
+      mimeType: "image/png",
+    });
+
+    setArticleRequest({
+      ...articleRequest,
+      thumbnail: file,
+      thumbnailUrl: data.thumbnail as string,
+    });
   };
 
   useEffect(() => {
     getFile();
-  }, [data.thumbnail]);
+  }, []);
 
   useEffect(() => {
     if (allArticleCategory?.data) {
@@ -77,6 +84,16 @@ const DetailArticleModal = ({
       );
     }
   }, [allArticleCategory?.data]);
+
+  useEffect(() => {
+    if (isEditArticleSuccess) {
+      setOpenDetail(false);
+    }
+
+    if (isEditArticleError) {
+      setOpenDetail(true);
+    }
+  }, [isEditArticleSuccess, isEditArticleError]);
 
   return (
     <>
@@ -91,7 +108,7 @@ const DetailArticleModal = ({
       />
       <Modal title="Edit Artikel" isOpen={openDetail} setIsOpen={setOpenDetail}>
         <Formik
-          initialValues={data}
+          initialValues={articleRequest}
           onSubmit={handleEditArticle}
           validationSchema={articleValidation}
           suppressHydrationWarning={true}
@@ -106,21 +123,13 @@ const DetailArticleModal = ({
           }) => (
             <Form
               onSubmit={() => {
-                console.log(handleEditArticle);
                 handleEditArticle(values);
               }}
             >
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   <BigFileInput
-                    //NEWWW
-                    src={
-                      typeof data.thumbnail === "string"
-                        ? data.thumbnail
-                        : data.thumbnail
-                        ? URL.createObjectURL(data.thumbnail)
-                        : ""
-                    }
+                    src={values.thumbnailUrl as string}
                     onChange={(file) => setFieldValue("thumbnail", file)}
                     label="Kover Artikel"
                   />
@@ -150,13 +159,13 @@ const DetailArticleModal = ({
                     label="Konten Artikel"
                     value={values.content}
                     onChange={handleChange("content")}
+                    error={errors.content ?? undefined}
                   />
                 </div>
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                   <PrimaryWithIconButton
                     label="Simpan"
                     onClick={() => {
-                      console.log(handleSubmit, values);
                       handleEditArticle(values);
                     }}
                     icon={CheckIcon}

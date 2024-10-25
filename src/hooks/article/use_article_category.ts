@@ -43,7 +43,7 @@ interface IUseArticleCategory {
   isAddArticleCategorySucces: boolean;
   isAddArticleCategoryError: boolean;
   isLoadingEditArticleCategory: boolean;
-  isEditArticleCategorySucces: boolean;
+  isEditArticleCategorySuccess: boolean;
   isEditArticleCategoryError: boolean;
   isLoadingDeleteArticleCategory: boolean;
   isDeleteArticleCategorySuccess: boolean;
@@ -85,7 +85,7 @@ export const useArticleCategory = (): IUseArticleCategory => {
   const {
     mutate: editArticleCategory,
     isLoading: isLoadingEditArticleCategory,
-    isSuccess: isEditArticleCategorySucces,
+    isSuccess: isEditArticleCategorySuccess,
     isError: isEditArticleCategoryError,
   } = useMutation(editArticleCategoryBridge, {
     onSuccess: async (value) => {
@@ -138,7 +138,7 @@ export const useArticleCategory = (): IUseArticleCategory => {
     isAddArticleCategorySucces,
     isAddArticleCategoryError,
     editArticleCategory,
-    isEditArticleCategorySucces,
+    isEditArticleCategorySuccess,
     isEditArticleCategoryError,
     isLoadingEditArticleCategory,
     deleteArticleCategory,

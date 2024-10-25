@@ -19,7 +19,6 @@ const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
   const { setIsLoading } = useCentralStore();
   const { editAdmin, isEditAdminSuccess, isEditAdminError } = useAdmin();
 
-  const [active, setActive] = useState<boolean>(true);
   const [openDetail, setOpenDetail] = useState(false);
 
   const handleEditAdmin = (adminRequest: AdminRequest) => {

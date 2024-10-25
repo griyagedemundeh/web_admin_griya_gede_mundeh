@@ -1,19 +1,15 @@
 import ArticleRequest from "@/data/models/article/request/article_request";
 import { IArticleService } from "./article_service_interface";
 import ApiResponse from "@/data/models/base/api-base-response";
-import { create } from "domain";
 import { AxiosError, AxiosResponse } from "axios";
 import api from "@/configs/api";
 import ListDataRequest from "@/data/models/base/list_data_request";
-import { ArticleinList } from "@/data/models/article/response/article";
-import { headers } from "next/headers";
+import { Article } from "@/data/models/article/response/article";
 
 export class ArticleService implements IArticleService {
   BASE_ENDPOINT: string = "admin/article";
 
-  async addArticle(
-    request: ArticleRequest
-  ): Promise<ApiResponse<ArticleinList>> {
+  async addArticle(request: ArticleRequest): Promise<ApiResponse<Article>> {
     const uri = `${this.BASE_ENDPOINT}/create`;
 
     const data = new FormData();
@@ -24,15 +20,18 @@ export class ArticleService implements IArticleService {
     data.append("articleCategoryId", String(request.articleCategoryId));
 
     try {
-      const response: AxiosResponse<ApiResponse<ArticleinList>> =
-        await api.post(uri, data, {
+      const response: AxiosResponse<ApiResponse<Article>> = await api.post(
+        uri,
+        data,
+        {
           //Headers
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        });
+        }
+      );
       return response.data;
-    } catch (error: AxiosError<ApiResponse<ArticleinList>> | any) {
+    } catch (error: AxiosError<ApiResponse<Article>> | any) {
       console.error("====================================");
       console.error("ERROR ADD ARTICLE --> ", error.response.data.message);
       console.error("====================================");
@@ -42,16 +41,17 @@ export class ArticleService implements IArticleService {
 
   async getAllArticle(
     request: ListDataRequest
-  ): Promise<ApiResponse<ArticleinList[]>> {
+  ): Promise<ApiResponse<Article[]>> {
     const uri = `article`;
 
     try {
-      const response: AxiosResponse<ApiResponse<ArticleinList[]>> =
-        await api.get(uri, { params: request });
+      const response: AxiosResponse<ApiResponse<Article[]>> = await api.get(
+        uri,
+        { params: request }
+      );
 
       return response.data;
-      console.log("jalan", response.data);
-    } catch (error: AxiosError<ApiResponse<ArticleinList[]>> | any) {
+    } catch (error: AxiosError<ApiResponse<Article[]>> | any) {
       console.error("==================================");
       console.error("ERROR GET ALL ARTICLE-->", error.response.data.message);
       console.error("====================================");
@@ -85,7 +85,7 @@ export class ArticleService implements IArticleService {
   }: {
     id: number | string;
     request: ArticleRequest;
-  }): Promise<ApiResponse<ArticleinList>> {
+  }): Promise<ApiResponse<Article>> {
     const uri = `${this.BASE_ENDPOINT}/${id}`;
 
     const data = new FormData();
@@ -96,15 +96,18 @@ export class ArticleService implements IArticleService {
     data.append("articleCategoryId", String(request.articleCategoryId));
 
     try {
-      const response: AxiosResponse<ApiResponse<ArticleinList>> =
-        await api.patch(uri, data, {
+      const response: AxiosResponse<ApiResponse<Article>> = await api.patch(
+        uri,
+        data,
+        {
           headers: {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-data",
           },
-        });
-        
+        }
+      );
+
       return response.data;
-    } catch (error: AxiosError<ApiResponse<ArticleinList>> | any) {
+    } catch (error: AxiosError<ApiResponse<Article>> | any) {
       console.error("====================================");
       console.error("ERROR EDIT ARTICLE --> ", error.response.data.message);
       console.error("====================================");

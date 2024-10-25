@@ -22,7 +22,7 @@ const DetailArticleCategoryModal = ({
   const { setIsLoading } = useCentralStore();
   const {
     editArticleCategory,
-    isEditArticleCategorySucces,
+    isEditArticleCategorySuccess,
     isEditArticleCategoryError,
   } = useArticleCategory();
 
@@ -35,14 +35,13 @@ const DetailArticleCategoryModal = ({
   };
 
   useEffect(() => {
-    if (isEditArticleCategorySucces) {
+    if (isEditArticleCategorySuccess) {
       setOpenDetail(false);
     }
     if (isEditArticleCategoryError) {
       setOpenDetail(true);
     }
-    console.log("Jalan");
-  }, [isEditArticleCategorySucces, isEditArticleCategoryError]);
+  }, [isEditArticleCategorySuccess, isEditArticleCategoryError]);
 
   return (
     <>

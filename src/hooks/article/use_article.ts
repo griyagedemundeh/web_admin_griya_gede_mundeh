@@ -50,7 +50,7 @@ interface IUseArticle {
     unknown
   >;
   isLoadingEditArticle: boolean;
-  isEditArticleSucces: boolean;
+  isEditArticleSuccess: boolean;
   isEditArticleError: boolean;
 }
 
@@ -111,7 +111,7 @@ export const useArticle = (): IUseArticle => {
   const {
     mutate: editArticle,
     isLoading: isLoadingEditArticle,
-    isSuccess: isEditArticleSucces,
+    isSuccess: isEditArticleSuccess,
     isError: isEditArticleError,
   } = useMutation(editArticleBridge, {
     onSuccess: async (value) => {
@@ -150,6 +150,6 @@ export const useArticle = (): IUseArticle => {
     editArticle,
     isLoadingEditArticle,
     isEditArticleError,
-    isEditArticleSucces,
+    isEditArticleSuccess,
   };
 };
