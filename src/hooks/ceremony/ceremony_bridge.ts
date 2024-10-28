@@ -44,7 +44,7 @@ export const getAllCeremony = async (
     })
     .catch((error: AxiosError<ApiResponse<CeremonyInList[]>> | unknown) => {
       console.error("====================================");
-      console.error(`${TAG_ERROR} GET ALL CEREMONY CATEGORY `, error);
+      console.error(`${TAG_ERROR} GET ALL CEREMONY`, error);
       console.error("====================================");
       throw error;
     });

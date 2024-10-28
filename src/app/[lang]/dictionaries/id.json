@@ -11,7 +11,8 @@
         "manager": "pengelola",
         "member": "anggota",
         "ceremony": "upacara",
-        "ceremonyCategory": "kategori-upacara"
+        "ceremonyCategory": "kategori-upacara",
+        "articleCategory": "kategori-artikel"
     },
     "label": {
         "emailorPhone": "Email/No.Handphone",
@@ -25,6 +26,7 @@
         "manager": "Pengelola",
         "member": "Anggota",
         "ceremony": "Upacara Agama",
-        "ceremonyCategory": "Kategori Upacara Agama"
+        "ceremonyCategory": "Kategori Upacara Agama",
+        "articleCategory": "Kategori Artikel"
     }
 }

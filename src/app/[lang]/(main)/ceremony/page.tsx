@@ -2,13 +2,10 @@
 
 import { getDictionary, Locale } from "../../dictionaries";
 import Image from "next/image";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-
 import AddCeremonyModal from "./components/AddCeremonyModal";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
@@ -205,19 +202,6 @@ export default function CeremonyPage({
 
       {/* Dialog Add Ceremony*/}
       <AddCeremonyModal open={open} setOpen={setOpen} />
-      {/* Dialog Detail Ceremony*/}
-      {/* <DetailCeremonyModal
-        ceremonyCategories={categories}
-        ceremonyPackages={ceremonyPackages}
-        open={openDetail}
-        progress={progress}
-        selectedCeremonyCategory={selectedCeremonyCategory}
-        setCeremonyPackages={setCeremonyPackages}
-        setOpen={setOpenDetail}
-        setProgress={setProgress}
-        setSelectedCeremonyCategory={setSelectedCeremonyCategory}
-        setSelectedCeremonyPackage={setSelectedCeremonyPackage}
-      /> */}
 
       {/* Delete Dialog */}
       {/* <AlertDangerModal
