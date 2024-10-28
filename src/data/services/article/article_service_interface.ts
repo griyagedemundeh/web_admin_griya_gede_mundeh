@@ -1,15 +1,13 @@
 import ArticleRequest from "@/data/models/article/request/article_request";
-import { ArticleinList } from "@/data/models/article/response/article";
+import { Article } from "@/data/models/article/response/article";
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 
 export interface IArticleService {
   // Article
-  addArticle(request: ArticleRequest): Promise<ApiResponse<ArticleinList>>;
+  addArticle(request: ArticleRequest): Promise<ApiResponse<Article>>;
 
-  getAllArticle(
-    request: ListDataRequest
-  ): Promise<ApiResponse<ArticleinList[]>>;
+  getAllArticle(request: ListDataRequest): Promise<ApiResponse<Article[]>>;
 
   deleteArticle({ id }: { id: number | string }): Promise<ApiResponse<null>>;
 
@@ -20,6 +18,5 @@ export interface IArticleService {
   }: {
     id: number | string;
     request: ArticleRequest;
-  }): Promise<ApiResponse<ArticleinList>>;
-  
+  }): Promise<ApiResponse<Article>>;
 }
