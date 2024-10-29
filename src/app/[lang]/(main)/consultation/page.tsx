@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import IconButton from "@/components/button/IconButton";
@@ -13,6 +13,9 @@ import {
 } from "@heroicons/react/24/outline";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import TransactionModal from "../transaction/components/TransactionModal";
+import { supabase } from "@/utils/supabase";
+import StorageKey from "@/constants/storage_key";
+import Message from "@/data/models/consultation/message/response/message";
 
 export default function ConsultationPage({
   params: { lang },
@@ -20,6 +23,26 @@ export default function ConsultationPage({
   params: { lang: Locale };
 }) {
   const [open, setOpen] = useState(false);
+  const [selectedConsultation, setSelectedConsultation] = useState<Message>();
+  const [chats, setChats] = useState();
+
+  const getChats = async () => {
+    const { data: consultations } = await supabase
+      .from(StorageKey.CEREMONY_CONSULTATION_MESSAGE)
+      .select();
+
+    if ((consultations?.length ?? 0) > 1) {
+      setChats(consultations as any);
+    }
+  };
+
+  useEffect(() => {
+    getChats();
+  }, []);
+
+  // console.log("====================================");
+  // console.log("DATA CHAT --->>>", chats);
+  // console.log("====================================");
 
   return (
     <>
@@ -29,7 +52,7 @@ export default function ConsultationPage({
         <InvoiceSection setOpen={setOpen} />
       </div>
       {/* Dialog Add Transaction*/}
-      <TransactionModal
+      {/* <TransactionModal
         open={open}
         setOpen={setOpen}
         title="Tambah Transaksi"
@@ -40,7 +63,7 @@ export default function ConsultationPage({
             icon={DocumentCheckIcon}
           />
         }
-      />
+      /> */}
     </>
   );
 }
@@ -88,7 +111,7 @@ function Sidebar() {
         {contacts.map((contact, index) => (
           <div
             key={contact.name}
-            className="flex flex-row items-center space-x-4 hover:cursor-pointer hover:bg-yellow-50 p-4 rounded-lg"
+            className={`  flex flex-row items-center space-x-4 hover:cursor-pointer hover:bg-yellow-50 p-4 rounded-lg`}
           >
             <Image
               alt=""
