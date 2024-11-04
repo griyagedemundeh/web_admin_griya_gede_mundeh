@@ -98,3 +98,38 @@ export async function urlToFile({
 
   return file;
 }
+
+export function formatTimeAgo(dateString: string): string {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffSeconds < 0) {
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return date.toLocaleTimeString(undefined, options);
+  }
+
+  if (diffSeconds < 60) {
+    return diffSeconds === 1 ? "a second ago" : `${diffSeconds} seconds ago`;
+  } else if (diffMinutes < 60) {
+    return diffMinutes === 1 ? "a minute ago" : `${diffMinutes} minutes ago`;
+  } else if (diffHours < 24) {
+    return diffHours === 1 ? "an hour ago" : `${diffHours} hours ago`;
+  } else if (diffDays < 7) {
+    return diffDays === 1 ? "a day ago" : `${diffDays} days ago`;
+  } else {
+    // Return formatted date in "HH:mm" for more than 7 days
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return date.toLocaleTimeString(undefined, options);
+  }
+}

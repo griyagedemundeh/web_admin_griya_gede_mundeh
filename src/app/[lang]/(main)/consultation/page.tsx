@@ -18,6 +18,8 @@ import StorageKey from "@/constants/storage_key";
 import Consultation from "@/data/models/consultation/response/consultation";
 import Message from "@/data/models/consultation/message/response/message";
 import MessageRequest from "@/data/models/consultation/message/request/message_request";
+import { formatTimeAgo } from "@/utils";
+import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 
 export default function ConsultationPage({
   params: { lang },
@@ -148,7 +150,6 @@ function ChatSection({
   consultation: Consultation | undefined;
 }) {
   const [chats, setChats] = useState<Message[]>([]);
-  const bottomRef = useRef(null);
 
   const [messageRequest, setMessageRequest] = useState<MessageRequest>({
     consultationId: consultation?.consultationId ?? 0,
@@ -166,7 +167,7 @@ function ChatSection({
       .from(StorageKey.CEREMONY_CONSULTATION_MESSAGE)
       .select()
       .eq("consultationId", consultation?.consultationId)
-      .order("id");
+      .order("id", { ascending: false });
 
     if (consultations?.length) {
       setChats(consultations);
@@ -175,7 +176,6 @@ function ChatSection({
 
   useEffect(() => {
     getChats();
-    (bottomRef.current as any).scrollIntoView({ behavior: "smooth" });
   }, [consultation?.consultationId, chats]);
 
   const sendMessage = async () => {
@@ -185,7 +185,11 @@ function ChatSection({
       .from(StorageKey.CEREMONY_CONSULTATION_MESSAGE)
       .insert(messageRequest);
 
-    setMessageRequest({ ...messageRequest, message: "" });
+    setMessageRequest((prev) => ({
+      ...prev,
+      message: "",
+      createdAt: new Date().toISOString(),
+    }));
 
     getChats();
   };
@@ -206,7 +210,7 @@ function ChatSection({
           </span>
         </div>
       </div>
-      <div className="flex-col-reverse space-y-6 overflow-auto pl-4 pr-4 pt-4 bg-gray-50 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white">
+      <div className="flex flex-col-reverse space-y-6 overflow-auto pl-4 pr-4 pt-4 bg-gray-50 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white">
         {chats.map((chat) => (
           <div key={chat.id} className="flex-col">
             <div
@@ -223,27 +227,20 @@ function ChatSection({
                 !chat.isAdmin ? "" : "text-right"
               }`}
             >
-              {chat.createdAt}
+              {formatTimeAgo(chat.createdAt)}
             </p>
           </div>
         ))}
-        <div ref={bottomRef} />
       </div>
       <div className="flex items-center border-t p-4 ">
-        <PrimaryInput
-          onChange={(e) =>
-            setMessageRequest({ ...messageRequest, message: e.target.value })
-          }
+        <PrimaryTextArea
           value={messageRequest.message}
-          placeholder="Ketik pesan..."
           className="w-full"
-          trailing={
-            <IconButton
-              icon={PaperClipIcon}
-              onClick={() => {}}
-              className="absolute top-1 right-1"
-            />
-          }
+          placeholder="Ketik pesan..."
+          rows={2}
+          onChange={(e) => {
+            setMessageRequest({ ...messageRequest, message: e.target.value });
+          }}
         />
         <div className="ml-4 p-1 text-white rounded-full bg-primary1">
           <IconButton

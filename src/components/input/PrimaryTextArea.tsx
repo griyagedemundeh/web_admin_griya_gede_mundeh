@@ -8,6 +8,7 @@ interface PrimaryInputProps {
   className?: string;
   isOptional?: boolean;
   error?: string;
+  rows?: number;
 }
 
 const PrimaryTextArea = ({
@@ -18,6 +19,7 @@ const PrimaryTextArea = ({
   placeholder,
   isOptional,
   error,
+  rows,
 }: PrimaryInputProps) => {
   return (
     <div className={className}>
@@ -34,10 +36,10 @@ const PrimaryTextArea = ({
           id={label}
           name={label}
           onChange={onChange}
-          rows={4}
+          rows={rows ?? 4}
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 bg-gray-50"
           placeholder={placeholder}
-          defaultValue={value}
+          value={value}
         />
       </div>
       {error && <p className="text-red text-xs mt-2">{error}</p>}

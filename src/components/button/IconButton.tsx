@@ -1,7 +1,7 @@
 import React, { ForwardRefExoticComponent, MouseEventHandler } from "react";
 
 interface PrimaryWithIconButtonProps {
-  onClick: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   icon: ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
       title?: string;
@@ -11,6 +11,7 @@ interface PrimaryWithIconButtonProps {
   className?: string;
   classNameIcon?: string;
   color?: string;
+  type?: "submit" | "reset" | "button" | undefined;
 }
 
 const IconButton = ({
@@ -19,9 +20,11 @@ const IconButton = ({
   className,
   classNameIcon,
   color,
+  type,
 }: PrimaryWithIconButtonProps) => {
   return (
     <button
+      type={type}
       className={
         className +
         ` hover:cursor-pointer hover:bg-${
