@@ -67,7 +67,7 @@ export default function ConsultationPage({
         )}
       </div>
       {/* Dialog Add Transaction*/}
-      {/* <TransactionModal
+      <TransactionModal
         open={open}
         setOpen={setOpen}
         title="Tambah Transaksi"
@@ -78,7 +78,7 @@ export default function ConsultationPage({
             icon={DocumentCheckIcon}
           />
         }
-      /> */}
+      />
     </>
   );
 }
