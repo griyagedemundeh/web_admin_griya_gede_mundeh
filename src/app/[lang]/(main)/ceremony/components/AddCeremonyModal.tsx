@@ -28,7 +28,7 @@ const AddCeremonyModal = ({
     isAddCeremonyDocumentationSuccess,
     addCeremonyPackages,
     isAddCeremonyPackagesSuccess,
-  } = useCeremony();
+  } = useCeremony({});
 
   const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
     useState<DropdownFilterItemProps>();

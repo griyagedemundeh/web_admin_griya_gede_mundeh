@@ -7,6 +7,7 @@ import api from "@/configs/api";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import User from "@/data/models/user/response/user";
 import MemberAddress from "@/data/models/user/response/address";
+import Address from "@/data/models/member/response/address";
 
 export class MemberService implements IMemberService {
   async addMember(request: MemberRequest): Promise<ApiResponse<Member>> {
@@ -50,23 +51,24 @@ export class MemberService implements IMemberService {
   }: {
     id: number | string;
     request: MemberRequest;
-    }): Promise<ApiResponse<User | MemberAddress>> {
+  }): Promise<ApiResponse<User | MemberAddress>> {
     //NEWW
-  // }): Promise<ApiResponse<Member>> {
+    // }): Promise<ApiResponse<Member>> {
     const uri = `/admin/member/${id}`;
 
     try {
-      const response: AxiosResponse<ApiResponse<User | MemberAddress>> = await api.patch(
-      //NEWW
-      // const response: AxiosResponse<ApiResponse<Member>> = await api.patch(
-        uri,
-        request
-      );
+      const response: AxiosResponse<ApiResponse<User | MemberAddress>> =
+        await api.patch(
+          //NEWW
+          // const response: AxiosResponse<ApiResponse<Member>> = await api.patch(
+          uri,
+          request
+        );
 
       return response.data;
-      } catch (error: AxiosError<ApiResponse<User | MemberAddress>> | any) {
-      //NEWW  
-    // } catch (error: AxiosError<ApiResponse<Member>> | any) {
+    } catch (error: AxiosError<ApiResponse<User | MemberAddress>> | any) {
+      //NEWW
+      // } catch (error: AxiosError<ApiResponse<Member>> | any) {
       console.error("====================================");
       console.error("ERROR EDIT MEMBER --> ", error.response.data.message);
       console.error("====================================");
@@ -104,6 +106,32 @@ export class MemberService implements IMemberService {
       console.error("Error GET MEMBER BY ID -->", error.response.data.message);
       console.error("==================================");
       throw error.response.data.message;
-    }{{  }}
+    }
+  }
+
+  async getListMemberAddress({
+    userId,
+  }: {
+    userId: number | string;
+  }): Promise<ApiResponse<Address[]>> {
+    const uri = `/admin/member/address/${userId}`;
+    try {
+      const response: AxiosResponse<ApiResponse<Address[]>> = await api.get(
+        uri
+      );
+
+      console.log("====================================");
+      console.log("adsadsad ---->>> ", response.data);
+      console.log("====================================");
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<Address[]>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error GET MEMBER ADDRESS BY USERID -->",
+        error.response.data.message
+      );
+      console.error("==================================");
+      throw error.response.data.message;
+    }
   }
 }

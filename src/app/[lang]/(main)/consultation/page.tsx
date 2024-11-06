@@ -71,13 +71,7 @@ export default function ConsultationPage({
         open={open}
         setOpen={setOpen}
         title="Tambah Transaksi"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Buat Invoice"
-            onClick={() => {}}
-            icon={DocumentCheckIcon}
-          />
-        }
+        ceremonyServiceId={selectedConsultation?.ceremonyServiceId}
       />
     </>
   );

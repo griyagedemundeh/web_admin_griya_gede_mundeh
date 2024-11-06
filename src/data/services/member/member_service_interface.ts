@@ -1,6 +1,7 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import MemberRequest from "@/data/models/member/request/member_request";
+import Address from "@/data/models/member/response/address";
 import Member from "@/data/models/member/response/member";
 import MemberAddress from "@/data/models/user/response/address";
 import User from "@/data/models/user/response/user";
@@ -16,7 +17,12 @@ export interface IMemberService {
     id: number | string;
     request: MemberRequest;
   }): Promise<ApiResponse<User | MemberAddress>>;
-  //NEWWW
-  // }): Promise<ApiResponse<Member>>;
+
   getAllMember(request: ListDataRequest): Promise<ApiResponse<Member[]>>;
+
+  getListMemberAddress({
+    userId,
+  }: {
+    userId: number | string;
+  }): Promise<ApiResponse<Address[]>>;
 }

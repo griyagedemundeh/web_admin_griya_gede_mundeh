@@ -10,7 +10,9 @@ import {
   addCeremonyPackages as addCeremonyPackagesBridge,
   editCeremonyPackages as editCeremonyPackagesBridge,
   deleteCeremonyPackage as deleteCeremonyPackageBridge,
+  getPackageByCeremonyServiceId as getPackageByCeremonyServiceIdBridge,
   useGetAllCeremonyQuery,
+  useGetCermonyPackageByCeremonyServiceIdQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
 import { useEffect, useState } from "react";
@@ -115,9 +117,17 @@ interface IUseCeremony {
   isLoadingDeleteCeremonyPackage: boolean;
   isDeleteCeremonyPackageSuccess: boolean;
   isDeleteCeremonyPackageError: boolean;
+
+  allCeremonyPackageByCeremonyServiceId:
+    | ApiResponse<CeremonyPackage[]>
+    | undefined;
 }
 
-export const useCeremony = (): IUseCeremony => {
+export const useCeremony = ({
+  ceremonyServiceId,
+}: {
+  ceremonyServiceId?: number | string;
+}): IUseCeremony => {
   const { setIsLoading } = useCentralStore();
 
   const [ceremony, setCeremony] = useState<Ceremony>();
@@ -129,6 +139,15 @@ export const useCeremony = (): IUseCeremony => {
     error: errorAllCeremony,
     refetch: refecthAllCeremony,
   } = useGetAllCeremonyQuery({ limit: 100, page: 1 });
+
+  const {
+    data: allCeremonyPackageByCeremonyServiceId,
+    isLoading: isCeremonyPackageByCeremonyServiceIdLoading,
+    isError: isCeremonyPackageByCeremonyServiceIdError,
+    error: errorCeremonyPackageByCeremonyServiceId,
+  } = useGetCermonyPackageByCeremonyServiceIdQuery({
+    ceremonyServiceId: ceremonyServiceId ?? 0,
+  });
 
   // CEREMONY
   const {
@@ -290,6 +309,20 @@ export const useCeremony = (): IUseCeremony => {
     }
   }, [isAllCeremonyLoading, isAllCeremonyError]);
 
+  useEffect(() => {
+    setIsLoading(isCeremonyPackageByCeremonyServiceIdLoading);
+
+    if (isCeremonyPackageByCeremonyServiceIdError) {
+      statusMessage({
+        message: errorCeremonyPackageByCeremonyServiceId,
+        status: "error",
+      });
+    }
+  }, [
+    isCeremonyPackageByCeremonyServiceIdLoading,
+    isCeremonyPackageByCeremonyServiceIdError,
+  ]);
+
   return {
     // CEREMONY
     addCeremony,
@@ -330,5 +363,6 @@ export const useCeremony = (): IUseCeremony => {
     isDeleteCeremonyPackageError,
     isDeleteCeremonyPackageSuccess,
     isLoadingDeleteCeremonyPackage,
+    allCeremonyPackageByCeremonyServiceId,
   };
 };

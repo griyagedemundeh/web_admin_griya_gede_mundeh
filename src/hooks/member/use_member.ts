@@ -8,12 +8,14 @@ import {
   deleteMember as deleteMemberBridge,
   editMember as editMemberBridge,
   useGetAllMemberQuery,
+  useGetMemberAddressQuery,
 } from "./member_bridge";
 import { showToast } from "@/utils";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import User from "@/data/models/user/response/user";
 import MemberAddress from "@/data/models/user/response/address";
+import Address from "@/data/models/member/response/address";
 
 interface IUseMember {
   addMember: UseMutateFunction<
@@ -24,8 +26,8 @@ interface IUseMember {
   >;
 
   editMember: UseMutateFunction<
-  //NEWW
-  // ApiResponse<Member>,
+    //NEWW
+    // ApiResponse<Member>,
     ApiResponse<User | MemberAddress>,
     unknown,
     {
@@ -43,6 +45,7 @@ interface IUseMember {
     unknown
   >;
   allMember: ApiResponse<Member[]> | undefined;
+  allAddress: ApiResponse<Address[]> | undefined;
   isLoadingAddMember: boolean;
   isAddMemberSuccess: boolean;
   isAddMemberError: boolean;
@@ -54,7 +57,11 @@ interface IUseMember {
   isDeleteMemberError: boolean;
 }
 
-export const useMember = (): IUseMember => {
+export const useMember = ({
+  userId,
+}: {
+  userId?: number | string;
+}): IUseMember => {
   const { setIsLoading } = useCentralStore();
 
   //get all list member
@@ -65,6 +72,13 @@ export const useMember = (): IUseMember => {
     error: errorAllMember,
     refetch: refecthAllMember,
   } = useGetAllMemberQuery({ limit: 100, page: 1 });
+
+  const {
+    data: allAddress,
+    isLoading: isAllAddressLoading,
+    isError: isAllAddressError,
+    error: errorAllAddress,
+  } = useGetMemberAddressQuery({ userId: userId ?? 0 });
 
   // ADD
   const {
@@ -154,7 +168,6 @@ export const useMember = (): IUseMember => {
     },
   });
 
-  //
   useEffect(() => {
     setIsLoading(isAllMemberLoading);
 
@@ -168,6 +181,7 @@ export const useMember = (): IUseMember => {
   return {
     addMember,
     allMember,
+    allAddress,
     isLoadingAddMember,
     isAddMemberSuccess,
     isAddMemberError,

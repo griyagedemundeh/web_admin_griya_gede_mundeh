@@ -1,13 +1,12 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import MemberRequest from "@/data/models/member/request/member_request";
+import Address from "@/data/models/member/response/address";
 import Member from "@/data/models/member/response/member";
 import MemberAddress from "@/data/models/user/response/address";
 import User from "@/data/models/user/response/user";
 import { MemberService } from "@/data/services/member/member_service";
 import { AxiosError } from "axios";
-import { error } from "console";
-import { request } from "http";
 import { useQuery, UseQueryResult } from "react-query";
 
 const authService = new MemberService();
@@ -36,9 +35,9 @@ export const editMember = async ({
 }: {
   id: number | string;
   request: MemberRequest;
-  }): Promise<ApiResponse<User | MemberAddress>> => {
+}): Promise<ApiResponse<User | MemberAddress>> => {
   //NEWW
-// }): Promise<ApiResponse<Member>> => {
+  // }): Promise<ApiResponse<Member>> => {
   const response = await authService
     .editMember({ id, request })
     .then(async (value) => {
@@ -46,7 +45,7 @@ export const editMember = async ({
     })
     //NEWW
     // .catch((error: AxiosError<ApiResponse<Member>> | unknown) => {
-      .catch((error: AxiosError<ApiResponse<User | MemberAddress>> | unknown) => {
+    .catch((error: AxiosError<ApiResponse<User | MemberAddress>> | unknown) => {
       console.error("====================================");
       console.error(`${TAG_ERROR} EDIT Member `, error);
       console.error("====================================");
@@ -115,3 +114,29 @@ export const useGetAllMemberQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<Member[]>, unknown> =>
   useQuery("allMember", () => getAllMember(request));
+
+export const getMemberAddress = async ({
+  userId,
+}: {
+  userId: number | string;
+}): Promise<ApiResponse<Address[]>> => {
+  const response = await authService
+    .getListMemberAddress({ userId })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<Address[]>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} GET ALL MEMBER ADDRESS `, error);
+      console.error("====================================");
+      throw error;
+    });
+  return response;
+};
+
+export const useGetMemberAddressQuery = ({
+  userId,
+}: {
+  userId: number | string;
+}): UseQueryResult<ApiResponse<Address[]>, unknown> =>
+  useQuery(`memberAddress_${userId}`, () => getMemberAddress({ userId }));
