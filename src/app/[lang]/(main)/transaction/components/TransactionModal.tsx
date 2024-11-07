@@ -59,33 +59,27 @@ const TransactionModal = ({
 
   useEffect(() => {
     if (allAdmin?.data) {
-      setAdmins((prevAdmins) =>
-        prevAdmins.concat(
-          allAdmin.data.map((admin) => ({
-            id: admin?.id,
-            title: `${admin?.user?.fullName} - ${admin?.user?.phoneNumber}`,
-          }))
-        )
+      setAdmins(
+        allAdmin.data.map((admin) => ({
+          id: admin?.id,
+          title: `${admin?.user?.fullName} - ${admin?.user?.phoneNumber}`,
+        }))
       );
     }
     if (allCeremonyPackageByCeremonyServiceId?.data) {
-      setPackages((prevPackages) =>
-        prevPackages.concat(
-          allCeremonyPackageByCeremonyServiceId.data.map((ceremonyPackage) => ({
-            id: `${ceremonyPackage?.id}`,
-            title: `${ceremonyPackage?.name}`,
-          }))
-        )
+      setPackages(
+        allCeremonyPackageByCeremonyServiceId.data.map((ceremonyPackage) => ({
+          id: `${ceremonyPackage?.id}`,
+          title: `${ceremonyPackage?.name}`,
+        }))
       );
     }
     if (allMember?.data) {
-      setMembers((prevMembers) =>
-        prevMembers.concat(
-          allMember.data.map((member) => ({
-            id: member?.id,
-            title: `${member?.user?.fullName}`,
-          }))
-        )
+      setMembers(
+        allMember.data.map((member) => ({
+          id: member?.id,
+          title: `${member?.user?.fullName}`,
+        }))
       );
     }
   }, [
@@ -96,13 +90,11 @@ const TransactionModal = ({
 
   useEffect(() => {
     if (allAddress?.data) {
-      setAddresses((prevAddress) =>
-        prevAddress.concat(
-          allAddress.data.map((address) => ({
-            id: address.id,
-            title: `${address?.addressAlias ?? "Rumah"} - ${address.address}`,
-          }))
-        )
+      setAddresses(
+        allAddress.data.map((address) => ({
+          id: address.id,
+          title: `${address?.addressAlias ?? "Rumah"} - ${address.address}`,
+        }))
       );
     }
   }, [selectedMember, allAddress]);
