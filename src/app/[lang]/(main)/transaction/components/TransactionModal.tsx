@@ -13,6 +13,8 @@ import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { useMember } from "@/hooks/member/use_member";
 import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
+import invoiceValidation from "../validation/invoice_validation";
+import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 
 interface TransactionModalProps {
   open: boolean;
@@ -59,6 +61,18 @@ const TransactionModal = ({
   ]);
 
   const { allMember, allAddress } = useMember({ userId: selectedMember?.id });
+
+  const [invoiceRequest, setInvoiceRequest] = useState<InvoiceRequest>({
+    adminId: 0,
+    ceremonyDate: new Date().toISOString(),
+    description: "",
+    isCash: false,
+    memberAddressId: 0,
+    memberId: 0,
+    note: "",
+    totalPrice: "",
+    consultationId: "",
+  });
 
   useEffect(() => {
     if (allCeremony?.data) {
@@ -115,16 +129,26 @@ const TransactionModal = ({
     allCeremonyPackageByCeremonyServiceId?.data?.map((ceremonyPackage) => {
       if (parseInt(`${selectedPackage?.id}`) === ceremonyPackage.id) {
         setSelectedPackageFull(ceremonyPackage);
+        setInvoiceRequest({
+          ...invoiceRequest,
+          description: ceremonyPackage.description,
+        });
       }
     });
   }, [selectedPackage]);
 
+  const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {};
+
+  console.log("====================================");
+  console.log("DATA ===>> ", invoiceRequest);
+  console.log("====================================");
+
   return (
     <Modal title={title} isOpen={open} setIsOpen={setOpen}>
       <Formik
-        initialValues={{}}
-        onSubmit={() => {}}
-        // validationSchema={}
+        initialValues={invoiceRequest}
+        onSubmit={handleAddInvoice}
+        validationSchema={invoiceValidation}
         suppressHydrationWarning={true}
       >
         {({
@@ -137,7 +161,7 @@ const TransactionModal = ({
         }) => (
           <Form
             onSubmit={() => {
-              // handleAddArticle(values);
+              handleAddInvoice(values);
             }}
           >
             <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
@@ -155,6 +179,9 @@ const TransactionModal = ({
                   selectedItem={selectedCeremony}
                   setSelectedItem={(value) => {
                     setSelectedCeremony(value);
+                    setValues({
+                      ...values,
+                    });
                   }}
                   className="w-full"
                 />
@@ -222,14 +249,6 @@ const TransactionModal = ({
                 className="w-full"
               />
 
-              {/* <PrimaryCurrencyInput
-                label="Total Harga"
-                setValue={(e) => {}}
-                value={}
-                placeholder="Masukkan total harga"
-                className="w-full"
-              /> */}
-
               <PrimaryCurrencyInput
                 label="Total Harga"
                 value={selectedPackageFull?.price}
@@ -254,9 +273,17 @@ const TransactionModal = ({
                 className="w-full"
               />
 
+              <PrimaryTextEditor
+                label="Deskripsi Upacara"
+                value={values.description}
+                error={errors?.description}
+                onChange={handleChange(`description`)}
+              />
+
               <PrimaryTextArea
-                onChange={(e) => {}}
-                value={""}
+                value={values.note}
+                error={errors?.note}
+                onChange={handleChange(`note`)}
                 label="Catatan"
                 isOptional={true}
                 className="w-full"
