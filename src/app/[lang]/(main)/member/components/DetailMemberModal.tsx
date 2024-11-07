@@ -22,7 +22,7 @@ interface DetailMemberModalProps {
 
 const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { editMember, isEditMemberSuccess, isEditMemberError } = useMember();
+  const { editMember, isEditMemberSuccess, isEditMemberError } = useMember({});
 
   const [openDetail, setOpenDetail] = useState(false);
 

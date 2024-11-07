@@ -199,3 +199,35 @@ export const deleteCeremonyPackage = async ({
 
   return response;
 };
+
+export const getPackageByCeremonyServiceId = async ({
+  ceremonyServiceId,
+}: {
+  ceremonyServiceId: number | string;
+}): Promise<ApiResponse<CeremonyPackage[]>> => {
+  const response = await ceremonyService
+    .getPackageByCeremonyServiceId({ ceremonyServiceId: ceremonyServiceId })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<CeremonyPackage[]>> | unknown) => {
+      console.error("====================================");
+      console.error(
+        `${TAG_ERROR} GET ALL CEREMONY PACAKAGE BY CEREMONY PACKAGE ID`,
+        error
+      );
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const useGetCermonyPackageByCeremonyServiceIdQuery = ({
+  ceremonyServiceId,
+}: {
+  ceremonyServiceId: number | string;
+}): UseQueryResult<ApiResponse<CeremonyPackage[]>, unknown> =>
+  useQuery(`ceremonyPackage_${ceremonyServiceId}`, () =>
+    getPackageByCeremonyServiceId({ ceremonyServiceId: ceremonyServiceId })
+  );

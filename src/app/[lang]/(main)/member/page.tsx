@@ -31,7 +31,7 @@ export default function UserPage({
   const [open, setOpen] = useState(false);
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
-  const { allMember } = useMember();
+  const { allMember } = useMember({});
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 

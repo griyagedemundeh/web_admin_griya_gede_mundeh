@@ -223,4 +223,28 @@ export class CeremonyService implements ICeremonyService {
       throw error.response.data.message;
     }
   }
+
+  async getPackageByCeremonyServiceId({
+    ceremonyServiceId,
+  }: {
+    ceremonyServiceId: number | string;
+  }): Promise<ApiResponse<CeremonyPackage[]>> {
+    //  const uri = `${this.BASE_ENDPOINT}/package/${id}`;
+    const uri = `/member/ceremony/package/${ceremonyServiceId}`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<CeremonyPackage[]>> =
+        await api.get(uri);
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<CeremonyPackage[]>> | any) {
+      console.error("====================================");
+      console.error(
+        "ERROR GET PACKAGE BY CEREMONY SERVICE ID --> ",
+        error.response.data.message
+      );
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
 }

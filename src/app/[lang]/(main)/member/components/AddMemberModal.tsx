@@ -20,7 +20,7 @@ interface AddMemberModalProps {
 const AddMemberModal = ({ open, setOpen, data }: AddMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
   // sesuaikan dengan useMember()
-  const { addMember, isAddMemberSuccess, isAddMemberError } = useMember();
+  const { addMember, isAddMemberSuccess, isAddMemberError } = useMember({});
 
   // buat dengan menyesuaikan untuk Member
   const handleAddMember = (anggotaRequest: MemberRequest) => {
