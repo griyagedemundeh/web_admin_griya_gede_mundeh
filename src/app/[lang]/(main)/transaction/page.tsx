@@ -117,45 +117,45 @@ export default function TransactionPage({
       <PrimaryTable
         title="Riwayat Transaksi"
         mainActionTitle="Tambah Transaksi"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
-            <PrimaryDatePicker
-              setValue={(value) => {}}
-              value={[new Date(), new Date()]}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+        //     <PrimaryDatePicker
+        //       setValue={(value) => {}}
+        //       value={[new Date(), new Date()]}
+        //     />
 
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <DropdownFilter
-              label="Tipe Pembayaran"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CreditCardIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Tipe Pembayaran"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CreditCardIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari transaksi"
-              className=""
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari transaksi"
+        //       className=""
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         mainActionOnClick={() => {
           setOpen(true);
         }}

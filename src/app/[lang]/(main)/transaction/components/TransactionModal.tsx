@@ -28,21 +28,8 @@ const TransactionModal = ({
   ceremonyServiceId,
 }: TransactionModalProps) => {
   const { allAdmin } = useAdmin();
-  const { allCeremonyPackageByCeremonyServiceId } = useCeremony({
-    ceremonyServiceId: ceremonyServiceId,
-  });
-
-  const [admins, setAdmins] = useState<DropdownFilterItemProps[]>([]);
-  const [members, setMembers] = useState<DropdownFilterItemProps[]>([]);
-  const [packages, setPackages] = useState<DropdownFilterItemProps[]>([]);
-  const [addresses, setAddresses] = useState<DropdownFilterItemProps[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<
-    DropdownFilterItemProps[]
-  >([
-    { id: 1, title: "Transfer/Online" },
-    { id: 2, title: "Tunai/Offline" },
-  ]);
-
+  const [selectedCeremony, setSelectedCeremony] =
+    useState<DropdownFilterItemProps>();
   const [selectedAdmin, setSelectedAdmin] = useState<DropdownFilterItemProps>();
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<DropdownFilterItemProps>();
@@ -55,9 +42,33 @@ const TransactionModal = ({
   const [selectedAddress, setSelectedAddress] =
     useState<DropdownFilterItemProps>();
 
+  const { allCeremonyPackageByCeremonyServiceId, allCeremony } = useCeremony({
+    ceremonyServiceId: ceremonyServiceId ?? selectedCeremony?.id,
+  });
+
+  const [ceremonies, setCeremonies] = useState<DropdownFilterItemProps[]>([]);
+  const [admins, setAdmins] = useState<DropdownFilterItemProps[]>([]);
+  const [members, setMembers] = useState<DropdownFilterItemProps[]>([]);
+  const [packages, setPackages] = useState<DropdownFilterItemProps[]>([]);
+  const [addresses, setAddresses] = useState<DropdownFilterItemProps[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<
+    DropdownFilterItemProps[]
+  >([
+    { id: 1, title: "Transfer/Online" },
+    { id: 2, title: "Tunai/Offline" },
+  ]);
+
   const { allMember, allAddress } = useMember({ userId: selectedMember?.id });
 
   useEffect(() => {
+    if (allCeremony?.data) {
+      setCeremonies(
+        allCeremony.data.map((ceremony) => ({
+          id: ceremony?.id,
+          title: `${ceremony?.title}`,
+        }))
+      );
+    }
     if (allAdmin?.data) {
       setAdmins(
         allAdmin.data.map((admin) => ({
@@ -83,9 +94,11 @@ const TransactionModal = ({
       );
     }
   }, [
+    allCeremony?.data,
     allAdmin?.data,
     allCeremonyPackageByCeremonyServiceId?.data,
     allMember?.data,
+    selectedCeremony,
   ]);
 
   useEffect(() => {
@@ -129,10 +142,20 @@ const TransactionModal = ({
           >
             <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
               <div className="w-full flex flex-row space-x-4">
-                <PrimaryInput
+                {/* <PrimaryInput
                   label="Nama Upacara"
                   onChange={(e) => {}}
                   value={""}
+                  className="w-full"
+                /> */}
+                <DropdownInput
+                  items={ceremonies ?? []}
+                  label="Upacara"
+                  placeholder="Pilih Upacara"
+                  selectedItem={selectedCeremony}
+                  setSelectedItem={(value) => {
+                    setSelectedCeremony(value);
+                  }}
                   className="w-full"
                 />
                 <PrimaryInput
