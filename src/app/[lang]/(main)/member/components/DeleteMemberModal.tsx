@@ -11,7 +11,7 @@ interface DeleteMemberModalProps {
 
 const DeleteMemberModal = ({ data }: DeleteMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { deleteMember } = useMember();
+  const { deleteMember } = useMember({});
 
   const [openDelete, setOpenDelete] = useState(false);
 

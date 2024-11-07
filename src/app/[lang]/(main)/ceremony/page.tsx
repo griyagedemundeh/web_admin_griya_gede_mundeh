@@ -32,7 +32,7 @@ export default function CeremonyPage({
     limit: 100,
     page: 1,
   });
-  const { allCeremony } = useCeremony();
+  const { allCeremony } = useCeremony({});
 
   useEffect(() => {
     setCurrentPage(allCeremony?.meta?.currentPage ?? 1);

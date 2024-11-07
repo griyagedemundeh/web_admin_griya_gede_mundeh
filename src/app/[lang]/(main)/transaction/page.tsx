@@ -174,13 +174,6 @@ export default function TransactionPage({
         open={open}
         setOpen={setOpen}
         title="Tambah Transaksi"
-        bottomAction={
-          <PrimaryWithIconButton
-            label="Buat Invoice"
-            onClick={() => {}}
-            icon={DocumentCheckIcon}
-          />
-        }
       />
 
       {/* Dialog PRE-PAID Transaction*/}
@@ -188,12 +181,6 @@ export default function TransactionPage({
         open={openDetail}
         setOpen={setOpenDetail}
         title="Detail Transaksi"
-        bottomAction={
-          <div className="flex flex-row space-x-2">
-            <SecondaryButton label="Ubah" onClick={() => {}} />
-            <PrimaryButton label="Bayar Sekarang" onClick={() => {}} />
-          </div>
-        }
       />
     </>
   );
