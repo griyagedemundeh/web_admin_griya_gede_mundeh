@@ -64,7 +64,7 @@ const TransactionModal = ({
 
   const [invoiceRequest, setInvoiceRequest] = useState<InvoiceRequest>({
     adminId: 0,
-    ceremonyDate: new Date().toISOString(),
+    ceremonyDate: new Date(),
     description: "",
     isCash: false,
     memberAddressId: 0,
@@ -72,6 +72,7 @@ const TransactionModal = ({
     note: "",
     totalPrice: "",
     consultationId: "",
+    additionalTitle: "",
   });
 
   useEffect(() => {
@@ -126,11 +127,24 @@ const TransactionModal = ({
     }
   }, [selectedMember, allAddress]);
   useEffect(() => {
+    if (selectedPackage === undefined) {
+      setInvoiceRequest({
+        ...invoiceRequest,
+        totalPrice: "",
+        description: "",
+      });
+      return;
+    }
+
     allCeremonyPackageByCeremonyServiceId?.data?.map((ceremonyPackage) => {
-      if (parseInt(`${selectedPackage?.id}`) === ceremonyPackage.id) {
+      if (
+        parseInt(`${selectedPackage?.id}`) === ceremonyPackage.id &&
+        selectedPackage !== undefined
+      ) {
         setSelectedPackageFull(ceremonyPackage);
         setInvoiceRequest({
           ...invoiceRequest,
+          totalPrice: ceremonyPackage.price.toString(),
           description: ceremonyPackage.description,
         });
       }
@@ -187,8 +201,8 @@ const TransactionModal = ({
                 />
                 <PrimaryInput
                   label="Judul Tambahan"
-                  onChange={(e) => {}}
-                  value={""}
+                  onChange={handleChange(`additionalTitle`)}
+                  value={values.additionalTitle ?? ""}
                   className="w-full"
                   isOptional={true}
                 />
@@ -200,6 +214,13 @@ const TransactionModal = ({
                 selectedItem={selectedPackage}
                 setSelectedItem={(value) => {
                   setSelectedPackage(value);
+                  if (value === undefined) {
+                    setValues({
+                      ...values,
+                      totalPrice: "",
+                      description: "",
+                    });
+                  }
                 }}
                 className="w-full"
                 isOptional={true}
@@ -227,17 +248,13 @@ const TransactionModal = ({
 
               <PrimaryDatePicker
                 label="Tanggal Upacara"
-                setValue={(e) => {}}
-                value={[new Date(), new Date()]}
+                setValue={(e) => {
+                  setValues({ ...values, ceremonyDate: e });
+                }}
+                value={values.ceremonyDate}
                 className="w-full"
               />
 
-              {/* <PrimaryInput
-                label="Lokasi Upacara"
-                onChange={(e) => {}}
-                value={""}
-                className="w-full"
-              /> */}
               <DropdownInput
                 items={addresses ?? []}
                 label="Lokasi/Alamat Upacara"
@@ -251,10 +268,9 @@ const TransactionModal = ({
 
               <PrimaryCurrencyInput
                 label="Total Harga"
-                value={selectedPackageFull?.price}
-                // error={(errors?.packages?.[index] as any)?.price}
-                // setValue={handleChange(`packages.${index}.price`)}
-                setValue={(e) => {}}
+                value={values?.totalPrice}
+                error={errors?.totalPrice}
+                setValue={handleChange(`totalPrice`)}
                 placeholder="Masukkan harga paket"
                 className="w-full"
               />
@@ -275,7 +291,7 @@ const TransactionModal = ({
 
               <PrimaryTextEditor
                 label="Deskripsi Upacara"
-                value={values.description}
+                value={selectedPackageFull?.description ?? values.description}
                 error={errors?.description}
                 onChange={handleChange(`description`)}
               />

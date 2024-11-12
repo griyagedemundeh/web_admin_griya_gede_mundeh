@@ -26,6 +26,7 @@ const invoiceValidation = Yup.object<InvoiceRequest>({
     .required("Total harga harus diisi!")
     .min(1, "Total harga tidak boleh kurang dari 0!"),
   isCash: Yup.boolean().required("Jenis pembayaran harus ditentukan!"),
+  additionalTitle: Yup.string(),
 });
 
 export default invoiceValidation;

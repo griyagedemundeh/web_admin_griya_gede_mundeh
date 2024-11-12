@@ -1,6 +1,7 @@
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { XCircleIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
 interface DropdownFilterProps {
@@ -37,10 +38,24 @@ const DropdownInput = ({
             }
           >
             {selectedItem?.title ?? placeholder}
-            <ChevronDownIcon
-              aria-hidden="true"
-              className="-mr-1 h-5 w-5 text-gray-400"
-            />
+            {isOptional && selectedItem ? (
+              <div
+                onClick={() => {
+                  setSelectedItem(undefined);
+                }}
+                className="hover:cursor-pointer hover:bg-gray-200 rounded-full"
+              >
+                <XCircleIcon
+                  aria-hidden="true"
+                  className="-mr-1 h-5 w-5 text-gray-400"
+                />
+              </div>
+            ) : (
+              <ChevronDownIcon
+                aria-hidden="true"
+                className="-mr-1 h-5 w-5 text-gray-400"
+              />
+            )}
           </MenuButton>
         </div>
 
