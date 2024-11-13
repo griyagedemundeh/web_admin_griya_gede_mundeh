@@ -4,6 +4,7 @@ type InvoiceRequest = {
   adminId: number | string;
   ceremonyDate: Date;
   consultationId?: string;
+  ceremonyServiceId: string;
   description: string;
   note: string;
   totalPrice: string;

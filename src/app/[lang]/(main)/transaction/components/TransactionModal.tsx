@@ -72,6 +72,7 @@ const TransactionModal = ({
     note: "",
     totalPrice: "",
     consultationId: "",
+    ceremonyServiceId: "",
     additionalTitle: "",
   });
 
@@ -126,30 +127,6 @@ const TransactionModal = ({
       );
     }
   }, [selectedMember, allAddress]);
-  useEffect(() => {
-    if (selectedPackage === undefined) {
-      setInvoiceRequest({
-        ...invoiceRequest,
-        totalPrice: "",
-        description: "",
-      });
-      return;
-    }
-
-    allCeremonyPackageByCeremonyServiceId?.data?.map((ceremonyPackage) => {
-      if (
-        parseInt(`${selectedPackage?.id}`) === ceremonyPackage.id &&
-        selectedPackage !== undefined
-      ) {
-        setSelectedPackageFull(ceremonyPackage);
-        setInvoiceRequest({
-          ...invoiceRequest,
-          totalPrice: ceremonyPackage.price.toString(),
-          description: ceremonyPackage.description,
-        });
-      }
-    });
-  }, [selectedPackage]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {};
 
@@ -180,12 +157,6 @@ const TransactionModal = ({
           >
             <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
               <div className="w-full flex flex-row space-x-4">
-                {/* <PrimaryInput
-                  label="Nama Upacara"
-                  onChange={(e) => {}}
-                  value={""}
-                  className="w-full"
-                /> */}
                 <DropdownInput
                   items={ceremonies ?? []}
                   label="Upacara"
@@ -195,6 +166,7 @@ const TransactionModal = ({
                     setSelectedCeremony(value);
                     setValues({
                       ...values,
+                      ceremonyServiceId: `${value?.id}`,
                     });
                   }}
                   className="w-full"
@@ -214,12 +186,25 @@ const TransactionModal = ({
                 selectedItem={selectedPackage}
                 setSelectedItem={(value) => {
                   setSelectedPackage(value);
+
                   if (value === undefined) {
                     setValues({
                       ...values,
                       totalPrice: "",
                       description: "",
                     });
+                  } else {
+                    allCeremonyPackageByCeremonyServiceId?.data?.map(
+                      (ceremonyPackage) => {
+                        if (parseInt(`${value.id}`) === ceremonyPackage.id) {
+                          setValues({
+                            ...values,
+                            totalPrice: ceremonyPackage.price.toString(),
+                            description: ceremonyPackage.description,
+                          });
+                        }
+                      }
+                    );
                   }
                 }}
                 className="w-full"
