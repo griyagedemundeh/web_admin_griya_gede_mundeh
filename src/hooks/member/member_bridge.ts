@@ -139,4 +139,6 @@ export const useGetMemberAddressQuery = ({
 }: {
   userId: number | string;
 }): UseQueryResult<ApiResponse<Address[]>, unknown> =>
-  useQuery(`memberAddress_${userId}`, () => getMemberAddress({ userId }));
+  useQuery(`memberAddress_${userId}`, () => getMemberAddress({ userId }), {
+    retry: false,
+  });

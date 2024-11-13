@@ -1,23 +1,13 @@
 import * as Yup from "yup";
 
-type InvoiceRequest = {
-  memberId: number | string;
-  memberAddressId: number | string;
-  adminId: number | string;
-  ceremonyDate: string;
-  consultationId?: string;
-  description: string;
-  note: string;
-  totalPrice: string;
-  isCash: boolean;
-};
-
 const invoiceValidation = Yup.object<InvoiceRequest>({
   memberId: Yup.number().required("Pengguna/Pemedek harus diisi!"),
   memberAddressId: Yup.number().required("Alamat pengguna harus diisi!"),
   adminId: Yup.number().required("Admin harus diisi!"),
-  ceremonyDate: Yup.string().required("Tanggal upacara harus diisi!"),
+  ceremonyDate: Yup.date().required("Tanggal upacara harus diisi!"),
   consultationId: Yup.string().optional().nullable(),
+  ceremonyServiceId: Yup.number().required("Upacara Agama harus diisi!"),
+  ceremonyPackageId: Yup.number().optional().nullable(),
   description: Yup.string().required("Deskripsi harus diisi!"),
   note: Yup.string()
     .optional()

@@ -12,6 +12,7 @@ interface DropdownFilterProps {
   setSelectedItem: (value: DropdownFilterItemProps | undefined) => void;
   className?: string;
   isOptional?: boolean;
+  error?: string;
 }
 
 const DropdownInput = ({
@@ -22,6 +23,7 @@ const DropdownInput = ({
   placeholder,
   className,
   isOptional,
+  error,
 }: DropdownFilterProps) => {
   return (
     <div className={className + " relative"}>
@@ -71,7 +73,11 @@ const DropdownInput = ({
                     onClick={() => {
                       setSelectedItem(item);
                     }}
-                    className="inline-block w-full text-start rounded-sm px-4 py-2 transition duration-200 ease-linear transform text-sm text-gray-700 data-[focus]:font-bold data-[focus]:bg-yellow-50 data-[focus]:border-l-primary1 data-[focus]:border-l-4 data-[focus]:text-gray-900 hover:cursor-pointer"
+                    className={`${
+                      selectedItem?.title === item.title
+                        ? "bg-yellow-50 border-l-primary1 border-l-4"
+                        : ""
+                    } inline-block w-full text-start rounded-sm px-4 py-2 transition duration-200 ease-linear transform text-sm text-gray-700 data-[focus]:font-bold data-[focus]:bg-yellow-50 data-[focus]:border-l-primary1 data-[focus]:border-l-4 data-[focus]:text-gray-900 hover:cursor-pointer`}
                   >
                     {item.title}
                   </div>
@@ -81,6 +87,7 @@ const DropdownInput = ({
           </div>
         </MenuItems>
       </Menu>
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 };

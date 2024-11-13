@@ -120,9 +120,6 @@ export class MemberService implements IMemberService {
         uri
       );
 
-      console.log("====================================");
-      console.log("adsadsad ---->>> ", response.data);
-      console.log("====================================");
       return response.data;
     } catch (error: AxiosError<ApiResponse<Address[]>> | any) {
       console.error("==================================");

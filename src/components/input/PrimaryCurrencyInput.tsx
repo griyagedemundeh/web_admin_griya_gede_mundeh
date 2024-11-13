@@ -9,6 +9,7 @@ interface IPrimaryCurrencyInputProps {
   placeholder?: string;
   className?: string;
   error?: string;
+  disabled?: boolean;
 }
 
 const PrimaryCurrencyInput = ({
@@ -19,6 +20,7 @@ const PrimaryCurrencyInput = ({
   prefix,
   className,
   error,
+  disabled,
 }: IPrimaryCurrencyInputProps) => {
   return (
     <div className={className}>
@@ -34,6 +36,7 @@ const PrimaryCurrencyInput = ({
         placeholder={placeholder ?? ""}
         defaultValue={0}
         value={value}
+        disabled={disabled}
         prefix={prefix ?? "Rp"}
         className="block w-full mt-2 rounded-md border-0 py-1.5 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 placeholder:text-xs bg-gray-50"
         onValueChange={(value: string | undefined) => {

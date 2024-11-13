@@ -85,7 +85,7 @@ export default function TransactionPage({
         header: "Tanggal Upacara",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.ceremonyDate.toISOString()}
+            {/* {info.row.original.ceremonyDate.toISOString()} */}
           </div>
         ),
       },

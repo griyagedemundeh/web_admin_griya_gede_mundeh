@@ -2,7 +2,13 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import MemberRequest from "@/data/models/member/request/member_request";
 import Member from "@/data/models/member/response/member";
 import { useCentralStore } from "@/store";
-import { UseMutateFunction, useMutation } from "react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  UseMutateFunction,
+  useMutation,
+} from "react-query";
 import {
   addMember as addMemberBridge,
   deleteMember as deleteMemberBridge,
@@ -26,8 +32,6 @@ interface IUseMember {
   >;
 
   editMember: UseMutateFunction<
-    //NEWW
-    // ApiResponse<Member>,
     ApiResponse<User | MemberAddress>,
     unknown,
     {
@@ -46,6 +50,9 @@ interface IUseMember {
   >;
   allMember: ApiResponse<Member[]> | undefined;
   allAddress: ApiResponse<Address[]> | undefined;
+  refecthAllAddress: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<Address[]>, unknown>>;
   isLoadingAddMember: boolean;
   isAddMemberSuccess: boolean;
   isAddMemberError: boolean;
@@ -78,6 +85,7 @@ export const useMember = ({
     isLoading: isAllAddressLoading,
     isError: isAllAddressError,
     error: errorAllAddress,
+    refetch: refecthAllAddress,
   } = useGetMemberAddressQuery({ userId: userId ?? 0 });
 
   // ADD
@@ -182,6 +190,7 @@ export const useMember = ({
     addMember,
     allMember,
     allAddress,
+    refecthAllAddress,
     isLoadingAddMember,
     isAddMemberSuccess,
     isAddMemberError,

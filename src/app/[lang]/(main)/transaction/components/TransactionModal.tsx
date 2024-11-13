@@ -56,11 +56,13 @@ const TransactionModal = ({
   const [paymentMethods, setPaymentMethods] = useState<
     DropdownFilterItemProps[]
   >([
-    { id: 1, title: "Transfer/Online" },
-    { id: 2, title: "Tunai/Offline" },
+    { id: 1, title: "Transfer/Online", value: false },
+    { id: 2, title: "Tunai/Offline", value: true },
   ]);
 
-  const { allMember, allAddress } = useMember({ userId: selectedMember?.id });
+  const { allMember, allAddress, refecthAllAddress } = useMember({
+    userId: selectedMember?.id,
+  });
 
   const [invoiceRequest, setInvoiceRequest] = useState<InvoiceRequest>({
     adminId: 0,
@@ -74,6 +76,7 @@ const TransactionModal = ({
     consultationId: "",
     ceremonyServiceId: "",
     additionalTitle: "",
+    ceremonyPackageId: "",
   });
 
   useEffect(() => {
@@ -128,11 +131,11 @@ const TransactionModal = ({
     }
   }, [selectedMember, allAddress]);
 
-  const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {};
-
-  console.log("====================================");
-  console.log("DATA ===>> ", invoiceRequest);
-  console.log("====================================");
+  const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
+    console.log("====================================");
+    console.log("DATA ===>> ", invoiceRequest);
+    console.log("====================================");
+  };
 
   return (
     <Modal title={title} isOpen={open} setIsOpen={setOpen}>
@@ -147,7 +150,7 @@ const TransactionModal = ({
           handleChange,
           handleSubmit,
           values,
-          setFieldValue,
+
           setValues,
         }) => (
           <Form
@@ -162,11 +165,21 @@ const TransactionModal = ({
                   label="Upacara"
                   placeholder="Pilih Upacara"
                   selectedItem={selectedCeremony}
+                  error={errors.ceremonyServiceId}
                   setSelectedItem={(value) => {
                     setSelectedCeremony(value);
+
+                    setValues({
+                      ...values,
+                      ceremonyServiceId: value?.id as number,
+                    });
+
+                    setSelectedPackage(undefined);
                     setValues({
                       ...values,
                       ceremonyServiceId: `${value?.id}`,
+                      totalPrice: "",
+                      description: "",
                     });
                   }}
                   className="w-full"
@@ -175,6 +188,7 @@ const TransactionModal = ({
                   label="Judul Tambahan"
                   onChange={handleChange(`additionalTitle`)}
                   value={values.additionalTitle ?? ""}
+                  error={errors.note}
                   className="w-full"
                   isOptional={true}
                 />
@@ -184,6 +198,7 @@ const TransactionModal = ({
                 label="Paket"
                 placeholder="Pilih Paket Upacara"
                 selectedItem={selectedPackage}
+                error={errors.ceremonyPackageId}
                 setSelectedItem={(value) => {
                   setSelectedPackage(value);
 
@@ -192,6 +207,7 @@ const TransactionModal = ({
                       ...values,
                       totalPrice: "",
                       description: "",
+                      ceremonyPackageId: undefined,
                     });
                   } else {
                     allCeremonyPackageByCeremonyServiceId?.data?.map(
@@ -199,6 +215,7 @@ const TransactionModal = ({
                         if (parseInt(`${value.id}`) === ceremonyPackage.id) {
                           setValues({
                             ...values,
+                            ceremonyPackageId: value.id,
                             totalPrice: ceremonyPackage.price.toString(),
                             description: ceremonyPackage.description,
                           });
@@ -215,8 +232,15 @@ const TransactionModal = ({
                 label="Pemedek/Pengguna"
                 placeholder="Pilih Pemedek/Pengguna"
                 selectedItem={selectedMember}
+                error={errors.memberId}
                 setSelectedItem={(value) => {
                   setSelectedMember(value);
+                  setSelectedAddress(undefined);
+                  setValues({
+                    ...values,
+                    memberId: value?.id as number,
+                    memberAddressId: undefined,
+                  });
                 }}
                 className="w-full"
               />
@@ -225,8 +249,13 @@ const TransactionModal = ({
                 label="Tipe Pembayaran"
                 placeholder="Pilih metode pembayaran"
                 selectedItem={selectedPaymentMethod}
+                error={errors.isCash}
                 setSelectedItem={(value) => {
                   setSelectedPaymentMethod(value);
+                  setValues({
+                    ...values,
+                    isCash: value?.value,
+                  });
                 }}
                 className="w-full"
               />
@@ -237,6 +266,7 @@ const TransactionModal = ({
                   setValues({ ...values, ceremonyDate: e });
                 }}
                 value={values.ceremonyDate}
+                error={`${errors?.ceremonyDate ?? ""}`}
                 className="w-full"
               />
 
@@ -245,14 +275,20 @@ const TransactionModal = ({
                 label="Lokasi/Alamat Upacara"
                 placeholder="Pilih Lokasi/Alamat Upacara"
                 selectedItem={selectedAddress}
+                error={errors.memberAddressId}
                 setSelectedItem={(value) => {
                   setSelectedAddress(value);
+                  setValues({
+                    ...values,
+                    memberAddressId: value?.id as string,
+                  });
                 }}
                 className="w-full"
               />
 
               <PrimaryCurrencyInput
                 label="Total Harga"
+                disabled={selectedPackage !== undefined}
                 value={values?.totalPrice}
                 error={errors?.totalPrice}
                 setValue={handleChange(`totalPrice`)}
@@ -264,12 +300,13 @@ const TransactionModal = ({
                 label="Pengelola"
                 placeholder="Pilih pengelola"
                 selectedItem={selectedAdmin}
+                error={errors.adminId}
                 setSelectedItem={(e) => {
                   setSelectedAdmin(e);
-                  // setValues({
-                  //   ...values,
-                  //   ceremonyCategoryId: e?.id as string,
-                  // });
+                  setValues({
+                    ...values,
+                    adminId: e?.id as string,
+                  });
                 }}
                 className="w-full"
               />
@@ -279,6 +316,7 @@ const TransactionModal = ({
                 value={selectedPackageFull?.description ?? values.description}
                 error={errors?.description}
                 onChange={handleChange(`description`)}
+                disabled={selectedPackage !== undefined}
               />
 
               <PrimaryTextArea
@@ -292,7 +330,10 @@ const TransactionModal = ({
               <div className="flex flex-row justify-end w-full pt-2">
                 <PrimaryWithIconButton
                   label="Buat Invoice"
-                  onClick={() => {}}
+                  type="submit"
+                  onClick={() => {
+                    handleSubmit();
+                  }}
                   icon={DocumentCheckIcon}
                 />
               </div>

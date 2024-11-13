@@ -10,6 +10,7 @@ interface IPrimaryDatePickerProps {
   setValue: (value: Date) => void;
   label?: string;
   className?: string;
+  error?: string;
 }
 
 const PrimaryDatePicker = ({
@@ -17,6 +18,7 @@ const PrimaryDatePicker = ({
   setValue,
   value,
   className,
+  error,
 }: IPrimaryDatePickerProps) => {
   return (
     <div className={className}>
@@ -46,6 +48,7 @@ const PrimaryDatePicker = ({
           className="border-none self-start p-0 ml-2 w-96"
         />
       </div>
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 };
