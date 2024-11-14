@@ -15,6 +15,9 @@ import { useMember } from "@/hooks/member/use_member";
 import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 import invoiceValidation from "../validation/invoice_validation";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
+import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
+import { useTransaction } from "@/hooks/transaction/use_transaction";
+import Script from "next/script";
 
 interface TransactionModalProps {
   open: boolean;
@@ -29,7 +32,12 @@ const TransactionModal = ({
   title,
   ceremonyServiceId,
 }: TransactionModalProps) => {
+  const [openPayment, setOpenPayment] = useState<boolean>(false);
+
   const { allAdmin } = useAdmin();
+
+  const { createInvoice, isLoadingCreateInvoice } = useTransaction();
+
   const [selectedCeremony, setSelectedCeremony] =
     useState<DropdownFilterItemProps>();
   const [selectedAdmin, setSelectedAdmin] = useState<DropdownFilterItemProps>();
@@ -75,8 +83,8 @@ const TransactionModal = ({
     totalPrice: "",
     consultationId: "",
     ceremonyServiceId: "",
-    additionalTitle: "",
-    ceremonyPackageId: "",
+    title: "",
+    ceremonyServicePackageId: "",
   });
 
   useEffect(() => {
@@ -132,216 +140,264 @@ const TransactionModal = ({
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
-    console.log("====================================");
-    console.log("DATA ===>> ", invoiceRequest);
-    console.log("====================================");
+    // console.log("====================================");
+    // console.log("DATA ===>> ", invoiceRequest);
+    // console.log("====================================");
+    // createInvoice(invoiceRequest);
   };
 
   return (
-    <Modal title={title} isOpen={open} setIsOpen={setOpen}>
-      <Formik
-        initialValues={invoiceRequest}
-        onSubmit={handleAddInvoice}
-        validationSchema={invoiceValidation}
-        suppressHydrationWarning={true}
-      >
-        {({
-          errors,
-          handleChange,
-          handleSubmit,
-          values,
+    <div>
+      <Modal title={title} isOpen={open} setIsOpen={setOpen}>
+        <Formik
+          initialValues={invoiceRequest}
+          onSubmit={handleAddInvoice}
+          validationSchema={invoiceValidation}
+          suppressHydrationWarning={true}
+        >
+          {({
+            errors,
+            handleChange,
+            handleSubmit,
+            values,
 
-          setValues,
-        }) => (
-          <Form
-            onSubmit={() => {
-              handleAddInvoice(values);
-            }}
-          >
-            <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
-              <div className="w-full flex flex-row space-x-4">
+            setValues,
+          }) => (
+            <Form
+              onSubmit={() => {
+                handleAddInvoice(values);
+              }}
+            >
+              <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
+                <div className="w-full flex flex-row space-x-4">
+                  <DropdownInput
+                    items={ceremonies ?? []}
+                    label="Upacara"
+                    placeholder="Pilih Upacara"
+                    selectedItem={selectedCeremony}
+                    error={errors.ceremonyServiceId}
+                    setSelectedItem={(value) => {
+                      setSelectedCeremony(value);
+
+                      setValues({
+                        ...values,
+                        ceremonyServiceId: value?.id as number,
+                      });
+
+                      setSelectedPackage(undefined);
+                      setValues({
+                        ...values,
+                        ceremonyServiceId: `${value?.id}`,
+                        totalPrice: "",
+                        description: "",
+                      });
+                    }}
+                    className="w-full"
+                  />
+                  <PrimaryInput
+                    label="Judul Tambahan"
+                    onChange={handleChange(`title`)}
+                    value={values.title ?? ""}
+                    error={errors.note}
+                    className="w-full"
+                    isOptional={true}
+                  />
+                </div>
                 <DropdownInput
-                  items={ceremonies ?? []}
-                  label="Upacara"
-                  placeholder="Pilih Upacara"
-                  selectedItem={selectedCeremony}
-                  error={errors.ceremonyServiceId}
+                  items={packages ?? []}
+                  label="Paket"
+                  placeholder="Pilih Paket Upacara"
+                  selectedItem={selectedPackage}
+                  error={errors.ceremonyServicePackageId}
                   setSelectedItem={(value) => {
-                    setSelectedCeremony(value);
+                    setSelectedPackage(value);
 
-                    setValues({
-                      ...values,
-                      ceremonyServiceId: value?.id as number,
-                    });
-
-                    setSelectedPackage(undefined);
-                    setValues({
-                      ...values,
-                      ceremonyServiceId: `${value?.id}`,
-                      totalPrice: "",
-                      description: "",
-                    });
+                    if (value === undefined) {
+                      setValues({
+                        ...values,
+                        totalPrice: "",
+                        description: "",
+                        ceremonyServicePackageId: undefined,
+                      });
+                    } else {
+                      allCeremonyPackageByCeremonyServiceId?.data?.map(
+                        (ceremonyPackage) => {
+                          if (parseInt(`${value.id}`) === ceremonyPackage.id) {
+                            setValues({
+                              ...values,
+                              ceremonyServicePackageId: value.id,
+                              totalPrice: ceremonyPackage.price.toString(),
+                              description: ceremonyPackage.description,
+                            });
+                          }
+                        }
+                      );
+                    }
                   }}
-                  className="w-full"
-                />
-                <PrimaryInput
-                  label="Judul Tambahan"
-                  onChange={handleChange(`additionalTitle`)}
-                  value={values.additionalTitle ?? ""}
-                  error={errors.note}
                   className="w-full"
                   isOptional={true}
                 />
-              </div>
-              <DropdownInput
-                items={packages ?? []}
-                label="Paket"
-                placeholder="Pilih Paket Upacara"
-                selectedItem={selectedPackage}
-                error={errors.ceremonyPackageId}
-                setSelectedItem={(value) => {
-                  setSelectedPackage(value);
-
-                  if (value === undefined) {
+                <DropdownInput
+                  items={members ?? []}
+                  label="Pemedek/Pengguna"
+                  placeholder="Pilih Pemedek/Pengguna"
+                  selectedItem={selectedMember}
+                  error={errors.memberId}
+                  setSelectedItem={(value) => {
+                    setSelectedMember(value);
+                    setSelectedAddress(undefined);
                     setValues({
                       ...values,
-                      totalPrice: "",
-                      description: "",
-                      ceremonyPackageId: undefined,
+                      memberId: value?.id as number,
+                      memberAddressId: undefined,
                     });
-                  } else {
-                    allCeremonyPackageByCeremonyServiceId?.data?.map(
-                      (ceremonyPackage) => {
-                        if (parseInt(`${value.id}`) === ceremonyPackage.id) {
-                          setValues({
-                            ...values,
-                            ceremonyPackageId: value.id,
-                            totalPrice: ceremonyPackage.price.toString(),
-                            description: ceremonyPackage.description,
-                          });
-                        }
-                      }
-                    );
-                  }
-                }}
-                className="w-full"
-                isOptional={true}
-              />
-              <DropdownInput
-                items={members ?? []}
-                label="Pemedek/Pengguna"
-                placeholder="Pilih Pemedek/Pengguna"
-                selectedItem={selectedMember}
-                error={errors.memberId}
-                setSelectedItem={(value) => {
-                  setSelectedMember(value);
-                  setSelectedAddress(undefined);
-                  setValues({
-                    ...values,
-                    memberId: value?.id as number,
-                    memberAddressId: undefined,
-                  });
-                }}
-                className="w-full"
-              />
-              <DropdownInput
-                items={paymentMethods ?? []}
-                label="Tipe Pembayaran"
-                placeholder="Pilih metode pembayaran"
-                selectedItem={selectedPaymentMethod}
-                error={errors.isCash}
-                setSelectedItem={(value) => {
-                  setSelectedPaymentMethod(value);
-                  setValues({
-                    ...values,
-                    isCash: value?.value,
-                  });
-                }}
-                className="w-full"
-              />
-
-              <PrimaryDatePicker
-                label="Tanggal Upacara"
-                setValue={(e) => {
-                  setValues({ ...values, ceremonyDate: e });
-                }}
-                value={values.ceremonyDate}
-                error={`${errors?.ceremonyDate ?? ""}`}
-                className="w-full"
-              />
-
-              <DropdownInput
-                items={addresses ?? []}
-                label="Lokasi/Alamat Upacara"
-                placeholder="Pilih Lokasi/Alamat Upacara"
-                selectedItem={selectedAddress}
-                error={errors.memberAddressId}
-                setSelectedItem={(value) => {
-                  setSelectedAddress(value);
-                  setValues({
-                    ...values,
-                    memberAddressId: value?.id as string,
-                  });
-                }}
-                className="w-full"
-              />
-
-              <PrimaryCurrencyInput
-                label="Total Harga"
-                disabled={selectedPackage !== undefined}
-                value={values?.totalPrice}
-                error={errors?.totalPrice}
-                setValue={handleChange(`totalPrice`)}
-                placeholder="Masukkan harga paket"
-                className="w-full"
-              />
-              <DropdownInput
-                items={admins ?? []}
-                label="Pengelola"
-                placeholder="Pilih pengelola"
-                selectedItem={selectedAdmin}
-                error={errors.adminId}
-                setSelectedItem={(e) => {
-                  setSelectedAdmin(e);
-                  setValues({
-                    ...values,
-                    adminId: e?.id as string,
-                  });
-                }}
-                className="w-full"
-              />
-
-              <PrimaryTextEditor
-                label="Deskripsi Upacara"
-                value={selectedPackageFull?.description ?? values.description}
-                error={errors?.description}
-                onChange={handleChange(`description`)}
-                disabled={selectedPackage !== undefined}
-              />
-
-              <PrimaryTextArea
-                value={values.note}
-                error={errors?.note}
-                onChange={handleChange(`note`)}
-                label="Catatan"
-                isOptional={true}
-                className="w-full"
-              />
-              <div className="flex flex-row justify-end w-full pt-2">
-                <PrimaryWithIconButton
-                  label="Buat Invoice"
-                  type="submit"
-                  onClick={() => {
-                    handleSubmit();
                   }}
-                  icon={DocumentCheckIcon}
+                  className="w-full"
                 />
+                <DropdownInput
+                  items={paymentMethods ?? []}
+                  label="Tipe Pembayaran"
+                  placeholder="Pilih metode pembayaran"
+                  selectedItem={selectedPaymentMethod}
+                  error={errors.isCash}
+                  setSelectedItem={(value) => {
+                    setSelectedPaymentMethod(value);
+                    setValues({
+                      ...values,
+                      isCash: value?.value,
+                    });
+                  }}
+                  className="w-full"
+                />
+
+                <PrimaryDatePicker
+                  label="Tanggal Upacara"
+                  setValue={(e) => {
+                    setValues({ ...values, ceremonyDate: e });
+                  }}
+                  value={values.ceremonyDate}
+                  error={`${errors?.ceremonyDate ?? ""}`}
+                  className="w-full"
+                />
+
+                <DropdownInput
+                  items={addresses ?? []}
+                  label="Lokasi/Alamat Upacara"
+                  placeholder="Pilih Lokasi/Alamat Upacara"
+                  selectedItem={selectedAddress}
+                  error={errors.memberAddressId}
+                  setSelectedItem={(value) => {
+                    setSelectedAddress(value);
+                    setValues({
+                      ...values,
+                      memberAddressId: value?.id as string,
+                    });
+                  }}
+                  className="w-full"
+                />
+
+                <PrimaryCurrencyInput
+                  label="Total Harga"
+                  disabled={selectedPackage !== undefined}
+                  value={values?.totalPrice}
+                  error={errors?.totalPrice}
+                  setValue={handleChange(`totalPrice`)}
+                  placeholder="Masukkan harga paket"
+                  className="w-full"
+                />
+                <DropdownInput
+                  items={admins ?? []}
+                  label="Pengelola"
+                  placeholder="Pilih pengelola"
+                  selectedItem={selectedAdmin}
+                  error={errors.adminId}
+                  setSelectedItem={(e) => {
+                    setSelectedAdmin(e);
+                    setValues({
+                      ...values,
+                      adminId: e?.id as string,
+                    });
+                  }}
+                  className="w-full"
+                />
+
+                <PrimaryTextEditor
+                  label="Deskripsi Upacara"
+                  value={selectedPackageFull?.description ?? values.description}
+                  error={errors?.description}
+                  onChange={handleChange(`description`)}
+                  disabled={selectedPackage !== undefined}
+                />
+
+                <PrimaryTextArea
+                  value={values.note}
+                  error={errors?.note}
+                  onChange={handleChange(`note`)}
+                  label="Catatan"
+                  isOptional={true}
+                  className="w-full"
+                />
+                <div className="flex flex-row justify-end w-full pt-2">
+                  <PrimaryWithIconButton
+                    label="Buat Invoice"
+                    loading={isLoadingCreateInvoice}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      // handleSubmit();
+                      setOpenPayment(true);
+
+                      window.snap.embed(
+                        "19c8a226-9e6f-4ad8-a210-0ce6f2812de4",
+                        {
+                          embedId: "snap-container",
+                          onSuccess: function (result) {
+                            /* You may add your own implementation here */
+                            alert("payment success!");
+                            console.log(result);
+                          },
+                          onPending: function (result) {
+                            /* You may add your own implementation here */
+                            alert("wating your payment!");
+                            console.log(result);
+                          },
+                          onError: function (result) {
+                            /* You may add your own implementation here */
+                            alert("payment failed!");
+                            console.log(result);
+                          },
+                          onClose: function () {
+                            /* You may add your own implementation here */
+                            alert(
+                              "you closed the popup without finishing the payment"
+                            );
+                          },
+                        }
+                      );
+                    }}
+                    icon={DocumentCheckIcon}
+                  />
+                </div>
               </div>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </Modal>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
+
+      <Modal
+        title={"Pembayaran"}
+        isOpen={openPayment}
+        setIsOpen={setOpenPayment}
+      >
+        <div id="step3">
+          <div className="overflow-auto h-[550px]">
+            <div
+              id="snap-container"
+              className="overflow-auto h-[540px] w-[420px]"
+            ></div>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 };
 

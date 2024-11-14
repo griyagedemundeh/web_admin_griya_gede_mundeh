@@ -5,10 +5,12 @@ type InvoiceRequest = {
   ceremonyDate: Date;
   consultationId?: string | number | null;
   ceremonyServiceId: string | number;
-  ceremonyPackageId?: string | number | null;
+  ceremonyServicePackageId?: string | number | null;
   description: string;
   note: string;
   totalPrice: string;
   isCash: boolean;
-  additionalTitle?: string;
+  title?: string;
 };
+
+export default InvoiceRequest;

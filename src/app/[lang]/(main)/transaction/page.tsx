@@ -23,6 +23,7 @@ import TransactionModal from "./components/TransactionModal";
 import SecondaryButton from "@/components/button/SecondaryButton";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
+import Script from "next/script";
 
 type ValuePiece = Date | null;
 
@@ -113,6 +114,12 @@ export default function TransactionPage({
 
   return (
     <>
+      <Script
+        type="text/javascript"
+        src={"https://app.stg.midtrans.com/snap/snap.js"}
+        data-client-key={"Mid-client-O8S4wgpjLqmrU5gQ"}
+        defer
+      />
       <h1 className="font-bold text-xl mb-8">Transaksi</h1>
       <PrimaryTable
         title="Riwayat Transaksi"

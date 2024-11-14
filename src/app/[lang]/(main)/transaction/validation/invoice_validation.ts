@@ -1,3 +1,4 @@
+import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
 import * as Yup from "yup";
 
 const invoiceValidation = Yup.object<InvoiceRequest>({
@@ -7,16 +8,19 @@ const invoiceValidation = Yup.object<InvoiceRequest>({
   ceremonyDate: Yup.date().required("Tanggal upacara harus diisi!"),
   consultationId: Yup.string().optional().nullable(),
   ceremonyServiceId: Yup.number().required("Upacara Agama harus diisi!"),
-  ceremonyPackageId: Yup.number().optional().nullable(),
+  ceremonyServicePackageId: Yup.number().optional().nullable(),
   description: Yup.string().required("Deskripsi harus diisi!"),
   note: Yup.string()
     .optional()
-    .max(500, "Catatan tidak boleh lebih dari 500 karakter"),
+    .max(500, "Catatan tidak boleh lebih dari 500 karakter!"),
   totalPrice: Yup.string()
     .required("Total harga harus diisi!")
     .min(1, "Total harga tidak boleh kurang dari 0!"),
   isCash: Yup.boolean().required("Jenis pembayaran harus ditentukan!"),
-  additionalTitle: Yup.string(),
+  title: Yup.string().max(
+    255,
+    "Judul tambahan tidak boleh lebih dari 255 karakter!"
+  ),
 });
 
 export default invoiceValidation;
