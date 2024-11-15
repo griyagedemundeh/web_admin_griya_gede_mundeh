@@ -1,11 +1,11 @@
 type InvoiceRequest = {
-  memberId: number | string;
-  memberAddressId: number | string | undefined;
-  adminId: number | string;
+  memberId: number;
+  memberAddressId: number | null;
+  adminId: number;
   ceremonyDate: Date;
-  consultationId?: string | number | null;
+  consultationId?: number | null;
   ceremonyServiceId: string | number;
-  ceremonyServicePackageId?: string | number | null;
+  ceremonyServicePackageId?: number | null;
   description: string;
   note: string;
   totalPrice: string;

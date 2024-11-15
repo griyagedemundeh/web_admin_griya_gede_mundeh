@@ -17,7 +17,7 @@ import invoiceValidation from "../validation/invoice_validation";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
 import { useTransaction } from "@/hooks/transaction/use_transaction";
-import Script from "next/script";
+import { number } from "yup";
 
 interface TransactionModalProps {
   open: boolean;
@@ -36,7 +36,12 @@ const TransactionModal = ({
 
   const { allAdmin } = useAdmin();
 
-  const { createInvoice, isLoadingCreateInvoice } = useTransaction();
+  const {
+    createInvoice,
+    isLoadingCreateInvoice,
+    payment,
+    isCreateInvoiceSuccess,
+  } = useTransaction();
 
   const [selectedCeremony, setSelectedCeremony] =
     useState<DropdownFilterItemProps>();
@@ -68,7 +73,7 @@ const TransactionModal = ({
     { id: 2, title: "Tunai/Offline", value: true },
   ]);
 
-  const { allMember, allAddress, refecthAllAddress } = useMember({
+  const { allMember, allAddress } = useMember({
     userId: selectedMember?.id,
   });
 
@@ -81,10 +86,10 @@ const TransactionModal = ({
     memberId: 0,
     note: "",
     totalPrice: "",
-    consultationId: "",
-    ceremonyServiceId: "",
+    consultationId: 0,
+    ceremonyServiceId: 0,
     title: "",
-    ceremonyServicePackageId: "",
+    ceremonyServicePackageId: 0,
   });
 
   useEffect(() => {
@@ -140,11 +145,14 @@ const TransactionModal = ({
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
-    // console.log("====================================");
-    // console.log("DATA ===>> ", invoiceRequest);
-    // console.log("====================================");
-    // createInvoice(invoiceRequest);
+    createInvoice(invoiceRequest);
   };
+
+  useEffect(() => {
+    if (isCreateInvoiceSuccess) {
+      setOpenPayment(true);
+    }
+  }, [isCreateInvoiceSuccess]);
 
   return (
     <div>
@@ -187,7 +195,7 @@ const TransactionModal = ({
                       setSelectedPackage(undefined);
                       setValues({
                         ...values,
-                        ceremonyServiceId: `${value?.id}`,
+                        ceremonyServiceId: value?.id as number,
                         totalPrice: "",
                         description: "",
                       });
@@ -225,7 +233,7 @@ const TransactionModal = ({
                           if (parseInt(`${value.id}`) === ceremonyPackage.id) {
                             setValues({
                               ...values,
-                              ceremonyServicePackageId: value.id,
+                              ceremonyServicePackageId: parseInt(`${value.id}`),
                               totalPrice: ceremonyPackage.price.toString(),
                               description: ceremonyPackage.description,
                             });
@@ -249,7 +257,7 @@ const TransactionModal = ({
                     setValues({
                       ...values,
                       memberId: value?.id as number,
-                      memberAddressId: undefined,
+                      memberAddressId: null,
                     });
                   }}
                   className="w-full"
@@ -290,7 +298,7 @@ const TransactionModal = ({
                     setSelectedAddress(value);
                     setValues({
                       ...values,
-                      memberAddressId: value?.id as string,
+                      memberAddressId: value?.id as number,
                     });
                   }}
                   className="w-full"
@@ -315,7 +323,7 @@ const TransactionModal = ({
                     setSelectedAdmin(e);
                     setValues({
                       ...values,
-                      adminId: e?.id as string,
+                      adminId: e?.id as number,
                     });
                   }}
                   className="w-full"
@@ -343,36 +351,7 @@ const TransactionModal = ({
                     loading={isLoadingCreateInvoice}
                     onClick={(e) => {
                       e.preventDefault();
-                      // handleSubmit();
-                      setOpenPayment(true);
-
-                      window.snap.embed(
-                        "19c8a226-9e6f-4ad8-a210-0ce6f2812de4",
-                        {
-                          embedId: "snap-container",
-                          onSuccess: function (result) {
-                            /* You may add your own implementation here */
-                            alert("payment success!");
-                            console.log(result);
-                          },
-                          onPending: function (result) {
-                            /* You may add your own implementation here */
-                            alert("wating your payment!");
-                            console.log(result);
-                          },
-                          onError: function (result) {
-                            /* You may add your own implementation here */
-                            alert("payment failed!");
-                            console.log(result);
-                          },
-                          onClose: function () {
-                            /* You may add your own implementation here */
-                            alert(
-                              "you closed the popup without finishing the payment"
-                            );
-                          },
-                        }
-                      );
+                      handleSubmit();
                     }}
                     icon={DocumentCheckIcon}
                   />
@@ -388,14 +367,16 @@ const TransactionModal = ({
         isOpen={openPayment}
         setIsOpen={setOpenPayment}
       >
-        <div id="step3">
-          <div className="overflow-auto h-[550px]">
-            <div
-              id="snap-container"
-              className="overflow-auto h-[540px] w-[420px]"
-            ></div>
-          </div>
-        </div>
+        <iframe
+          src={payment?.paymentUrl}
+          className="h-[550px] w-full"
+          title="Pembayaran"
+          onChange={(e) => {
+            console.log("====================================");
+            console.log("e ---> ", e.target);
+            console.log("====================================");
+          }}
+        ></iframe>
       </Modal>
     </div>
   );

@@ -114,12 +114,6 @@ export default function TransactionPage({
 
   return (
     <>
-      <Script
-        type="text/javascript"
-        src={"https://app.stg.midtrans.com/snap/snap.js"}
-        data-client-key={"Mid-client-O8S4wgpjLqmrU5gQ"}
-        defer
-      />
       <h1 className="font-bold text-xl mb-8">Transaksi</h1>
       <PrimaryTable
         title="Riwayat Transaksi"

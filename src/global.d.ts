@@ -1,10 +1,10 @@
 declare global {
   interface Window {
     snap: {
-      embed: (
+      pay: (
         token: string,
         options?: {
-          embedId: string;
+          embedId?: string;
           onSuccess?: (result: T) => void;
           onPending?: (result: T) => void;
           onError?: (result: T) => void;

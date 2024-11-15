@@ -6,6 +6,7 @@ import { createInvoice as createInvoiceBridge } from "./transaction_bridge";
 import { showToast } from "@/utils";
 import { AxiosError } from "axios";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
+import { useState } from "react";
 
 interface IUseTransaction {
   createInvoice: UseMutateFunction<
@@ -17,10 +18,13 @@ interface IUseTransaction {
   isLoadingCreateInvoice: boolean;
   isCreateInvoiceSuccess: boolean;
   isCreateInvoiceError: boolean;
+  payment: Payment | undefined;
 }
 
 export const useTransaction = (): IUseTransaction => {
   const { setIsLoading } = useCentralStore();
+
+  const [payment, setPayment] = useState<Payment>();
 
   const {
     mutate: createInvoice,
@@ -35,9 +39,7 @@ export const useTransaction = (): IUseTransaction => {
 
       setIsLoading(false);
 
-      console.log("====================================");
-      console.log("DATA PAYMENT ---->> ", value);
-      console.log("====================================");
+      setPayment(value.data);
     },
     onError: async (error: AxiosError<ApiResponse<Member>> | unknown) => {
       setIsLoading(false);
@@ -56,5 +58,6 @@ export const useTransaction = (): IUseTransaction => {
     isCreateInvoiceError,
     isCreateInvoiceSuccess,
     isLoadingCreateInvoice,
+    payment,
   };
 };
