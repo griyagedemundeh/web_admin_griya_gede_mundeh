@@ -2,11 +2,16 @@ import ApiResponse from "@/data/models/base/api-base-response";
 import Member from "@/data/models/member/response/member";
 import { useCentralStore } from "@/store";
 import { UseMutateFunction, useMutation } from "react-query";
-import { createInvoice as createInvoiceBridge } from "./transaction_bridge";
-import { showToast } from "@/utils";
+import {
+  createInvoice as createInvoiceBridge,
+  useGetAllInvoiceQuery,
+} from "./transaction_bridge";
+import { showToast, statusMessage } from "@/utils";
 import { AxiosError } from "axios";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ListDataRequest from "@/data/models/base/list_data_request";
+import Invoice from "@/data/models/transaction/response/invoice";
 
 interface IUseTransaction {
   createInvoice: UseMutateFunction<
@@ -19,12 +24,28 @@ interface IUseTransaction {
   isCreateInvoiceSuccess: boolean;
   isCreateInvoiceError: boolean;
   payment: Payment | undefined;
+
+  // Invoice
+  invoices: ApiResponse<Invoice[]> | undefined;
+  isLoadingGetAllInvoice: boolean;
 }
 
 export const useTransaction = (): IUseTransaction => {
   const { setIsLoading } = useCentralStore();
 
   const [payment, setPayment] = useState<Payment>();
+
+  const [filter, setFilter] = useState<ListDataRequest>({
+    page: 1,
+    limit: 1000,
+  });
+
+  const {
+    data: invoices,
+    isLoading: isLoadingGetAllInvoice,
+    isError: isErrorGetAllInvoice,
+    error: errorGetAllInvoice,
+  } = useGetAllInvoiceQuery(filter);
 
   const {
     mutate: createInvoice,
@@ -53,11 +74,23 @@ export const useTransaction = (): IUseTransaction => {
     },
   });
 
+  useEffect(() => {
+    setIsLoading(isLoadingGetAllInvoice);
+
+    if (isErrorGetAllInvoice) {
+      statusMessage({ message: errorGetAllInvoice, status: "error" });
+    }
+  }, [isLoadingGetAllInvoice, isErrorGetAllInvoice]);
+
   return {
     createInvoice,
     isCreateInvoiceError,
     isCreateInvoiceSuccess,
     isLoadingCreateInvoice,
     payment,
+
+    // Invoice
+    invoices,
+    isLoadingGetAllInvoice,
   };
 };

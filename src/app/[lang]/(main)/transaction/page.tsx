@@ -1,33 +1,51 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  CreditCardIcon,
-  DocumentCheckIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
-import PrimaryInput from "@/components/input/PrimaryInput";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconButton from "@/components/button/IconButton";
-import { status, transactions } from "@/utils/dummyData";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import Transaction from "@/data/models/transaction";
 import TransactionModal from "./components/TransactionModal";
-import SecondaryButton from "@/components/button/SecondaryButton";
-import PrimaryButton from "@/components/button/PrimaryButton";
-import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
-import Script from "next/script";
+import { useTransaction } from "@/hooks/transaction/use_transaction";
+import Invoice from "@/data/models/transaction/response/invoice";
+import { formatDateIndonesia, formatRupiah } from "@/utils";
 
-type ValuePiece = Date | null;
+const StatusBadge = ({ status }: { status: string }): React.ReactElement => {
+  let bgColor = "";
+  let borderColor = "";
+  let textColor = "";
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+  switch (status) {
+    case "success":
+      bgColor = "bg-emerald-100";
+      borderColor = "border-green";
+      textColor = "text-green";
+      break;
+    case "pending":
+      bgColor = "bg-yellow-100";
+      borderColor = "border-yellow-500";
+      textColor = "text-yellow-500";
+      break;
+    case "failed":
+      bgColor = "bg-red-100";
+      borderColor = "border-red-500";
+      textColor = "text-red-500";
+      break;
+    default:
+      bgColor = "bg-gray-100";
+      borderColor = "border-gray-300";
+      textColor = "text-gray-600";
+  }
+
+  return (
+    <div
+      className={`py-1 ${bgColor} ${borderColor} border-2 rounded-lg ${textColor} w-auto text-center capitalize`}
+    >
+      <p>{status}</p>
+    </div>
+  );
+};
 
 export default function TransactionPage({
   params: { lang },
@@ -38,16 +56,12 @@ export default function TransactionPage({
   const [open, setOpen] = useState(false);
 
   const [openDetail, setOpenDetail] = useState(false);
-  const [value, onChange] = useState<Value>([new Date(), new Date()]);
 
-  const [selectedStatusItem, setSelectedStatusItem] =
-    useState<DropdownFilterItemProps>();
-
-  const [data, setData] = useState(() => transactions);
+  const { invoices } = useTransaction();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns = useMemo<ColumnDef<Transaction>[]>(
+  const columns = useMemo<ColumnDef<Invoice>[]>(
     () => [
       {
         header: "Detail Order",
@@ -55,10 +69,10 @@ export default function TransactionPage({
           <div className="py-4 sm:pl-6 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-col space-y-2">
               <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
-                {info.row.original.invoiceNumber}
+                {info.row.original.id}
               </p>
               <p className="text-gray-800 line-clamp-1 text-ellipsis">
-                {info.row.original.title}
+                {info.row.original.status}
               </p>
             </div>
           </div>
@@ -68,9 +82,7 @@ export default function TransactionPage({
         header: "Status",
         cell: (info) => (
           <div className="w-1/2">
-            <div className="py-1 bg-emerald-100 border-green border-2 rounded-lg text-green w-auto text-center">
-              <p>{info.row.original.status}</p>
-            </div>
+            {StatusBadge({ status: info.row.original.status })}
           </div>
         ),
       },
@@ -78,15 +90,17 @@ export default function TransactionPage({
         header: "Total Harga",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            Rp{info.row.original.totalPrice}
+            {formatRupiah(info.row.original.totalPrice)}
           </div>
         ),
       },
       {
-        header: "Tanggal Upacara",
+        header: "Tanggal Pembayaran",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {/* {info.row.original.ceremonyDate.toISOString()} */}
+            {info.row.original?.paidAt
+              ? formatDateIndonesia(info.row.original?.createdAt)
+              : "Belum Bayar/Lunas"}
           </div>
         ),
       },
@@ -161,12 +175,12 @@ export default function TransactionPage({
           setOpen(true);
         }}
         columns={columns}
-        data={data ?? []}
+        data={invoices?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={5}
-        limitPage={10}
+        limitPage={1000}
         isCommon={true}
       />
 

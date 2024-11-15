@@ -90,10 +90,7 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       current: false,
     },
   ];
-  const userNavigation = [
-    { name: "Your profile", href: "#" },
-    { name: "Sign out", href: "#" },
-  ];
+  const userNavigation = [{ name: "Keluar", href: "#" }];
 
   return (
     <div>

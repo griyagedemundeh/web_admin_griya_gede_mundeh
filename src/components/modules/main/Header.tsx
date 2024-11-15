@@ -62,7 +62,7 @@ const Header = ({ navigations, onClose, t }: HeaderProps) => {
                   aria-hidden="true"
                   className="ml-4 text-sm font-semibold leading-6 text-gray-900"
                 >
-                  Tom Cook
+                  {account?.fullName}
                 </span>
                 <ChevronDownIcon
                   aria-hidden="true"
@@ -78,7 +78,7 @@ const Header = ({ navigations, onClose, t }: HeaderProps) => {
                 <MenuItem key={item.name}>
                   <a
                     href={item.href}
-                    className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                    className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-rose-50"
                   >
                     {item.name}
                   </a>

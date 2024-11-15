@@ -2,9 +2,9 @@ type InvoiceRequest = {
   memberId: number;
   memberAddressId: number | null;
   adminId: number;
-  ceremonyDate: Date;
+  ceremonyDate: string | Date;
   consultationId?: number | null;
-  ceremonyServiceId: string | number;
+  ceremonyServiceId: number;
   ceremonyServicePackageId?: number | null;
   description: string;
   note: string;

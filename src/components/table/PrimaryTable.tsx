@@ -81,6 +81,11 @@ const PrimaryTable = ({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 1000, // Use limitPage or fallback to 10
+      },
+    },
   });
 
   // const next = () => {

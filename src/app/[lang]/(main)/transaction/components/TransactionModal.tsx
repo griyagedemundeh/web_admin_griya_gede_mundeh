@@ -112,7 +112,7 @@ const TransactionModal = ({
     if (allCeremonyPackageByCeremonyServiceId?.data) {
       setPackages(
         allCeremonyPackageByCeremonyServiceId.data.map((ceremonyPackage) => ({
-          id: `${ceremonyPackage?.id}`,
+          id: ceremonyPackage?.id,
           title: `${ceremonyPackage?.name}`,
         }))
       );
@@ -145,7 +145,13 @@ const TransactionModal = ({
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
-    createInvoice(invoiceRequest);
+    createInvoice({
+      ...invoiceRequest,
+      ceremonyDate: new Date(invoiceRequest.ceremonyDate)
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " "),
+    });
   };
 
   useEffect(() => {
@@ -233,7 +239,7 @@ const TransactionModal = ({
                           if (parseInt(`${value.id}`) === ceremonyPackage.id) {
                             setValues({
                               ...values,
-                              ceremonyServicePackageId: parseInt(`${value.id}`),
+                              ceremonyServicePackageId: value.id as number,
                               totalPrice: ceremonyPackage.price.toString(),
                               description: ceremonyPackage.description,
                             });
@@ -281,9 +287,12 @@ const TransactionModal = ({
                 <PrimaryDatePicker
                   label="Tanggal Upacara"
                   setValue={(e) => {
-                    setValues({ ...values, ceremonyDate: e });
+                    setValues({
+                      ...values,
+                      ceremonyDate: e.toISOString(),
+                    });
                   }}
-                  value={values.ceremonyDate}
+                  value={new Date(values.ceremonyDate)}
                   error={`${errors?.ceremonyDate ?? ""}`}
                   className="w-full"
                 />
