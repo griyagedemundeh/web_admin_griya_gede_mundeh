@@ -17,7 +17,8 @@ import invoiceValidation from "../validation/invoice_validation";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
 import { useTransaction } from "@/hooks/transaction/use_transaction";
-import { number } from "yup";
+import IconButton from "@/components/button/IconButton";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 interface TransactionModalProps {
   open: boolean;
@@ -33,6 +34,7 @@ const TransactionModal = ({
   ceremonyServiceId,
 }: TransactionModalProps) => {
   const [openPayment, setOpenPayment] = useState<boolean>(false);
+  const [openAddAdress, setOpenAddAddress] = useState<boolean>(false);
 
   const { allAdmin } = useAdmin();
 
@@ -297,21 +299,37 @@ const TransactionModal = ({
                   className="w-full"
                 />
 
-                <DropdownInput
-                  items={addresses ?? []}
-                  label="Lokasi/Alamat Upacara"
-                  placeholder="Pilih Lokasi/Alamat Upacara"
-                  selectedItem={selectedAddress}
-                  error={errors.memberAddressId}
-                  setSelectedItem={(value) => {
-                    setSelectedAddress(value);
-                    setValues({
-                      ...values,
-                      memberAddressId: value?.id as number,
-                    });
-                  }}
-                  className="w-full"
-                />
+                <div
+                  className={`flex flex-row justify-between w-full space-x-2 ${
+                    errors.memberAddressId ? "items-center" : "items-end"
+                  }`}
+                >
+                  <DropdownInput
+                    items={addresses ?? []}
+                    label="Lokasi/Alamat Upacara"
+                    placeholder="Pilih Lokasi/Alamat Upacara"
+                    selectedItem={selectedAddress}
+                    error={errors.memberAddressId}
+                    setSelectedItem={(value) => {
+                      setSelectedAddress(value);
+                      setValues({
+                        ...values,
+                        memberAddressId: value?.id as number,
+                      });
+                    }}
+                    className="w-full"
+                  />
+
+                  <IconButton
+                    icon={PlusCircleIcon}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenAddAddress(true);
+                    }}
+                    className="h-8 w-8 flex flex-row items-center justify-center"
+                  />
+                </div>
 
                 <PrimaryCurrencyInput
                   label="Total Harga"
@@ -386,6 +404,45 @@ const TransactionModal = ({
             console.log("====================================");
           }}
         ></iframe>
+      </Modal>
+
+      <Modal
+        title={`Tambah Alamat \n${selectedMember?.title}`}
+        isOpen={openAddAdress}
+        setIsOpen={setOpenAddAddress}
+      >
+        <Formik
+          initialValues={invoiceRequest}
+          onSubmit={handleAddInvoice}
+          validationSchema={invoiceValidation}
+          suppressHydrationWarning={true}
+        >
+          {({
+            errors,
+            handleChange,
+            handleSubmit,
+            values,
+
+            setValues,
+          }) => (
+            <Form
+              onSubmit={() => {
+                handleAddInvoice(values);
+              }}
+            >
+              <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
+                <PrimaryInput
+                  label=""
+                  onChange={handleChange(`title`)}
+                  value={values.title ?? ""}
+                  error={errors.note}
+                  className="w-full"
+                  isOptional={true}
+                />
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </div>
   );

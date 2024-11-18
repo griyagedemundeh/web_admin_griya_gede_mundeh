@@ -6,7 +6,7 @@ type Invoice = {
   totalPrice: number;
   paymentUrl: string;
   isCash: boolean;
-  status: string;
+  status: "success" | "pending" | "canceled";
   createdAt: string;
   paidAt: string | null;
   updatedAt: string;

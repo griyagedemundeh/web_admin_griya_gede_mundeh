@@ -10,6 +10,7 @@ import TransactionModal from "./components/TransactionModal";
 import { useTransaction } from "@/hooks/transaction/use_transaction";
 import Invoice from "@/data/models/transaction/response/invoice";
 import { formatDateIndonesia, formatRupiah } from "@/utils";
+import DetailTransactionModal from "./components/DetailTransactionModal";
 
 const StatusBadge = ({ status }: { status: string }): React.ReactElement => {
   let bgColor = "";
@@ -109,14 +110,9 @@ export default function TransactionPage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={InformationCircleIcon}
-                colorBackground="blue"
-                className="bg-blue-100"
-                colorIcon="blue"
-                onClick={() => {
-                  setOpenDetail(true);
-                }}
+              <DetailTransactionModal
+                title={`Detail - ${info.row.original?.id}`}
+                invoice={info.row.original}
               />
             </div>
           </div>
