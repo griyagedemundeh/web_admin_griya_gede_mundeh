@@ -1,10 +1,12 @@
 type Invoice = {
-  id: number;
-  consultationId: number;
+  id: string;
+  consultationId: string | null;
   ceremonyHistoryId: number;
   memberId: number;
   totalPrice: number;
   paymentUrl: string;
+  paymentToken: string;
+  paymentMethod: string;
   isCash: boolean;
   status: "success" | "pending" | "canceled";
   createdAt: string;

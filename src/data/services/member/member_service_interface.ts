@@ -1,5 +1,6 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
+import MemberAddressRequest from "@/data/models/member/request/member_address_request";
 import MemberRequest from "@/data/models/member/request/member_request";
 import Address from "@/data/models/member/response/address";
 import Member from "@/data/models/member/response/member";
@@ -25,4 +26,8 @@ export interface IMemberService {
   }: {
     userId: number | string;
   }): Promise<ApiResponse<Address[]>>;
+
+  createMemberAddress(
+    request: MemberAddressRequest
+  ): Promise<ApiResponse<MemberAddress>>;
 }

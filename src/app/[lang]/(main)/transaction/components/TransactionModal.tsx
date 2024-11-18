@@ -7,7 +7,11 @@ import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
 import Modal from "@/components/modal/Modal";
 import { Form, Formik } from "formik";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import { DocumentCheckIcon } from "@heroicons/react/20/solid";
+import {
+  CheckCircleIcon,
+  DocumentCheckIcon,
+  MapPinIcon,
+} from "@heroicons/react/20/solid";
 import { useAdmin } from "@/hooks/admin/use_admin";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
@@ -17,8 +21,9 @@ import invoiceValidation from "../validation/invoice_validation";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
 import { useTransaction } from "@/hooks/transaction/use_transaction";
-import IconButton from "@/components/button/IconButton";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import memberAddressValidation from "../../member/validation/member_address_validation";
+import MemberAddressRequest from "@/data/models/member/request/member_address_request";
+import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 
 interface TransactionModalProps {
   open: boolean;
@@ -75,7 +80,7 @@ const TransactionModal = ({
     { id: 2, title: "Tunai/Offline", value: true },
   ]);
 
-  const { allMember, allAddress } = useMember({
+  const { allMember, allAddress, refecthAllAddress } = useMember({
     userId: selectedMember?.id,
   });
 
@@ -93,6 +98,20 @@ const TransactionModal = ({
     title: "",
     ceremonyServicePackageId: 0,
   });
+
+  const [memberAddressRequest, setMemberAddressRequest] =
+    useState<MemberAddressRequest>({
+      address: "",
+      addressAlias: "",
+      addressNote: "",
+      userId: selectedMember?.id as number,
+    });
+
+  const {
+    createMemberAddress,
+    isCreateMemberAddressSuccess,
+    isLoadingCreateMemberAddress,
+  } = useMember({});
 
   useEffect(() => {
     if (allCeremony?.data) {
@@ -138,12 +157,19 @@ const TransactionModal = ({
   useEffect(() => {
     if (allAddress?.data) {
       setAddresses(
-        allAddress.data.map((address) => ({
+        allAddress.data.map((address, index) => ({
           id: address.id,
-          title: `${address?.addressAlias ?? "Rumah"} - ${address.address}`,
+          title:
+            `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
+            `- ${address.address}`,
         }))
       );
     }
+
+    setMemberAddressRequest({
+      ...memberAddressRequest,
+      userId: selectedMember?.id as number,
+    });
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
@@ -156,11 +182,32 @@ const TransactionModal = ({
     });
   };
 
+  const handleCreateMemberAddress = (
+    memberAddressRequest: MemberAddressRequest
+  ) => {
+    createMemberAddress(memberAddressRequest);
+  };
+
   useEffect(() => {
-    if (isCreateInvoiceSuccess) {
+    if (isCreateInvoiceSuccess && !invoiceRequest.isCash) {
       setOpenPayment(true);
     }
-  }, [isCreateInvoiceSuccess]);
+  }, [isCreateInvoiceSuccess, invoiceRequest.isCash]);
+
+  useEffect(() => {
+    if (isCreateMemberAddressSuccess && allAddress?.data) {
+      refecthAllAddress();
+      setOpenAddAddress(false);
+      setAddresses(
+        allAddress.data.map((address, index) => ({
+          id: address.id,
+          title:
+            `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
+            `- ${address.address}`,
+        }))
+      );
+    }
+  }, [isCreateMemberAddressSuccess, allAddress?.data]);
 
   return (
     <div>
@@ -320,14 +367,14 @@ const TransactionModal = ({
                     className="w-full"
                   />
 
-                  <IconButton
-                    icon={PlusCircleIcon}
-                    type="button"
+                  <IconBackgroundButton
+                    icon={MapPinIcon}
                     onClick={(e) => {
                       e.preventDefault();
                       setOpenAddAddress(true);
                     }}
-                    className="h-8 w-8 flex flex-row items-center justify-center"
+                    colorIcon="white"
+                    className="bg-gray-300 hover:bg-gray-200"
                   />
                 </div>
 
@@ -407,42 +454,74 @@ const TransactionModal = ({
       </Modal>
 
       <Modal
-        title={`Tambah Alamat \n${selectedMember?.title}`}
+        title={`Tambah Alamat \n${selectedMember?.title ?? ""}`}
         isOpen={openAddAdress}
         setIsOpen={setOpenAddAddress}
       >
-        <Formik
-          initialValues={invoiceRequest}
-          onSubmit={handleAddInvoice}
-          validationSchema={invoiceValidation}
-          suppressHydrationWarning={true}
-        >
-          {({
-            errors,
-            handleChange,
-            handleSubmit,
-            values,
+        {selectedMember?.title ? (
+          <Formik
+            initialValues={memberAddressRequest}
+            onSubmit={handleCreateMemberAddress}
+            validationSchema={memberAddressValidation}
+            suppressHydrationWarning={true}
+          >
+            {({
+              errors,
+              handleChange,
+              handleSubmit,
+              values,
 
-            setValues,
-          }) => (
-            <Form
-              onSubmit={() => {
-                handleAddInvoice(values);
-              }}
-            >
-              <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
-                <PrimaryInput
-                  label=""
-                  onChange={handleChange(`title`)}
-                  value={values.title ?? ""}
-                  error={errors.note}
-                  className="w-full"
-                  isOptional={true}
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
+              setValues,
+            }) => (
+              <Form
+                onSubmit={() => {
+                  handleCreateMemberAddress(values);
+                }}
+              >
+                <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
+                  <PrimaryInput
+                    label="Alamat"
+                    onChange={handleChange(`address`)}
+                    value={values.address ?? ""}
+                    placeholder={`Masukkan alamat ${selectedMember.title}`}
+                    error={errors.address}
+                    className="w-full"
+                  />
+                  <PrimaryInput
+                    label="Alias Alamat"
+                    onChange={handleChange(`addressAlias`)}
+                    value={values.addressAlias ?? ""}
+                    placeholder={`Masukkan alias alamat ${selectedMember.title}`}
+                    error={errors.addressAlias}
+                    className="w-full"
+                  />
+                  <PrimaryInput
+                    label="Catatan Alamat"
+                    onChange={handleChange(`addressNote`)}
+                    value={values.addressNote ?? ""}
+                    placeholder={`Masukkan catatan alamat ${selectedMember.title}`}
+                    error={errors.addressNote}
+                    className="w-full"
+                    isOptional={true}
+                  />
+                  <div className="flex flex-row justify-end w-full pt-2">
+                    <PrimaryWithIconButton
+                      label="Simpan"
+                      loading={isLoadingCreateMemberAddress}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSubmit();
+                      }}
+                      icon={CheckCircleIcon}
+                    />
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        ) : (
+          <div className="p-6">Tolong pilih Pemedek/Pengguna!</div>
+        )}
       </Modal>
     </div>
   );

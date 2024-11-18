@@ -3,6 +3,7 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import {
+  CheckCircleIcon,
   MapPinIcon,
   PencilIcon,
   PencilSquareIcon,
@@ -14,6 +15,8 @@ import { useCentralStore } from "@/store";
 import editMemberValidation from "../validation/edit_member_validation";
 import { useMember } from "@/hooks/member/use_member";
 import MemberRequest from "@/data/models/member/request/member_request";
+import MemberAddressRequest from "@/data/models/member/request/member_address_request";
+import memberAddressValidation from "../validation/member_address_validation";
 
 interface DetailMemberModalProps {
   id: number | string;
@@ -22,14 +25,36 @@ interface DetailMemberModalProps {
 
 const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { editMember, isEditMemberSuccess, isEditMemberError } = useMember({});
+  const {
+    editMember,
+    isEditMemberSuccess,
+    isEditMemberError,
+    createMemberAddress,
+    isCreateMemberAddressSuccess,
+    isLoadingCreateMemberAddress,
+  } = useMember({});
 
   const [openDetail, setOpenDetail] = useState(false);
+  const [openAddAdress, setOpenAddAddress] = useState<boolean>(false);
+
+  const [memberAddressRequest, setMemberAddressRequest] =
+    useState<MemberAddressRequest>({
+      address: "",
+      addressAlias: "",
+      addressNote: "",
+      userId: id as number,
+    });
 
   const handleEditMember = (anggotaRequest: MemberRequest) => {
     setIsLoading(true);
     editMember({ id, request: anggotaRequest });
     setOpenDetail(false);
+  };
+
+  const handleCreateMemberAddress = (
+    memberAddressRequest: MemberAddressRequest
+  ) => {
+    createMemberAddress(memberAddressRequest);
   };
 
   useEffect(() => {
@@ -41,6 +66,12 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
       setOpenDetail(true);
     }
   }, [isEditMemberSuccess, isEditMemberError]);
+
+  useEffect(() => {
+    if (isCreateMemberAddressSuccess) {
+      setOpenAddAddress(false);
+    }
+  }, [isCreateMemberAddressSuccess]);
 
   return (
     <>
@@ -109,7 +140,10 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
 
                     <IconBackgroundButton
                       icon={MapPinIcon}
-                      onClick={() => {}}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setOpenAddAddress(true);
+                      }}
                       colorIcon="white"
                       className="bg-gray-300 hover:bg-gray-200"
                     />
@@ -160,6 +194,77 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
             </Form>
           )}
         </Formik>
+      </Modal>
+
+      <Modal
+        title={`Tambah Alamat \n${data.fullName ?? ""}`}
+        isOpen={openAddAdress}
+        setIsOpen={setOpenAddAddress}
+      >
+        {data?.fullName ? (
+          <Formik
+            initialValues={memberAddressRequest}
+            onSubmit={handleCreateMemberAddress}
+            validationSchema={memberAddressValidation}
+            suppressHydrationWarning={true}
+          >
+            {({
+              errors,
+              handleChange,
+              handleSubmit,
+              values,
+
+              setValues,
+            }) => (
+              <Form
+                onSubmit={() => {
+                  handleCreateMemberAddress(values);
+                }}
+              >
+                <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
+                  <PrimaryInput
+                    label="Alamat"
+                    onChange={handleChange(`address`)}
+                    value={values.address ?? ""}
+                    placeholder={`Masukkan alamat ${data.fullName}`}
+                    error={errors.address}
+                    className="w-full"
+                  />
+                  <PrimaryInput
+                    label="Alias Alamat"
+                    onChange={handleChange(`addressAlias`)}
+                    value={values.addressAlias ?? ""}
+                    placeholder={`Masukkan alias alamat ${data.fullName}`}
+                    error={errors.addressAlias}
+                    className="w-full"
+                  />
+                  <PrimaryInput
+                    label="Catatan Alamat"
+                    onChange={handleChange(`addressNote`)}
+                    value={values.addressNote ?? ""}
+                    placeholder={`Masukkan catatan alamat ${data.fullName}`}
+                    error={errors.addressNote}
+                    className="w-full"
+                    isOptional={true}
+                  />
+                  <div className="flex flex-row justify-end w-full pt-2">
+                    <PrimaryWithIconButton
+                      label="Simpan"
+                      loading={isLoadingCreateMemberAddress}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSubmit();
+                      }}
+                      icon={CheckCircleIcon}
+                    />
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        ) : (
+          <div className="p-6">Tolong pilih Pemedek/Pengguna!</div>
+        )}
       </Modal>
     </>
   );

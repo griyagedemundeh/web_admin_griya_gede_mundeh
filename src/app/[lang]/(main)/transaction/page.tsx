@@ -101,7 +101,7 @@ export default function TransactionPage({
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             {info.row.original?.paidAt
               ? formatDateIndonesia(info.row.original?.createdAt)
-              : "Belum Bayar/Lunas"}
+              : "Belum Bayar/Belum Lunas"}
           </div>
         ),
       },

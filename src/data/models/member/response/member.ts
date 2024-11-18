@@ -1,5 +1,4 @@
 import MemberAddress from "../../user/response/address";
-import Address from "../../user/response/address";
 import User from "../../user/response/user";
 
 type Member = {

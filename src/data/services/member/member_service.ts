@@ -8,6 +8,7 @@ import ListDataRequest from "@/data/models/base/list_data_request";
 import User from "@/data/models/user/response/user";
 import MemberAddress from "@/data/models/user/response/address";
 import Address from "@/data/models/member/response/address";
+import MemberAddressRequest from "@/data/models/member/request/member_address_request";
 
 export class MemberService implements IMemberService {
   async addMember(request: MemberRequest): Promise<ApiResponse<Member>> {
@@ -52,23 +53,14 @@ export class MemberService implements IMemberService {
     id: number | string;
     request: MemberRequest;
   }): Promise<ApiResponse<User | MemberAddress>> {
-    //NEWW
-    // }): Promise<ApiResponse<Member>> {
     const uri = `/admin/member/${id}`;
 
     try {
       const response: AxiosResponse<ApiResponse<User | MemberAddress>> =
-        await api.patch(
-          //NEWW
-          // const response: AxiosResponse<ApiResponse<Member>> = await api.patch(
-          uri,
-          request
-        );
+        await api.patch(uri, request);
 
       return response.data;
     } catch (error: AxiosError<ApiResponse<User | MemberAddress>> | any) {
-      //NEWW
-      // } catch (error: AxiosError<ApiResponse<Member>> | any) {
       console.error("====================================");
       console.error("ERROR EDIT MEMBER --> ", error.response.data.message);
       console.error("====================================");
@@ -125,6 +117,25 @@ export class MemberService implements IMemberService {
       console.error("==================================");
       console.error(
         "Error GET MEMBER ADDRESS BY USERID -->",
+        error.response.data.message
+      );
+      console.error("==================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async createMemberAddress(
+    request: MemberAddressRequest
+  ): Promise<ApiResponse<MemberAddress>> {
+    const uri = `admin/member/address/create/${request.userId}`;
+    try {
+      const response: AxiosResponse<ApiResponse<MemberAddress>> =
+        await api.post(uri, request);
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<MemberAddress>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error ADD MEMBER ADDRESS -->",
         error.response.data.message
       );
       console.error("==================================");

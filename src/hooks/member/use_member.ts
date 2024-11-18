@@ -13,6 +13,7 @@ import {
   addMember as addMemberBridge,
   deleteMember as deleteMemberBridge,
   editMember as editMemberBridge,
+  createMemberAddress as createMemberAddressBridge,
   useGetAllMemberQuery,
   useGetMemberAddressQuery,
 } from "./member_bridge";
@@ -22,6 +23,7 @@ import { useEffect } from "react";
 import User from "@/data/models/user/response/user";
 import MemberAddress from "@/data/models/user/response/address";
 import Address from "@/data/models/member/response/address";
+import MemberAddressRequest from "@/data/models/member/request/member_address_request";
 
 interface IUseMember {
   addMember: UseMutateFunction<
@@ -53,6 +55,13 @@ interface IUseMember {
   refecthAllAddress: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<ApiResponse<Address[]>, unknown>>;
+  createMemberAddress: UseMutateFunction<
+    ApiResponse<MemberAddress>,
+    unknown,
+    MemberAddressRequest,
+    unknown
+  >;
+
   isLoadingAddMember: boolean;
   isAddMemberSuccess: boolean;
   isAddMemberError: boolean;
@@ -62,6 +71,10 @@ interface IUseMember {
   isLoadingDeleteMember: boolean;
   isDeleteMemberSuccess: boolean;
   isDeleteMemberError: boolean;
+
+  isLoadingCreateMemberAddress: boolean;
+  isCreateMemberAddressSuccess: boolean;
+  isCreateMemberAddressError: boolean;
 }
 
 export const useMember = ({
@@ -176,6 +189,32 @@ export const useMember = ({
     },
   });
 
+  const {
+    mutate: createMemberAddress,
+    isLoading: isLoadingCreateMemberAddress,
+    isSuccess: isCreateMemberAddressSuccess,
+    isError: isCreateMemberAddressError,
+  } = useMutation(createMemberAddressBridge, {
+    onSuccess: async (value) => {
+      value.message.forEach((message) => {
+        showToast({ status: "success", message: message });
+      });
+
+      setIsLoading(false);
+      refecthAllAddress();
+    },
+    onError: async (error: AxiosError<ApiResponse<Member>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
   useEffect(() => {
     setIsLoading(isAllMemberLoading);
 
@@ -194,6 +233,10 @@ export const useMember = ({
     isLoadingAddMember,
     isAddMemberSuccess,
     isAddMemberError,
+    createMemberAddress,
+    isCreateMemberAddressError,
+    isCreateMemberAddressSuccess,
+    isLoadingCreateMemberAddress,
     editMember,
     isEditMemberError,
     isEditMemberSuccess,
