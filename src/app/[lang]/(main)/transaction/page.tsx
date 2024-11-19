@@ -1,10 +1,8 @@
 "use client";
 
 import { getDictionary, Locale } from "../../dictionaries";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import TransactionModal from "./components/TransactionModal";
 import { useTransaction } from "@/hooks/transaction/use_transaction";
@@ -56,8 +54,6 @@ export default function TransactionPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const [openDetail, setOpenDetail] = useState(false);
-
   const { invoices } = useTransaction();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -100,7 +96,7 @@ export default function TransactionPage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             {info.row.original?.paidAt
-              ? formatDateIndonesia(info.row.original?.createdAt)
+              ? formatDateIndonesia(info.row.original?.paidAt)
               : "Belum Bayar/Belum Lunas"}
           </div>
         ),
@@ -185,13 +181,6 @@ export default function TransactionPage({
         open={open}
         setOpen={setOpen}
         title="Tambah Transaksi"
-      />
-
-      {/* Dialog PRE-PAID Transaction*/}
-      <TransactionModal
-        open={openDetail}
-        setOpen={setOpenDetail}
-        title="Detail Transaksi"
       />
     </>
   );

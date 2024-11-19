@@ -7,6 +7,7 @@ import {
   BanknotesIcon,
   ChatBubbleLeftRightIcon,
   NewspaperIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import MobileBarDialog from "./MobileBarDialog";
 import SideBar from "./SideBar";
@@ -47,6 +48,12 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       current: false,
     },
     {
+      name: t.label.member,
+      href: `/member`,
+      icon: UserIcon,
+      current: false,
+    },
+    {
       name: t.label.article,
       href: `/article`,
       icon: NewspaperIcon,
@@ -61,29 +68,23 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       initial: getInitials(t.label.manager),
       current: false,
     },
+
     {
       id: 2,
-      name: t.label.member,
-      href: `/member`,
-      initial: getInitials(t.label.member),
-      current: false,
-    },
-    {
-      id: 3,
       name: t.label.ceremonyCategory,
       href: `/ceremony-category`,
       initial: getInitials(t.label.ceremonyCategory),
       current: false,
     },
     {
-      id: 4,
+      id: 3,
       name: t.label.ceremony,
       href: `/ceremony`,
       initial: getInitials(t.label.ceremony),
       current: false,
     },
     {
-      id: 3,
+      id: 4,
       name: t.label.articleCategory,
       href: `/article-category`,
       initial: getInitials(t.label.articleCategory),
