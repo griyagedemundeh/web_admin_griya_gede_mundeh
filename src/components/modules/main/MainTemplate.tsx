@@ -30,15 +30,15 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       current: true,
     },
     {
-      name: t.label.transaction,
-      href: `/transaction`,
-      icon: BanknotesIcon,
-      current: false,
-    },
-    {
       name: t.label.consultation,
       href: `/consultation`,
       icon: ChatBubbleLeftRightIcon,
+      current: false,
+    },
+    {
+      name: t.label.transaction,
+      href: `/transaction`,
+      icon: BanknotesIcon,
       current: false,
     },
     {

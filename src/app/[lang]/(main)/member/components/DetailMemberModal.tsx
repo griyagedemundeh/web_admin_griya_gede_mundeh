@@ -17,6 +17,7 @@ import { useMember } from "@/hooks/member/use_member";
 import MemberRequest from "@/data/models/member/request/member_request";
 import MemberAddressRequest from "@/data/models/member/request/member_address_request";
 import memberAddressValidation from "../validation/member_address_validation";
+import { useAuth } from "@/hooks/auth/use_auth";
 
 interface DetailMemberModalProps {
   id: number | string;
@@ -33,6 +34,8 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
     isCreateMemberAddressSuccess,
     isLoadingCreateMemberAddress,
   } = useMember({});
+
+  const { account } = useAuth();
 
   const [openDetail, setOpenDetail] = useState(false);
   const [openAddAdress, setOpenAddAddress] = useState<boolean>(false);
@@ -106,6 +109,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     placeholder="Masukkan nama lengkap member"
                     error={errors.fullName ?? undefined}
                     onChange={handleChange("fullName")}
+                    disabled={account?.role == "admin"}
                     className="w-full"
                   />
                   <PrimaryInput
@@ -115,6 +119,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     placeholder="Masukkan email member"
                     error={errors.email ?? undefined}
                     onChange={handleChange("email")}
+                    disabled={account?.role == "admin"}
                     className="w-full"
                     type="email"
                   />
@@ -124,17 +129,17 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     placeholder="Masukkan no hp member"
                     error={errors.phoneNumber ?? undefined}
                     onChange={handleChange("phoneNumber")}
+                    disabled={account?.role == "admin"}
                     className="w-full"
                   />
                   <div className="flex flex-row space-x-2 items-end w-full">
                     <PrimaryInput
                       label="Alamat Utama"
-                      // onChange={(e) => {}}
                       onChange={handleChange("address")}
                       placeholder="Masukkan alamat member"
                       error={errors.address ?? undefined}
                       value={values.address}
-                      // value={"AKU Ingin"}
+                      disabled={account?.role == "admin"}
                       className="w-full"
                     />
 
@@ -154,6 +159,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     placeholder="Masukkan password member"
                     error={errors.password ?? undefined}
                     onChange={handleChange("password")}
+                    disabled={account?.role == "admin"}
                     type="password"
                     className="w-full"
                   />
@@ -163,6 +169,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     placeholder="Masukkan konfirmasi password member"
                     error={errors.passwordConfirm ?? undefined}
                     onChange={handleChange("passwordConfirm")}
+                    disabled={account?.role == "admin"}
                     type="password"
                     className="w-full"
                   />
@@ -182,13 +189,15 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   )} */}
                 </div>
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
-                  <PrimaryWithIconButton
-                    label="Simpan"
-                    onClick={() => {
-                      handleSubmit();
-                    }}
-                    icon={PencilIcon}
-                  />
+                  {account?.role === "superAdmin" && (
+                    <PrimaryWithIconButton
+                      label="Simpan"
+                      onClick={() => {
+                        handleSubmit();
+                      }}
+                      icon={PencilIcon}
+                    />
+                  )}
                 </div>
               </div>
             </Form>

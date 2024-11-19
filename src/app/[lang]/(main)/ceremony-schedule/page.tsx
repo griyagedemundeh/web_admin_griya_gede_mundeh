@@ -112,45 +112,45 @@ export default function TransactionPage({
       <h1 className="font-bold text-xl mb-8">Jadwal Upacara</h1>
       <PrimaryTable
         title="Daftar Jadwal Upacara"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
-            <PrimaryDatePicker
-              setValue={(value) => {}}
-              value={[new Date(), new Date()]}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+        //     <PrimaryDatePicker
+        //       setValue={(value) => {}}
+        //       value={[new Date(), new Date()]}
+        //     />
 
-            <DropdownFilter
-              label="Kategori"
-              selectedItem={selectedCeremonyCategory}
-              setSelectedItem={setSelectedCeremonyCategory}
-              icon={TagIcon}
-              items={categories}
-            />
+        //     <DropdownFilter
+        //       label="Kategori"
+        //       selectedItem={selectedCeremonyCategory}
+        //       setSelectedItem={setSelectedCeremonyCategory}
+        //       icon={TagIcon}
+        //       items={categories}
+        //     />
 
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari upacara"
-              className=""
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari upacara"
+        //       className=""
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         columns={columns}
         data={data ?? []}
         isLoading={false}
@@ -162,7 +162,7 @@ export default function TransactionPage({
       />
 
       {/* Dialog PRE-PAID Transaction*/}
-      <CeremonyScheduleModal
+      {/* <CeremonyScheduleModal
         open={openDetail}
         setOpen={setOpenDetail}
         title="Detail Jadwal Upacara"
@@ -172,7 +172,7 @@ export default function TransactionPage({
             <PrimaryButton label="Ubah Status" onClick={() => {}} />
           </div>
         }
-      />
+      /> */}
     </>
   );
 }
