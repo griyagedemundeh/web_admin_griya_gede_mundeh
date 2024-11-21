@@ -133,3 +133,25 @@ export function formatTimeAgo(dateString: string): string {
     return date.toLocaleTimeString(undefined, options);
   }
 }
+
+export const formatRupiah = (value: number): string => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(value);
+};
+
+export const formatDateIndonesia = (dateString: string): string => {
+  const date = new Date(dateString);
+  const formattedDate = date.toLocaleString("id-ID", {
+    timeZone: "Asia/Makassar",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return formattedDate;
+};

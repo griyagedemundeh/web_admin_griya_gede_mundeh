@@ -1,5 +1,5 @@
 export type CeremonyPackage = {
-  id: number | string;
+  id: number;
   name: string;
   description: string;
   price: number;

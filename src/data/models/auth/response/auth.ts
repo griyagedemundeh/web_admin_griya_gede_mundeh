@@ -5,7 +5,7 @@ type Auth = {
   email: string;
   phoneNumber: string;
   token: string;
-  role: string;
+  role: "superAdmin" | "admin";
 };
 
 export default Auth;

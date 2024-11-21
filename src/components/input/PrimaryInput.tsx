@@ -6,11 +6,12 @@ interface PrimaryInputProps {
   value: string | number;
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   className?: string;
   trailing?: any;
   isOptional?: boolean;
   error?: string;
+  disabled?: boolean; // Added disabled property
 }
 
 export default function PrimaryInput({
@@ -23,6 +24,7 @@ export default function PrimaryInput({
   trailing,
   isOptional,
   error,
+  disabled, // Destructure the disabled property
 }: PrimaryInputProps) {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -45,7 +47,8 @@ export default function PrimaryInput({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="block w-full rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 bg-gray-50 placeholder:text-xs"
+          className="block w-full rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 bg-gray-50 placeholder:text-xs disabled:bg-gray-100"
+          disabled={disabled}
         />
 
         {trailing}

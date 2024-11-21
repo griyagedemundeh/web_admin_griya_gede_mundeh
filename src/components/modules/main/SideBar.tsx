@@ -1,4 +1,5 @@
 import LogoWithTitle from "@/components/mini/LogoWithTitle";
+import { useAuth } from "@/hooks/auth/use_auth";
 import BasicNavigation from "@/interfaces/BasicNavigation";
 import { classNames } from "@/utils";
 
@@ -11,10 +12,10 @@ interface SideBarProps {
   navigations: BasicNavigation[];
   navigationAdmin: BasicNavigation[];
 }
-``;
-
 const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
   const pathName = usePathname();
+
+  const { account } = useAuth();
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
@@ -51,38 +52,40 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                 ))}
               </ul>
             </li>
-            <li>
-              <div className="text-xs font-semibold leading-6 text-gray-400">
-                Admin
-              </div>
-              <ul role="list" className="-mx-2 mt-2 space-y-1">
-                {navigationAdmin.map((item) => (
-                  <li key={item.name}>
-                    <a
-                      href={item.href}
-                      className={classNames(
-                        pathName.endsWith(item.href.toLocaleLowerCase())
-                          ? "bg-yellow-50 text-primary1 border-l-primary1 border-l-4"
-                          : "text-gray-700 hover:bg-yellow-50 hover:text-primary1",
-                        "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                      )}
-                    >
-                      <span
+            {account?.role === "superAdmin" && (
+              <li>
+                <div className="text-xs font-semibold leading-6 text-gray-400">
+                  Admin
+                </div>
+                <ul role="list" className="-mx-2 mt-2 space-y-1">
+                  {navigationAdmin.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
                         className={classNames(
                           pathName.endsWith(item.href.toLocaleLowerCase())
-                            ? "border-primary1 text-primary1"
-                            : "border-gray-200 text-gray-400 group-hover:border-primary1 group-hover:text-primary1",
-                          "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
+                            ? "bg-yellow-50 text-primary1 border-l-primary1 border-l-4"
+                            : "text-gray-700 hover:bg-yellow-50 hover:text-primary1",
+                          "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                         )}
                       >
-                        {item.initial}
-                      </span>
-                      <span className="truncate">{item.name}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </li>
+                        <span
+                          className={classNames(
+                            pathName.endsWith(item.href.toLocaleLowerCase())
+                              ? "border-primary1 text-primary1"
+                              : "border-gray-200 text-gray-400 group-hover:border-primary1 group-hover:text-primary1",
+                            "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
+                          )}
+                        >
+                          {item.initial}
+                        </span>
+                        <span className="truncate">{item.name}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
             <li className="mt-auto">
               <a
                 href="/setting"

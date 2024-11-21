@@ -4,11 +4,12 @@ interface PrimaryInputProps {
   label?: string;
   value: string | number;
   placeholder?: string;
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   className?: string;
   isOptional?: boolean;
   error?: string;
   rows?: number;
+  disabled?: boolean;
 }
 
 const PrimaryTextArea = ({
@@ -20,6 +21,7 @@ const PrimaryTextArea = ({
   isOptional,
   error,
   rows,
+  disabled,
 }: PrimaryInputProps) => {
   return (
     <div className={className}>
@@ -36,8 +38,9 @@ const PrimaryTextArea = ({
           id={label}
           name={label}
           onChange={onChange}
+          disabled={disabled}
           rows={rows ?? 4}
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 bg-gray-50"
+          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary1 sm:text-sm sm:leading-6 bg-gray-50 disabled:bg-gray-100"
           placeholder={placeholder}
           value={value}
         />

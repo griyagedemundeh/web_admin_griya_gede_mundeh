@@ -1,15 +1,16 @@
 import { CalendarDateRangeIcon } from "@heroicons/react/20/solid";
 import React from "react";
-import DatePicker, { DateObject } from "react-multi-date-picker";
-
-import DatePanel from "react-multi-date-picker/plugins/date_panel";
-import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface IPrimaryDatePickerProps {
-  value: Date[];
-  setValue: (value: DateObject[]) => void;
+  // value: Date[];
+  // setValue: (value: DateObject[]) => void;
+  value: Date;
+  setValue: (value: Date) => void;
   label?: string;
   className?: string;
+  error?: string;
 }
 
 const PrimaryDatePicker = ({
@@ -17,6 +18,7 @@ const PrimaryDatePicker = ({
   setValue,
   value,
   className,
+  error,
 }: IPrimaryDatePickerProps) => {
   return (
     <div className={className}>
@@ -30,38 +32,23 @@ const PrimaryDatePicker = ({
       )}
 
       <div
-        className=" rounded-lg flex flex-row items-center justify-between shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        style={{ padding: 6, paddingLeft: 10 }}
+        className=" rounded-lg flex flex-row items-center justify-start shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+        style={{ padding: 10, paddingLeft: 10 }}
       >
         <CalendarDateRangeIcon height={16} width={16} color="gray" />
+
         <DatePicker
-          format="MM/DD/YYYY HH:mm"
-          range
-          placeholder={`${new Date()}`}
-          value={[new Date(), new Date()]}
-          onChange={(e) => {
-            setValue(e);
-          }}
-          hideOnScroll={true}
-          containerStyle={{
-            padding: 0,
-            marginLeft: 4,
-            borderRadius: 10,
-            border: 0,
-          }}
-          style={{
-            accentColor: "orange",
-            color: "gray",
-            caretColor: "orange",
-            border: 0,
-            width: className?.includes("w-full") ? 400 : "auto",
-          }}
-          plugins={[
-            <TimePicker key={1} position="bottom" />,
-            <DatePanel key={2} markFocused color="red" />,
-          ]}
+          selected={value}
+          onChange={(date) => setValue(date as Date)}
+          showTimeSelect
+          timeFormat="HH:mm"
+          timeIntervals={15}
+          timeCaption="time"
+          dateFormat="d MMMM yyyy - HH:mm "
+          className="border-none self-start p-0 ml-2 w-96"
         />
       </div>
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 };

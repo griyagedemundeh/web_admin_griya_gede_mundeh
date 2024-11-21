@@ -11,6 +11,7 @@ interface PrimaryWithIconButtonProps {
   >;
   className?: string;
   loading?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const PrimaryWithIconButton = ({
@@ -19,11 +20,12 @@ const PrimaryWithIconButton = ({
   icon: Icon,
   className,
   loading,
+  type,
 }: PrimaryWithIconButtonProps) => {
   return (
     <button
       onClick={onClick}
-      type="button"
+      type={type}
       disabled={loading}
       className={
         className +

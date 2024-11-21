@@ -36,7 +36,7 @@ const Modal = ({ children, isOpen, setIsOpen, title }: Modal) => {
                 classNameIcon="h-7 w-7"
               />
             </div>
-            <Divider className="my-4" />
+            <Divider className="mt-4" />
             {children}
           </DialogPanel>
         </div>

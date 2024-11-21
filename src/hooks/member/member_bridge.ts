@@ -1,5 +1,6 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
+import MemberAddressRequest from "@/data/models/member/request/member_address_request";
 import MemberRequest from "@/data/models/member/request/member_request";
 import Address from "@/data/models/member/response/address";
 import Member from "@/data/models/member/response/member";
@@ -75,6 +76,23 @@ export const deleteMember = async ({
   return response;
 };
 
+export const createMemberAddress = async (
+  request: MemberAddressRequest
+): Promise<ApiResponse<MemberAddress>> => {
+  const response = await authService
+    .createMemberAddress(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<MemberAddress>> | unknown) => {
+      console.error("========================");
+      console.error(`${TAG_ERROR} ADD MEMBER ADDRESS `, error);
+      console.error("========================");
+      throw error;
+    });
+  return response;
+};
+
 export const getAllMember = async (
   request: ListDataRequest
 ): Promise<ApiResponse<Member[]>> => {
@@ -139,4 +157,6 @@ export const useGetMemberAddressQuery = ({
 }: {
   userId: number | string;
 }): UseQueryResult<ApiResponse<Address[]>, unknown> =>
-  useQuery(`memberAddress_${userId}`, () => getMemberAddress({ userId }));
+  useQuery(`memberAddress_${userId}`, () => getMemberAddress({ userId }), {
+    retry: false,
+  });
