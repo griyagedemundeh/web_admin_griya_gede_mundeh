@@ -41,7 +41,7 @@ const StatusBadge = ({ status }: { status: string }): React.ReactElement => {
     <div
       className={`py-1 ${bgColor} ${borderColor} border-2 rounded-lg ${textColor} w-auto text-center capitalize`}
     >
-      <p>{status}</p>
+      <p className="text-xs">{status}</p>
     </div>
   );
 };
@@ -69,7 +69,11 @@ export default function TransactionPage({
                 {info.row.original.id}
               </p>
               <p className="text-gray-800 line-clamp-1 text-ellipsis">
-                {info.row.original.invoiceCeremonyHistory.title}
+                {info.row.original.invoiceCeremonyHistory.title.length < 40
+                  ? info.row.original.invoiceCeremonyHistory.title
+                  : info.row.original.invoiceCeremonyHistory.title
+                      .slice(0, 40)
+                      .concat("...")}
               </p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useCentralStore } from "@/store";
 import { UseMutateFunction, useMutation } from "react-query";
 import {
   createInvoice as createInvoiceBridge,
+  updateStatusInvoice as updateInvoiceBridge,
   useGetAllInvoiceQuery,
 } from "./transaction_bridge";
 import { showToast, statusMessage } from "@/utils";
@@ -12,10 +13,11 @@ import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
 import { useEffect, useState } from "react";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import Invoice from "@/data/models/transaction/response/invoice";
+import UpdateInvoiceStatusRequest from "@/data/models/transaction/request/update_invoice_status_request";
 
 interface IUseTransaction {
   createInvoice: UseMutateFunction<
-    ApiResponse<Payment>,
+    ApiResponse<Invoice>,
     unknown,
     InvoiceRequest,
     unknown
@@ -23,17 +25,28 @@ interface IUseTransaction {
   isLoadingCreateInvoice: boolean;
   isCreateInvoiceSuccess: boolean;
   isCreateInvoiceError: boolean;
-  payment: Payment | undefined;
+  payment: Invoice | undefined;
 
   // Invoice
   invoices: ApiResponse<Invoice[]> | undefined;
   isLoadingGetAllInvoice: boolean;
+
+  // Update Status
+  updateStatusInvoice: UseMutateFunction<
+    ApiResponse<Invoice>,
+    unknown,
+    UpdateInvoiceStatusRequest,
+    unknown
+  >;
+  isLoadingUpdateStatusInvoice: boolean;
+  isUpdateStatusInvoiceSuccess: boolean;
+  isUpdateStatusInvoiceError: boolean;
 }
 
 export const useTransaction = (): IUseTransaction => {
   const { setIsLoading } = useCentralStore();
 
-  const [payment, setPayment] = useState<Payment>();
+  const [payment, setPayment] = useState<Invoice>();
 
   const [filter, setFilter] = useState<ListDataRequest>({
     page: 1,
@@ -74,6 +87,32 @@ export const useTransaction = (): IUseTransaction => {
     },
   });
 
+  const {
+    mutate: updateStatusInvoice,
+    isLoading: isLoadingUpdateStatusInvoice,
+    isSuccess: isUpdateStatusInvoiceSuccess,
+    isError: isUpdateStatusInvoiceError,
+  } = useMutation(updateInvoiceBridge, {
+    onSuccess: async (value) => {
+      value.message.forEach((message) => {
+        showToast({ status: "success", message: message });
+      });
+
+      setIsLoading(false);
+      window.location.reload();
+    },
+    onError: async (error: AxiosError<ApiResponse<Member>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
   useEffect(() => {
     setIsLoading(isLoadingGetAllInvoice);
 
@@ -92,5 +131,11 @@ export const useTransaction = (): IUseTransaction => {
     // Invoice
     invoices,
     isLoadingGetAllInvoice,
+
+    // Update Status Invoice
+    updateStatusInvoice,
+    isLoadingUpdateStatusInvoice,
+    isUpdateStatusInvoiceError,
+    isUpdateStatusInvoiceSuccess,
   };
 };

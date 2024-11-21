@@ -44,7 +44,7 @@ const PrimaryDatePicker = ({
           timeFormat="HH:mm"
           timeIntervals={15}
           timeCaption="time"
-          dateFormat="MMMM d, yyyy h:mm aa"
+          dateFormat="d MMMM yyyy - HH:mm "
           className="border-none self-start p-0 ml-2 w-96"
         />
       </div>

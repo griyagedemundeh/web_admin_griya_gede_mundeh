@@ -8,7 +8,7 @@ export type InvoiceCeremonyHistory = {
   title: string;
   packageName: string;
   description: string;
-  note: string;
+  note: string | null;
   ceremonyAddress: string;
   ceremonyAddressNote: string | null;
   ceremonyDate: string; // ISO date string

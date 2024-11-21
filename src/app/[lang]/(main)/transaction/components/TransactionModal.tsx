@@ -24,6 +24,8 @@ import { useTransaction } from "@/hooks/transaction/use_transaction";
 import memberAddressValidation from "../../member/validation/member_address_validation";
 import MemberAddressRequest from "@/data/models/member/request/member_address_request";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
+import Image from "next/image";
+import Images from "@/constants/images";
 
 interface TransactionModalProps {
   open: boolean;
@@ -48,6 +50,8 @@ const TransactionModal = ({
     isLoadingCreateInvoice,
     payment,
     isCreateInvoiceSuccess,
+    updateStatusInvoice,
+    isLoadingUpdateStatusInvoice,
   } = useTransaction();
 
   const [selectedCeremony, setSelectedCeremony] =
@@ -173,12 +177,17 @@ const TransactionModal = ({
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
+    const ceremonyDate = new Date(invoiceRequest.ceremonyDate);
+
+    const date = `${ceremonyDate.getFullYear()}-${
+      ceremonyDate.toLocaleDateString().split("/")[0]
+    }-${ceremonyDate.getDate()} ${
+      ceremonyDate.toTimeString().split("GMT+0800 (Central Indonesia Time)")[0]
+    }`;
+
     createInvoice({
       ...invoiceRequest,
-      ceremonyDate: new Date(invoiceRequest.ceremonyDate)
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " "),
+      ceremonyDate: date,
     });
   };
 
@@ -338,7 +347,7 @@ const TransactionModal = ({
                   setValue={(e) => {
                     setValues({
                       ...values,
-                      ceremonyDate: e.toISOString(),
+                      ceremonyDate: e,
                     });
                   }}
                   value={new Date(values.ceremonyDate)}
@@ -441,16 +450,40 @@ const TransactionModal = ({
         isOpen={openPayment}
         setIsOpen={setOpenPayment}
       >
-        <iframe
-          src={payment?.paymentUrl}
-          className="h-[550px] w-full"
-          title="Pembayaran"
-          onChange={(e) => {
-            console.log("====================================");
-            console.log("e ---> ", e.target);
-            console.log("====================================");
-          }}
-        ></iframe>
+        {payment?.paymentUrl ? (
+          <iframe
+            src={payment?.paymentUrl}
+            className="h-[550px] w-full"
+            title="Pembayaran"
+            onChange={(e) => {
+              console.log("====================================");
+              console.log("e ---> ", e.target);
+              console.log("====================================");
+            }}
+          ></iframe>
+        ) : (
+          <div className="w-full flex flex-col justify-center items-center gap-y-4 p-4">
+            <Image
+              alt=""
+              src={Images.icEmptyInvoice}
+              className="w-72"
+              height={40}
+              width={40}
+            />
+            <PrimaryWithIconButton
+              label="Sudah Bayar"
+              loading={isLoadingUpdateStatusInvoice}
+              onClick={(e) => {
+                e.preventDefault();
+                updateStatusInvoice({
+                  invoiceId: payment?.id as string,
+                  status: "success",
+                });
+              }}
+              icon={DocumentCheckIcon}
+            />
+          </div>
+        )}
       </Modal>
 
       <Modal

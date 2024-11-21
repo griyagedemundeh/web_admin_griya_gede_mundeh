@@ -1,6 +1,7 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
+import UpdateInvoiceStatusRequest from "@/data/models/transaction/request/update_invoice_status_request";
 import Invoice from "@/data/models/transaction/response/invoice";
 
 import { TransactionService } from "@/data/services/transaction/transaction_service";
@@ -12,15 +13,32 @@ const TAG_ERROR = "Error during :";
 
 export const createInvoice = async (
   request: InvoiceRequest
-): Promise<ApiResponse<Payment>> => {
+): Promise<ApiResponse<Invoice>> => {
   const response = await authService
     .createInvoice(request)
     .then(async (value) => {
       return value;
     })
-    .catch((error: AxiosError<ApiResponse<Payment>> | unknown) => {
+    .catch((error: AxiosError<ApiResponse<Invoice>> | unknown) => {
       console.error("========================");
       console.error(`${TAG_ERROR} CREATE INVOICE `, error);
+      console.error("========================");
+      throw error;
+    });
+  return response;
+};
+
+export const updateStatusInvoice = async (
+  request: UpdateInvoiceStatusRequest
+): Promise<ApiResponse<Invoice>> => {
+  const response = await authService
+    .updateInvoiceStatus(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<Invoice>> | unknown) => {
+      console.error("========================");
+      console.error(`${TAG_ERROR} UPDATE INVOICE `, error);
       console.error("========================");
       throw error;
     });

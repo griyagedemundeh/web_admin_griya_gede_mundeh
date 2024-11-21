@@ -9,6 +9,9 @@ import PrimaryInput from "@/components/input/PrimaryInput";
 import { formatDateIndonesia, formatRupiah } from "@/utils";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
+import Images from "@/constants/images";
+import Image from "next/image";
+import { useTransaction } from "@/hooks/transaction/use_transaction";
 
 interface DetailTransactionModalProps {
   title: string;
@@ -21,6 +24,9 @@ const DetailTransactionModal = ({
 }: DetailTransactionModalProps) => {
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openDetail, setOpenDetail] = useState(false);
+
+  const { updateStatusInvoice, isLoadingUpdateStatusInvoice } =
+    useTransaction();
 
   return (
     <div>
@@ -47,18 +53,56 @@ const DetailTransactionModal = ({
             className="w-full"
             disabled
           />
-          <PrimaryInput
-            label="Paket"
-            value={invoice.invoiceCeremonyHistory.packageName}
-            className="w-full"
-            disabled
-          />
+          {invoice.invoiceCeremonyHistory.packageName && (
+            <PrimaryInput
+              label="Paket"
+              value={invoice.invoiceCeremonyHistory.packageName}
+              className="w-full"
+              disabled
+            />
+          )}
           <PrimaryInput
             label="Total Harga"
             value={formatRupiah(invoice.totalPrice) ?? ""}
             className="w-full"
             disabled
           />
+
+          <PrimaryInput
+            label="Tanggal Upacara"
+            value={
+              invoice.invoiceCeremonyHistory.ceremonyDate
+                ? formatDateIndonesia(
+                    invoice.invoiceCeremonyHistory.ceremonyDate
+                  )
+                : "-"
+            }
+            className="w-full"
+            disabled
+          />
+
+          <PrimaryTextArea
+            value={`${invoice.invoiceCeremonyHistory.ceremonyAddress}\n${
+              invoice.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
+            }`}
+            label="Alamat/Lokasi Upacara"
+            disabled
+            className="w-full"
+          />
+          <PrimaryTextEditor
+            label="Deskripsi Upacara"
+            value={invoice.invoiceCeremonyHistory.description}
+            disabled
+          />
+          {invoice.invoiceCeremonyHistory.note && (
+            <PrimaryTextArea
+              value={`${invoice.invoiceCeremonyHistory.note}`}
+              label="Catatan"
+              disabled
+              className="w-full"
+            />
+          )}
+
           <PrimaryInput
             label="Tanggal Pembuatan Invoice"
             value={
@@ -76,20 +120,6 @@ const DetailTransactionModal = ({
             }
             className="w-full"
             disabled
-          />
-
-          <PrimaryTextEditor
-            label="Deskripsi Upacara"
-            value={invoice.invoiceCeremonyHistory.description}
-            disabled
-          />
-          <PrimaryTextArea
-            value={`${invoice.invoiceCeremonyHistory.ceremonyAddress}\n${
-              invoice.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
-            }`}
-            label="Alamat/Lokasi Upacara"
-            disabled
-            className="w-full"
           />
 
           {invoice.status === "pending" && (
@@ -112,16 +142,40 @@ const DetailTransactionModal = ({
         isOpen={openPayment}
         setIsOpen={setOpenPayment}
       >
-        <iframe
-          src={invoice.paymentUrl}
-          className="h-[550px] w-full"
-          title={`Pembayaran untuk Invoice: ${invoice.id}`}
-          onChange={(e) => {
-            console.log("====================================");
-            console.log("e ---> ", e.target);
-            console.log("====================================");
-          }}
-        ></iframe>
+        {invoice.paymentUrl ? (
+          <iframe
+            src={invoice.paymentUrl}
+            className="h-[550px] w-full"
+            title={`Pembayaran untuk Invoice: ${invoice.id}`}
+            onChange={(e) => {
+              console.log("====================================");
+              console.log("e ---> ", e.target);
+              console.log("====================================");
+            }}
+          ></iframe>
+        ) : (
+          <div className="w-full flex flex-col justify-center items-center gap-y-4 p-4">
+            <Image
+              alt=""
+              src={Images.icEmptyInvoice}
+              className="w-72"
+              height={40}
+              width={40}
+            />
+            <PrimaryWithIconButton
+              label="Sudah Bayar"
+              loading={isLoadingUpdateStatusInvoice}
+              onClick={(e) => {
+                e.preventDefault();
+                updateStatusInvoice({
+                  invoiceId: invoice.id,
+                  status: "success",
+                });
+              }}
+              icon={DocumentCheckIcon}
+            />
+          </div>
+        )}
       </Modal>
     </div>
   );

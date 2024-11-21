@@ -1,5 +1,5 @@
 type Payment = {
-  id: number;
+  id: number | string;
   title: string;
   paymentUrl: string;
   totalPrice: number;
