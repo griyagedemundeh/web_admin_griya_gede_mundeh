@@ -69,7 +69,7 @@ export default function TransactionPage({
                 {info.row.original.id}
               </p>
               <p className="text-gray-800 line-clamp-1 text-ellipsis">
-                {info.row.original.status}
+                {info.row.original.invoiceCeremonyHistory.title}
               </p>
             </div>
           </div>

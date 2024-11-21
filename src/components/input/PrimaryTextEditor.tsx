@@ -38,7 +38,7 @@ const ToolbarButton = ({
 interface PrimaryTextEditorProps {
   label?: string;
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   error?: string;
   disabled?: boolean;
 }
@@ -72,7 +72,9 @@ const PrimaryTextEditor = ({
     content: value,
     onUpdate: ({ editor }) => {
       const updatedContent = editor.getHTML();
-      onChange(updatedContent);
+      if (onChange) {
+        onChange(updatedContent);
+      }
     },
   });
 
@@ -114,88 +116,90 @@ const PrimaryTextEditor = ({
       <div className="scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white">
         <div className="w-full mt-4 p-4 bg-white border border-gray-300 rounded-lg">
           {/* Toolbar */}
-          <div className="flex space-x-2 border-b border-gray-300 pb-2 mb-2">
-            <ToolbarButton
-              icon={<b>B</b>}
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().toggleBold().run();
-              }}
-              className={editor?.isActive("bold") ? "bg-gray-200" : ""}
-            />
-            <ToolbarButton
-              icon={<i>I</i>}
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().toggleItalic().run();
-              }}
-              className={editor?.isActive("italic") ? "bg-gray-200" : ""}
-            />
-            <ToolbarButton
-              icon={<u>U</u>}
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().toggleUnderline().run();
-              }}
-              className={editor?.isActive("underline") ? "bg-gray-200" : ""}
-            />
-            <ToolbarButton
-              icon="🔗"
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                setLink;
-              }}
-              className={editor?.isActive("link") ? "bg-gray-200" : ""}
-            />
-            <ToolbarButton
-              icon="⭕"
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().toggleBulletList().run();
-              }}
-              className={editor?.isActive("bulletList") ? "bg-gray-200" : ""}
-            />
-            <ToolbarButton
-              icon="🔢"
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().toggleOrderedList().run();
-              }}
-              className={editor?.isActive("orderedList") ? "bg-gray-200" : ""}
-            />
-            <ToolbarButton
-              icon="↶"
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().undo().run();
-              }}
-              disabled={!editor?.can().undo()}
-            />
-            <ToolbarButton
-              icon="↷"
-              onClick={() => {
-                if (disabled) {
-                  return;
-                }
-                editor?.chain().focus().redo().run();
-              }}
-              disabled={!editor?.can().redo()}
-            />
-          </div>
+          {!disabled && (
+            <div className="flex space-x-2 border-b border-gray-300 pb-2 mb-2">
+              <ToolbarButton
+                icon={<b>B</b>}
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().toggleBold().run();
+                }}
+                className={editor?.isActive("bold") ? "bg-gray-200" : ""}
+              />
+              <ToolbarButton
+                icon={<i>I</i>}
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().toggleItalic().run();
+                }}
+                className={editor?.isActive("italic") ? "bg-gray-200" : ""}
+              />
+              <ToolbarButton
+                icon={<u>U</u>}
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().toggleUnderline().run();
+                }}
+                className={editor?.isActive("underline") ? "bg-gray-200" : ""}
+              />
+              <ToolbarButton
+                icon="🔗"
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  setLink;
+                }}
+                className={editor?.isActive("link") ? "bg-gray-200" : ""}
+              />
+              <ToolbarButton
+                icon="⭕"
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().toggleBulletList().run();
+                }}
+                className={editor?.isActive("bulletList") ? "bg-gray-200" : ""}
+              />
+              <ToolbarButton
+                icon="🔢"
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().toggleOrderedList().run();
+                }}
+                className={editor?.isActive("orderedList") ? "bg-gray-200" : ""}
+              />
+              <ToolbarButton
+                icon="↶"
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().undo().run();
+                }}
+                disabled={!editor?.can().undo()}
+              />
+              <ToolbarButton
+                icon="↷"
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+                  editor?.chain().focus().redo().run();
+                }}
+                disabled={!editor?.can().redo()}
+              />
+            </div>
+          )}
 
           {!disabled ? (
             <EditorContent

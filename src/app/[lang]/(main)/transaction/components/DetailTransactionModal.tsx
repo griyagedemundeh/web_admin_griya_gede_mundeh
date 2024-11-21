@@ -7,6 +7,8 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Invoice from "@/data/models/transaction/response/invoice";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import { formatDateIndonesia, formatRupiah } from "@/utils";
+import PrimaryTextArea from "@/components/input/PrimaryTextArea";
+import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 
 interface DetailTransactionModalProps {
   title: string;
@@ -46,6 +48,12 @@ const DetailTransactionModal = ({
             disabled
           />
           <PrimaryInput
+            label="Paket"
+            value={invoice.invoiceCeremonyHistory.packageName}
+            className="w-full"
+            disabled
+          />
+          <PrimaryInput
             label="Total Harga"
             value={formatRupiah(invoice.totalPrice) ?? ""}
             className="w-full"
@@ -68,6 +76,20 @@ const DetailTransactionModal = ({
             }
             className="w-full"
             disabled
+          />
+
+          <PrimaryTextEditor
+            label="Deskripsi Upacara"
+            value={invoice.invoiceCeremonyHistory.description}
+            disabled
+          />
+          <PrimaryTextArea
+            value={`${invoice.invoiceCeremonyHistory.ceremonyAddress}\n${
+              invoice.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
+            }`}
+            label="Alamat/Lokasi Upacara"
+            disabled
+            className="w-full"
           />
 
           {invoice.status === "pending" && (
