@@ -99,7 +99,7 @@ const SideBar = ({ navigationAdmin, navigations, t }: SideBarProps) => {
                   aria-hidden="true"
                   className="h-6 w-6 shrink-0 group-hover:text-primary1"
                 />
-                Settings
+                Pengaturan
               </a>
             </li>
           </ul>
