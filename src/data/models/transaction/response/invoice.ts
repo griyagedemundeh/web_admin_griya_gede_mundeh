@@ -1,36 +1,55 @@
-export type InvoiceCeremonyHistory = {
+type User = {
+  fullName: string;
   id: number;
-  adminId: number;
-  memberId: number;
-  memberAddressId: number;
-  consultationId: number | null;
-  ceremonyServicePackageId: number;
+};
+
+type InvoiceMember = {
+  userId: number;
+  id: number;
+  user: User;
+};
+
+type CeremonyService = {
   title: string;
-  packageName: string;
-  description: string;
-  note: string | null;
-  ceremonyAddress: string;
-  ceremonyAddressNote: string | null;
-  ceremonyDate: string; // ISO date string
-  status: string;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  id: number;
+};
+
+type CeremonyPackage = {
+  name: string;
+  ceremonyServiceId: number;
+  id: number;
+  ceremonyService: CeremonyService;
+};
+
+type CeremonyAdmin = {
+  userId: number;
+  id: number;
+  user: User;
+};
+
+type InvoiceCeremonyHistory = {
+  adminId: number;
+  ceremonyServicePackageId: number;
+  id: number;
+  ceremonyPackage: CeremonyPackage;
+  ceremonyAdmin: CeremonyAdmin;
 };
 
 type Invoice = {
-  id: string; // UUID
+  id: string;
   consultationId: number | null;
   ceremonyHistoryId: number;
   memberId: number;
   totalPrice: number;
-  paymentUrl: string;
-  paymentToken: string;
+  paymentUrl: string | null;
+  paymentToken: string | null;
   paymentMethod: string | null;
   isCash: boolean;
   status: string;
-  createdAt: string; // ISO date string
-  paidAt: string | null; // ISO date string or null
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  paidAt: string;
+  updatedAt: string;
+  invoiceMember: InvoiceMember;
   invoiceCeremonyHistory: InvoiceCeremonyHistory;
 };
 
