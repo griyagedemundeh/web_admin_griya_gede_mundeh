@@ -161,7 +161,7 @@ export function getCountdown(targetDate: string): string {
   const now = new Date().getTime();
   const difference = targetTime - now;
 
-  if (difference <= 0) {
+  if (difference === 0) {
     return "Hari Ini";
   }
 
@@ -171,6 +171,14 @@ export function getCountdown(targetDate: string): string {
   );
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+  if (difference < 0 && days !== 0) {
+    return `${-1 * days} Hari yang lalu`;
+  }
+
+  if (difference < 0) {
+    return `${hours}Jam ${minutes}Menit ${seconds}Detik yang lalu`;
+  }
 
   return `${days}Hari ${hours}Jam ${minutes}Menit ${seconds}Detik`;
 }
