@@ -1,36 +1,61 @@
 "use client";
 
 import { getDictionary, Locale } from "../../dictionaries";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import { useCeremonyHistory } from "@/hooks/ceremony/use_ceremony_history";
 import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
 import { getCountdown } from "@/utils";
 import CeremonyScheduleModal from "./components/CeremonyScheduleModal";
+import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
 
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
+const StatusIndicator = ({
+  status,
+}: CeremonyHistoryUpdateStatusRequest): React.ReactElement => {
+  let bgColor = "";
+
+  switch (status) {
+    case "completed":
+      bgColor = "bg-emerald-400";
+      break;
+    case "onProgress":
+      bgColor = "bg-yellow-400";
+      break;
+    case "onGoing":
+      bgColor = "bg-blue-400";
+      break;
+    case "cancel":
+      bgColor = "bg-rose-600";
+      break;
+    default:
+      bgColor = "bg-gray-400";
+      break;
+  }
+
+  return <div className={`h-2 w-2 rounded-full ${bgColor}`}></div>;
+};
+
 const CountDown = ({ date }: { date: string }): ReactElement => {
-  const [countdown, setCountDown] = useState<string>("");
+  const [countDown, setCountDown] = useState<string>("");
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCountDown(getCountdown(date));
 
-      if (countdown === "Hari Ini") {
+      if (countDown === "Hari Ini") {
         clearInterval(timer);
       }
     }, 1000);
 
     () => clearInterval(timer);
-  }, [countdown]);
+  }, [countDown]);
 
-  return <p className="font-semibold">{countdown}</p>;
+  return <p className="font-semibold">{countDown}</p>;
 };
 
 export default function CeremonyHistoryPage({
@@ -44,8 +69,6 @@ export default function CeremonyHistoryPage({
 
   const { allCeremonyHistory } = useCeremonyHistory();
 
-  const [openDetail, setOpenDetail] = useState<boolean>(false);
-
   const columns = useMemo<ColumnDef<CeremonyHistory>[]>(
     () => [
       {
@@ -54,7 +77,7 @@ export default function CeremonyHistoryPage({
           <div className="py-4 sm:pl-6 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-col space-y-2">
               <div className="flex flex-row space-x-2 items-center">
-                <div className="h-2 w-2 rounded-full bg-orange-400"></div>
+                <StatusIndicator status={info.row.original.status} id={1} />
                 <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
                   {info.row.original.status}
                 </p>
@@ -156,19 +179,6 @@ export default function CeremonyHistoryPage({
         limitPage={10}
         isCommon={true}
       />
-
-      {/* Dialog PRE-PAID Transaction*/}
-      {/* <CeremonyScheduleModal
-        open={openDetail}
-        setOpen={setOpenDetail}
-        title="Detail Jadwal Upacara"
-        bottomAction={
-          <div className="flex flex-row space-x-2">
-            <SecondaryButton label="Konsultasi" onClick={() => {}} />
-            <PrimaryButton label="Ubah Status" onClick={() => {}} />
-          </div>
-        }
-      /> */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 type CeremonyHistoryUpdateStatusRequest = {
-  id: string;
+  id: string | number;
   status: "onProgress" | "onGoing" | "completed" | "cancel";
 };
 

@@ -15,15 +15,15 @@ interface IUseCeremonyHistory {
   allCeremonyHistory: ApiResponse<CeremonyHistory[]> | undefined;
   isAllCeremonyHistoryLoading: boolean;
   isAllCeremonyHistoryError: boolean;
-  updateStatusInvoice: UseMutateFunction<
+  updateStatusCeremonyHistory: UseMutateFunction<
     ApiResponse<null>,
     unknown,
     CeremonyHistoryUpdateStatusRequest,
     unknown
   >;
-  isLoadingUpdateStatusInvoice: boolean;
-  isUpdateStatusInvoiceSuccess: boolean;
-  isUpdateStatusInvoiceError: boolean;
+  isLoadingUpdateStatusCeremonyHistory: boolean;
+  isUpdateStatusCeremonyHistorySuccess: boolean;
+  isUpdateStatusCeremonyHistoryError: boolean;
 }
 
 export const useCeremonyHistory = (): IUseCeremonyHistory => {
@@ -37,10 +37,10 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
   } = useGetAllCeremonyHistoryQuery({ page: 1, limit: 1000 });
 
   const {
-    mutate: updateStatusInvoice,
-    isLoading: isLoadingUpdateStatusInvoice,
-    isSuccess: isUpdateStatusInvoiceSuccess,
-    isError: isUpdateStatusInvoiceError,
+    mutate: updateStatusCeremonyHistory,
+    isLoading: isLoadingUpdateStatusCeremonyHistory,
+    isSuccess: isUpdateStatusCeremonyHistorySuccess,
+    isError: isUpdateStatusCeremonyHistoryError,
   } = useMutation(updateStatusCeremonyHistoryBridge, {
     onSuccess: async (value) => {
       value.message.forEach((message) => {
@@ -74,9 +74,9 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
     allCeremonyHistory,
     isAllCeremonyHistoryError,
     isAllCeremonyHistoryLoading,
-    updateStatusInvoice,
-    isLoadingUpdateStatusInvoice,
-    isUpdateStatusInvoiceError,
-    isUpdateStatusInvoiceSuccess,
+    updateStatusCeremonyHistory,
+    isLoadingUpdateStatusCeremonyHistory,
+    isUpdateStatusCeremonyHistoryError,
+    isUpdateStatusCeremonyHistorySuccess,
   };
 };

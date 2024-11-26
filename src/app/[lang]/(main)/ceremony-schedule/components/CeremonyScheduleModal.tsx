@@ -1,14 +1,18 @@
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
-import PrimaryButton from "@/components/button/PrimaryButton";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import SecondaryButton from "@/components/button/SecondaryButton";
+import SecondaryWithIconButton from "@/components/button/SecondaryWithIconButton";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
+import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
+import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import Modal from "@/components/modal/Modal";
+import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
 import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
+import { useCeremonyHistory } from "@/hooks/ceremony/use_ceremony_history";
+import { useCentralStore } from "@/store";
 import { formatDateIndonesia } from "@/utils";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 import React, { useState } from "react";
@@ -22,9 +26,21 @@ const CeremonyScheduleModal = ({
   title,
   ceremonyHistory,
 }: CeremonyScheduleModalProps) => {
-  const [openModalConfirmStatus, setOpenModalConfirmStatus] =
+  const [openModalCompleteStatus, setOpenModalCompleteStatus] =
+    useState<boolean>(false);
+  const [openModalCancelStatus, setOpenModalCancelStatus] =
     useState<boolean>(false);
   const [openDetail, setOpenDetail] = useState(false);
+
+  const { setIsLoading } = useCentralStore();
+
+  const { updateStatusCeremonyHistory } = useCeremonyHistory();
+
+  const updateStatus = (request: CeremonyHistoryUpdateStatusRequest) => {
+    setIsLoading(true);
+
+    updateStatusCeremonyHistory(request);
+  };
 
   return (
     <div>
@@ -95,56 +111,68 @@ const CeremonyScheduleModal = ({
             />
           )}
 
-          {ceremonyHistory.status !== "completed" &&
-            ceremonyHistory.status !== "cancel" && (
-              <div className="flex flex-row justify-end w-full pt-2">
+          <div className="flex flex-row justify-end w-full pt-2 space-x-2">
+            {ceremonyHistory.status !== "completed" &&
+              ceremonyHistory.status !== "cancel" && (
+                <SecondaryWithIconButton
+                  label="Batalkan"
+                  className="bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-300"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenModalCancelStatus(true);
+                  }}
+                  icon={XCircleIcon}
+                />
+              )}
+
+            {ceremonyHistory.status !== "completed" &&
+              ceremonyHistory.status !== "cancel" && (
                 <PrimaryWithIconButton
                   label="Selesai"
                   onClick={(e) => {
                     e.preventDefault();
-                    setOpenModalConfirmStatus(true);
+                    setOpenModalCompleteStatus(true);
                   }}
                   icon={CheckCircleIcon}
                 />
-              </div>
-            )}
+              )}
+          </div>
         </div>
       </Modal>
 
-      <Modal
-        title={""}
-        isOpen={openModalConfirmStatus}
-        setIsOpen={setOpenModalConfirmStatus}
-      >
-        <div className="w-full flex flex-col justify-center items-center gap-y-4 p-4">
-          {/* <Image
-            alt=""
-            src={Images.icEmptyceremonyHistory}
-            className="w-72"
-            height={40}
-            width={40}
-          /> */}
-          <p></p>
-          <SecondaryButton
-            label="Batal"
-            onClick={(e) => {
-              e.preventDefault();
-              setOpenModalConfirmStatus(false);
-            }}
-          />
-          <PrimaryButton
-            label="Ubah"
-            // loading={isLoadingUpdateStatusceremonyHistory}
-            onClick={(e) => {
-              e.preventDefault();
-              // updateStatusceremonyHistory({
-              //   ceremonyHistoryId: ceremonyHistory.id,
-              //   status: "success",
-              // });
-            }}
-          />
-        </div>
-      </Modal>
+      <AlertConfirmationModal
+        onRightClick={() => {
+          updateStatus({
+            id: ceremonyHistory.id,
+            status: "completed",
+          });
+
+          setOpenDetail(false);
+          setOpenModalCompleteStatus(false);
+        }}
+        open={openModalCompleteStatus}
+        setOpen={setOpenModalCompleteStatus}
+        title="Selesaikan Upacara"
+        description={`Apakah kamu yakin ingin mengubah status ${ceremonyHistory.title}  ke SELSAI?\nPastikan jika Upacara Agama telah selesai terlaksana!`}
+        rightButtonLabel="Lanjutkan"
+        leftButtonLabel="Batal"
+      />
+      <AlertDangerModal
+        onRightClick={() => {
+          updateStatus({
+            id: ceremonyHistory.id,
+            status: "cancel",
+          });
+          setOpenDetail(false);
+          setOpenModalCancelStatus(false);
+        }}
+        open={openModalCancelStatus}
+        setOpen={setOpenModalCancelStatus}
+        title="Batalkan Upacara"
+        description={`Apakah kamu yakin ingin mengubah status ${ceremonyHistory.title}  ke BATAL?\nPastikan jika pembatalan atas persetujuan Pemedek/Pengguna!`}
+        rightButtonLabel="Lanjutkan"
+        leftButtonLabel="Batal"
+      />
     </div>
   );
 };
