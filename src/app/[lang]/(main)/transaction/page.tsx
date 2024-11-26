@@ -69,10 +69,14 @@ export default function TransactionPage({
                 {info.row.original.id}
               </p>
               <p className="text-gray-800 line-clamp-1 text-ellipsis">
-                {info.row.original.invoiceCeremonyHistory.title.length < 40
-                  ? info.row.original.invoiceCeremonyHistory.title
-                  : info.row.original.invoiceCeremonyHistory.title
-                      .slice(0, 40)
+                {info.row.original.invoiceCeremonyHistory?.ceremonyPackage
+                  ?.ceremonyService?.title &&
+                info.row.original.invoiceCeremonyHistory?.ceremonyPackage
+                  ?.ceremonyService?.title?.length < 40
+                  ? info.row.original.invoiceCeremonyHistory?.ceremonyPackage
+                      ?.ceremonyService?.title
+                  : info.row.original.invoiceCeremonyHistory?.ceremonyPackage?.ceremonyService?.title
+                      ?.slice(0, 40)
                       .concat("...")}
               </p>
             </div>

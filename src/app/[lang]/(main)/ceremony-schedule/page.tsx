@@ -1,51 +1,75 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  MagnifyingGlassIcon,
-  TagIcon,
-} from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
-import PrimaryInput from "@/components/input/PrimaryInput";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
-import { useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import IconButton from "@/components/button/IconButton";
-import { categories, ceremonySchedules, status } from "@/utils/dummyData";
-import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryTable from "@/components/table/PrimaryTable";
-import SecondaryButton from "@/components/button/SecondaryButton";
-import PrimaryButton from "@/components/button/PrimaryButton";
-import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
+import { useCeremonyHistory } from "@/hooks/ceremony/use_ceremony_history";
+import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
+import { getCountdown } from "@/utils";
 import CeremonyScheduleModal from "./components/CeremonyScheduleModal";
+import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
 
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export default function TransactionPage({
+const StatusIndicator = ({
+  status,
+}: CeremonyHistoryUpdateStatusRequest): React.ReactElement => {
+  let bgColor = "";
+
+  switch (status) {
+    case "completed":
+      bgColor = "bg-emerald-400";
+      break;
+    case "onProgress":
+      bgColor = "bg-yellow-400";
+      break;
+    case "onGoing":
+      bgColor = "bg-blue-400";
+      break;
+    case "cancel":
+      bgColor = "bg-rose-600";
+      break;
+    default:
+      bgColor = "bg-gray-400";
+      break;
+  }
+
+  return <div className={`h-2 w-2 rounded-full ${bgColor}`}></div>;
+};
+
+const CountDown = ({ date }: { date: string }): ReactElement => {
+  const [countDown, setCountDown] = useState<string>("");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountDown(getCountdown(date));
+
+      if (countDown === "Hari Ini") {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    () => clearInterval(timer);
+  }, [countDown]);
+
+  return <p className="font-semibold">{countDown}</p>;
+};
+
+export default function CeremonyHistoryPage({
   params: { lang },
 }: {
   params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
-  const [open, setOpen] = useState(false);
-
-  const [openDetail, setOpenDetail] = useState(false);
-
-  const [selectedCeremonyCategory, setSelectedCeremonyCategory] =
-    useState<DropdownFilterItemProps>();
-
-  const [selectedStatusItem, setSelectedStatusItem] =
-    useState<DropdownFilterItemProps>();
-
-  const [data, setData] = useState(() => ceremonySchedules);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns = useMemo<ColumnDef<CeremonySchedule>[]>(
+  const { allCeremonyHistory } = useCeremonyHistory();
+
+  const columns = useMemo<ColumnDef<CeremonyHistory>[]>(
     () => [
       {
         header: "Nama Upacara",
@@ -53,27 +77,27 @@ export default function TransactionPage({
           <div className="py-4 sm:pl-6 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-col space-y-2">
               <div className="flex flex-row space-x-2 items-center">
-                <div className="h-2 w-2 rounded-full bg-orange-400"></div>
+                <StatusIndicator status={info.row.original.status} id={1} />
                 <p className="text-gray-500 line-clamp-1 text-ellipsis text-xs">
                   {info.row.original.status}
                 </p>
               </div>
               <p className="text-gray-800 line-clamp-1 text-ellipsis">
-                {info.row.original.title}
+                {info.row.original.title.length > 40
+                  ? info.row.original.title.slice(0, 40).concat("...")
+                  : info.row.original.title}
               </p>
             </div>
           </div>
         ),
       },
       {
-        header: "Kategori",
-        cell: (info) => <div className="pl-4">{info.row.original.status}</div>,
-      },
-      {
         header: "Alamat",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.address}
+            {info.row.original.ceremonyAddress.length > 40
+              ? info.row.original.ceremonyAddress.slice(0, 40).concat("...")
+              : info.row.original.ceremonyAddress}
           </div>
         ),
       },
@@ -81,7 +105,7 @@ export default function TransactionPage({
         header: "Hitung Mundur",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.countDown.toISOString()}
+            <CountDown date={info.row.original.ceremonyDate} />
           </div>
         ),
       },
@@ -90,14 +114,9 @@ export default function TransactionPage({
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div className="flex flex-row space-x-2">
-              <IconBackgroundButton
-                icon={InformationCircleIcon}
-                colorBackground="blue"
-                className="bg-blue-100"
-                colorIcon="blue"
-                onClick={() => {
-                  setOpenDetail(true);
-                }}
+              <CeremonyScheduleModal
+                title={`Detail - ${info.row.original?.title}`}
+                ceremonyHistory={info.row.original}
               />
             </div>
           </div>
@@ -152,7 +171,7 @@ export default function TransactionPage({
         //   </div>
         // }
         columns={columns}
-        data={data ?? []}
+        data={allCeremonyHistory?.data ?? []}
         isLoading={false}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -160,19 +179,6 @@ export default function TransactionPage({
         limitPage={10}
         isCommon={true}
       />
-
-      {/* Dialog PRE-PAID Transaction*/}
-      {/* <CeremonyScheduleModal
-        open={openDetail}
-        setOpen={setOpenDetail}
-        title="Detail Jadwal Upacara"
-        bottomAction={
-          <div className="flex flex-row space-x-2">
-            <SecondaryButton label="Konsultasi" onClick={() => {}} />
-            <PrimaryButton label="Ubah Status" onClick={() => {}} />
-          </div>
-        }
-      /> */}
     </>
   );
 }

@@ -53,43 +53,43 @@ const DetailTransactionModal = ({
             className="w-full"
             disabled
           />
-          {invoice.invoiceCeremonyHistory.packageName && (
+          {invoice.invoiceCeremonyHistory?.ceremonyPackage?.name && (
             <PrimaryInput
               label="Paket"
-              value={invoice.invoiceCeremonyHistory.packageName}
+              value={invoice.invoiceCeremonyHistory?.ceremonyPackage?.name}
               className="w-full"
               disabled
             />
           )}
           <PrimaryInput
             label="Total Harga"
-            value={formatRupiah(invoice.totalPrice) ?? ""}
+            value={formatRupiah(invoice?.totalPrice) ?? ""}
             className="w-full"
             disabled
           />
-
+          {/* 
           <PrimaryInput
             label="Tanggal Upacara"
             value={
-              invoice.invoiceCeremonyHistory.ceremonyDate
+              invoice?.createdAt
                 ? formatDateIndonesia(
-                    invoice.invoiceCeremonyHistory.ceremonyDate
+                    invoice?.createdAt
                   )
                 : "-"
             }
             className="w-full"
             disabled
-          />
+          /> */}
 
-          <PrimaryTextArea
+          {/* <PrimaryTextArea
             value={`${invoice.invoiceCeremonyHistory.ceremonyAddress}\n${
               invoice.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
             }`}
             label="Alamat/Lokasi Upacara"
             disabled
             className="w-full"
-          />
-          <PrimaryTextEditor
+          /> */}
+          {/* <PrimaryTextEditor
             label="Deskripsi Upacara"
             value={invoice.invoiceCeremonyHistory.description}
             disabled
@@ -101,7 +101,7 @@ const DetailTransactionModal = ({
               disabled
               className="w-full"
             />
-          )}
+          )} */}
 
           <PrimaryInput
             label="Tanggal Pembuatan Invoice"
