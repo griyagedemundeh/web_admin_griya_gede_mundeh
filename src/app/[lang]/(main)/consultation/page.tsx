@@ -20,6 +20,7 @@ import Message from "@/data/models/consultation/message/response/message";
 import MessageRequest from "@/data/models/consultation/message/request/message_request";
 import { formatTimeAgo } from "@/utils";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
+import CeremonyConsultation from "./components/CeremonyConsultation";
 
 export default function ConsultationPage({
   params: { lang },
@@ -77,6 +78,15 @@ export default function ConsultationPage({
   );
 }
 
+const tabOptions = [
+  { name: "Upacara Agama", value: "ceremony-consultation" },
+  { name: "Umum", value: "general-consultation" },
+];
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 function Sidebar({
   consultations,
   selectedConsultation,
@@ -86,6 +96,37 @@ function Sidebar({
   selectedConsultation: Consultation | undefined;
   setSelectedConsultation: (value: Consultation) => void;
 }) {
+  const [activeTab, setActiveTab] = useState("ceremony-consultation");
+  const renderContent = () => {
+    switch (activeTab) {
+      case "ceremony-consultation":
+        return (
+          <CeremonyConsultation
+            consultations={consultations}
+            selectedCeremonyConsultation={selectedConsultation}
+            setSelectedCeremonyConsultation={setSelectedConsultation}
+          />
+        );
+      case "general-consultation":
+        return (
+          <CeremonyConsultation
+            consultations={consultations}
+            selectedCeremonyConsultation={selectedConsultation}
+            setSelectedCeremonyConsultation={setSelectedConsultation}
+          />
+        );
+
+      default:
+        return (
+          <CeremonyConsultation
+            consultations={consultations}
+            selectedCeremonyConsultation={selectedConsultation}
+            setSelectedCeremonyConsultation={setSelectedConsultation}
+          />
+        );
+    }
+  };
+
   return (
     <div className="w-1/4 border-r border-gray-300">
       <PrimaryInput
@@ -101,7 +142,31 @@ function Sidebar({
           />
         }
       />
-      <div
+      <div className="px-4 w-full border-t-2 pt-2">
+        <div className="hidden sm:block">
+          <div className="border-gray-200">
+            <nav aria-label="Tabs" className="-mb-px flex space-x-8">
+              {tabOptions.map((tab) => (
+                <a
+                  key={tab.value}
+                  onClick={() => setActiveTab(tab.value)}
+                  aria-current={activeTab === tab.value ? "page" : undefined}
+                  className={classNames(
+                    activeTab === tab.value
+                      ? "border-primary1 text-primary1"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                    "whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium cursor-pointer w-full text-center"
+                  )}
+                >
+                  {tab.name}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </div>
+      {renderContent()}
+      {/* <div
         className="mt-8 overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white"
         style={{ height: "30rem" }}
       >
@@ -133,7 +198,7 @@ function Sidebar({
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
