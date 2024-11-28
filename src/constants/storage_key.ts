@@ -1,6 +1,6 @@
 enum StorageKey {
   ACCOUNT = "account",
-  CONSULTATION = "consultations",
+  CEREMONY_CONSULTATION = "ceremony_consultations",
   CEREMONY_CONSULTATION_MESSAGE = "ceremony_consultation_messages",
 }
 
