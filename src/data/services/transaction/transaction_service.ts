@@ -34,7 +34,7 @@ export class TransactionService implements ITransactionService {
         { params: request }
       );
       return response.data;
-    } catch (error: AxiosError<ApiResponse<Payment>> | any) {
+    } catch (error: AxiosError<ApiResponse<Invoice[]>> | any) {
       console.error("==================================");
       console.error("Error GET ALL INVOICE -->", error.response.data.message);
       console.error("==================================");
@@ -55,6 +55,27 @@ export class TransactionService implements ITransactionService {
       console.error("==================================");
       console.error(
         "Error UPDATE STATUS INVOICE -->",
+        error.response.data.message
+      );
+      console.error("==================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async getDetailInvoice({
+    id,
+  }: {
+    id: string;
+  }): Promise<ApiResponse<Invoice>> {
+    try {
+      const response: AxiosResponse<ApiResponse<Invoice>> = await api.get(
+        `${this.uri}/${id}`
+      );
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<Invoice>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error GET DETAIL INVOICE -->",
         error.response.data.message
       );
       console.error("==================================");

@@ -6,6 +6,7 @@ import {
   createInvoice as createInvoiceBridge,
   updateStatusInvoice as updateInvoiceBridge,
   useGetAllInvoiceQuery,
+  useGetDetailInvoiceQuery,
 } from "./transaction_bridge";
 import { showToast, statusMessage } from "@/utils";
 import { AxiosError } from "axios";
@@ -31,6 +32,11 @@ interface IUseTransaction {
   invoices: ApiResponse<Invoice[]> | undefined;
   isLoadingGetAllInvoice: boolean;
 
+  // Detail Invoice
+  invoice: ApiResponse<Invoice> | undefined;
+  isLoadingGetDetailInvoice: boolean;
+  isErrorGetDetailInvoice: boolean;
+
   // Update Status
   updateStatusInvoice: UseMutateFunction<
     ApiResponse<Invoice>,
@@ -48,6 +54,8 @@ export const useTransaction = (): IUseTransaction => {
 
   const [payment, setPayment] = useState<Invoice>();
 
+  const [idInvoice, setIdInvoice] = useState<string>("");
+
   const [filter, setFilter] = useState<ListDataRequest>({
     page: 1,
     limit: 1000,
@@ -59,6 +67,12 @@ export const useTransaction = (): IUseTransaction => {
     isError: isErrorGetAllInvoice,
     error: errorGetAllInvoice,
   } = useGetAllInvoiceQuery(filter);
+
+  const {
+    data: invoice,
+    isLoading: isLoadingGetDetailInvoice,
+    isError: isErrorGetDetailInvoice,
+  } = useGetDetailInvoiceQuery({ id: idInvoice });
 
   const {
     mutate: createInvoice,
@@ -131,6 +145,12 @@ export const useTransaction = (): IUseTransaction => {
     // Invoice
     invoices,
     isLoadingGetAllInvoice,
+
+    // Detail Invoice
+    invoice,
+
+    isErrorGetDetailInvoice,
+    isLoadingGetDetailInvoice,
 
     // Update Status Invoice
     updateStatusInvoice,

@@ -15,7 +15,7 @@ const CeremonyConsultation = ({
 }: ICeremonyConsultationProps) => {
   return (
     <div
-      className="mt-8 overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white"
+      className="overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white"
       style={{ height: "30rem" }}
     >
       {consultations?.map((consultation, index) => (

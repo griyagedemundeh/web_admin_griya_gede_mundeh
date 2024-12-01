@@ -3,7 +3,7 @@ type MessageRequest = {
   ceremonyServiceId?: number;
   consultationId: number;
   createdAt: string;
-  invoiceId?: number | null;
+  invoiceId?: string | null;
   isAdmin: boolean;
   message: string;
   messageType: "default" | "invoice";
