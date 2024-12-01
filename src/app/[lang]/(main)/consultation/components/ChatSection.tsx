@@ -1,4 +1,5 @@
 import IconButton from "@/components/button/IconButton";
+import OutlinePrimaryButton from "@/components/button/OutlinePrimaryButton";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import StorageKey from "@/constants/storage_key";
 import MessageRequest from "@/data/models/consultation/message/request/message_request";
@@ -73,7 +74,8 @@ function ChatSection({ consultation }: IChatSectionProps) {
         ...initialMessageRequest,
         invoiceId: invoice.id,
         messageType: "invoice",
-        message: "Invoice sudah dibuat",
+        message: "Invoice sudah dibuat!",
+        // address
       };
 
       // Immediately set invoice to undefined to prevent re-triggers
@@ -136,11 +138,28 @@ function ChatSection({ consultation }: IChatSectionProps) {
               className={`p-3 ${
                 !chat.isAdmin
                   ? "bg-white ring-1 ring-inset ring-gray-300 mr-40 rounded-tr-xl rounded-br-xl rounded-bl-xl"
-                  : "bg-primary1 ml-40 rounded-tl-xl rounded-br-xl rounded-bl-xl"
+                  : "bg-primary1 ml-40 rounded-tl-xl rounded-br-xl rounded-bl-xl text-white"
               }`}
             >
-              {chat.message}
-              <div>{chat.invoiceId}</div>
+              {chat.messageType === "default" && <p>{chat.message}</p>}
+              {chat.messageType === "invoice" && (
+                <div className="flex flex-col">
+                  <div className="">
+                    <p className="font-extrabold">Tagihan Upacara</p>
+                    <p>{"Mebayuh Bali pak kadek"}</p>
+                  </div>
+
+                  <div className="my-4">
+                    <p>💸Harga: Rp2.500.000</p>
+                    <p>📅Tanggal dan Waktu: 23 Juli 2025 - 20.30</p>
+                    <p>📍Lokasi: Jalan jalan</p>
+                  </div>
+
+                  <div>
+                    <OutlinePrimaryButton label="Detail" onClick={() => {}} />
+                  </div>
+                </div>
+              )}
             </div>
             <p
               className={`text-xs py-2 text-gray-500 ${

@@ -8,6 +8,11 @@ type MessageRequest = {
   message: string;
   messageType: "default" | "invoice";
   userId: number;
+  title?: string;
+  totalPrice?: string;
+  ceremonyDate?: string | Date;
+  addressId?: string;
+  address?: string;
 };
 
 export default MessageRequest;
