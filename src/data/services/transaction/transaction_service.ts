@@ -76,10 +76,10 @@ export class TransactionService implements ITransactionService {
       console.error("==================================");
       console.error(
         "Error GET DETAIL INVOICE -->",
-        error.response.data.message
+        error?.response?.data?.message
       );
       console.error("==================================");
-      throw error.response.data.message;
+      throw error?.response?.data?.message;
     }
   }
 }

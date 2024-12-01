@@ -9,9 +9,13 @@ import { useCentralStore } from "@/store";
 import { formatTimeAgo } from "@/utils";
 import { supabase } from "@/utils/supabase";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
-
 import Image from "next/image";
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import DetailTransactionModal from "../../transaction/components/DetailTransactionModal";
+import ApiResponse from "@/data/models/base/api-base-response";
+import Invoice from "@/data/models/transaction/response/invoice";
+import { TransactionService } from "@/data/services/transaction/transaction_service";
+import { AxiosError } from "axios";
 
 interface IChatSectionProps {
   consultation: Consultation | undefined;
@@ -20,6 +24,10 @@ interface IChatSectionProps {
 function ChatSection({ consultation }: IChatSectionProps) {
   const [chats, setChats] = useState<Message[]>([]);
   const { invoice, setInvoice } = useCentralStore();
+  const [openDetail, setOpenDetail] = useState<boolean>(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [detailInvoice, setDetailInvoice] = useState<Invoice>();
 
   // Use a ref to track if invoice processing is in progress
   const isProcessingInvoice = useRef<boolean>(false);
@@ -79,6 +87,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
       };
 
       // Immediately set invoice to undefined to prevent re-triggers
+
       setInvoice(undefined);
 
       await supabase
@@ -114,6 +123,34 @@ function ChatSection({ consultation }: IChatSectionProps) {
     setMessageRequest(initialMessageRequest);
     getChats();
   }, [messageRequest, getChats, initialMessageRequest]);
+
+  const getDetailInvoice = async ({
+    id,
+  }: {
+    id: string;
+  }): Promise<ApiResponse<Invoice>> => {
+    const authService = new TransactionService();
+    const TAG_ERROR = "Error during :";
+
+    setIsLoading(true);
+
+    const response = await authService
+      .getDetailInvoice({ id })
+      .then(async (value) => {
+        setOpenDetail(true);
+        return value;
+      })
+      .catch((error: AxiosError<ApiResponse<Invoice>> | unknown) => {
+        console.error("========================");
+        console.error(`${TAG_ERROR} GET Detail INVOICE `, error);
+        console.error("========================");
+        throw error;
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    return response;
+  };
 
   return (
     <div className="w-1/2 flex flex-col" style={{ height: "40rem" }}>
@@ -156,7 +193,24 @@ function ChatSection({ consultation }: IChatSectionProps) {
                   </div>
 
                   <div>
-                    <OutlinePrimaryButton label="Detail" onClick={() => {}} />
+                    <DetailTransactionModal
+                      title={`Detail - ${chat?.invoiceId}`}
+                      invoice={detailInvoice}
+                      open={openDetail}
+                      setOpen={setOpenDetail}
+                      child={
+                        <OutlinePrimaryButton
+                          label="Detail"
+                          loading={isLoading}
+                          onClick={async () => {
+                            const response = await getDetailInvoice({
+                              id: chat?.invoiceId ?? "",
+                            });
+                            setDetailInvoice(response.data);
+                          }}
+                        />
+                      }
+                    />
                   </div>
                 </div>
               )}

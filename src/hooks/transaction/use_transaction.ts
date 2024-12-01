@@ -11,7 +11,7 @@ import {
 import { showToast, statusMessage } from "@/utils";
 import { AxiosError } from "axios";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ListDataRequest from "@/data/models/base/list_data_request";
 import Invoice from "@/data/models/transaction/response/invoice";
 import UpdateInvoiceStatusRequest from "@/data/models/transaction/request/update_invoice_status_request";
@@ -36,6 +36,7 @@ interface IUseTransaction {
   invoice: ApiResponse<Invoice> | undefined;
   isLoadingGetDetailInvoice: boolean;
   isErrorGetDetailInvoice: boolean;
+  setIdInvoice: Dispatch<SetStateAction<string>>;
 
   // Update Status
   updateStatusInvoice: UseMutateFunction<
@@ -148,6 +149,7 @@ export const useTransaction = (): IUseTransaction => {
 
     // Detail Invoice
     invoice,
+    setIdInvoice,
 
     isErrorGetDetailInvoice,
     isLoadingGetDetailInvoice,

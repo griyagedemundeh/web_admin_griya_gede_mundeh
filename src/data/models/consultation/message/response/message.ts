@@ -4,7 +4,7 @@ type Message = {
   consultationId: number;
   createdAt: string;
   id: number;
-  invoiceId: number | null;
+  invoiceId: string | null;
   isAdmin: boolean;
   message: string;
   messageType: "default" | "invoice";
