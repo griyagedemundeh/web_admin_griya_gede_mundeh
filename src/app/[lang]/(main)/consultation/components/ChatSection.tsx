@@ -68,7 +68,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
   // Fetch initial chats
   useEffect(() => {
     getChats();
-  }, [getChats]);
+  }, [getChats, chats]);
 
   // Separate function to handle invoice sending with minimal state interactions
   const processInvoice = useCallback(async () => {

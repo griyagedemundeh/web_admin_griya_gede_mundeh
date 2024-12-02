@@ -8,6 +8,7 @@ import Consultation from "@/data/models/consultation/response/consultation";
 import SidebarConsultation from "./components/SideBarConsultation";
 import ChatSection from "./components/ChatSection";
 import InvoiceSection from "./components/InvoiceSection";
+import { count } from "console";
 
 export default function ConsultationPage({
   params: { lang },
@@ -18,19 +19,16 @@ export default function ConsultationPage({
     useState<Consultation>();
   const [consultations, setConsultations] = useState<Consultation[]>();
 
-  const getConsultations = async () => {
-    const { data: consultations } = await supabase
-      .from(StorageKey.CEREMONY_CONSULTATION)
-      .select();
-
-    if ((consultations?.length ?? 0) >= 1) {
-      setConsultations(consultations as any);
-    }
-  };
-
   useEffect(() => {
-    getConsultations();
-  }, []);
+    supabase
+      .from(StorageKey.CEREMONY_CONSULTATION)
+      .select()
+      .then((val) => {
+        if ((val.data?.length ?? 0) >= 1) {
+          setConsultations(val.data as any);
+        }
+      });
+  }, [consultations]);
 
   return (
     <div className="flex bg-white rounded-lg border">
