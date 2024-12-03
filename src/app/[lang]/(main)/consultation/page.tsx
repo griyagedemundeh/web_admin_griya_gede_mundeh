@@ -18,7 +18,7 @@ export default function ConsultationPage({
     useState<Consultation>();
   const [consultations, setConsultations] = useState<Consultation[]>();
 
-  useEffect(() => {
+  const init = () => {
     supabase
       .from(StorageKey.CEREMONY_CONSULTATION)
       .select()
@@ -27,6 +27,16 @@ export default function ConsultationPage({
           setConsultations(val.data as any);
         }
       });
+  };
+
+  useEffect(() => {
+    init();
+
+    if (consultations == undefined) {
+      setInterval(() => {
+        init();
+      }, 1000);
+    }
   }, [consultations]);
 
   return (

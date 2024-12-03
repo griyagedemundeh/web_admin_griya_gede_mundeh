@@ -202,6 +202,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
 
                   <div>
                     <DetailTransactionModal
+                      key={chat.id}
                       title={`Detail - ${chat?.invoiceId}`}
                       invoice={detailInvoice}
                       open={openDetail}
@@ -235,7 +236,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
       </div>
       <div className="flex items-center border-t p-4 ">
         <PrimaryTextArea
-          value={invoice ? "" : messageRequest.message}
+          value={messageRequest.message}
           className="w-full"
           placeholder="Ketik pesan..."
           rows={2}
