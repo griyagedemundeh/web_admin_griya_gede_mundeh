@@ -6,7 +6,7 @@ import MessageRequest from "@/data/models/consultation/message/request/message_r
 import Message from "@/data/models/consultation/message/response/message";
 import Consultation from "@/data/models/consultation/response/consultation";
 import { useCentralStore } from "@/store";
-import { formatTimeAgo } from "@/utils";
+import { formatDateIndonesia, formatRupiah, formatTimeAgo } from "@/utils";
 import { supabase } from "@/utils/supabase";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
@@ -83,11 +83,14 @@ function ChatSection({ consultation }: IChatSectionProps) {
         invoiceId: invoice.id,
         messageType: "invoice",
         message: "Invoice sudah dibuat!",
-        // address
+        ceremonyDate: invoice.invoiceCeremonyHistory.ceremonyDate,
+        address: invoice.invoiceCeremonyHistory.ceremonyAddress,
+        paymentUrl: invoice.paymentUrl,
+        title: invoice.invoiceCeremonyHistory.title,
+        totalPrice: `${invoice.totalPrice}`,
       };
 
       // Immediately set invoice to undefined to prevent re-triggers
-
       setInvoice(undefined);
 
       await supabase
@@ -183,13 +186,18 @@ function ChatSection({ consultation }: IChatSectionProps) {
                 <div className="flex flex-col">
                   <div className="">
                     <p className="font-extrabold">Tagihan Upacara</p>
-                    <p>{"Mebayuh Bali pak kadek"}</p>
+                    <p>{chat.title}</p>
                   </div>
 
                   <div className="my-4">
-                    <p>💸Harga: Rp2.500.000</p>
-                    <p>📅Tanggal dan Waktu: 23 Juli 2025 - 20.30</p>
-                    <p>📍Lokasi: Jalan jalan</p>
+                    <p>
+                      💸Harga: {formatRupiah(parseInt(chat.totalPrice ?? "0"))}
+                    </p>
+                    <p>
+                      📅Tanggal dan Waktu:
+                      {formatDateIndonesia(chat.ceremonyDate ?? "")}
+                    </p>
+                    <p>📍Lokasi: {chat.address}</p>
                   </div>
 
                   <div>

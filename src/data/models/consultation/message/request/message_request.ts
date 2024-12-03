@@ -13,6 +13,7 @@ type MessageRequest = {
   ceremonyDate?: string | Date;
   addressId?: string;
   address?: string;
+  paymentUrl?: string;
 };
 
 export default MessageRequest;

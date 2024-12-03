@@ -8,7 +8,6 @@ import Consultation from "@/data/models/consultation/response/consultation";
 import SidebarConsultation from "./components/SideBarConsultation";
 import ChatSection from "./components/ChatSection";
 import InvoiceSection from "./components/InvoiceSection";
-import { count } from "console";
 
 export default function ConsultationPage({
   params: { lang },

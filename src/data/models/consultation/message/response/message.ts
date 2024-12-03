@@ -8,6 +8,11 @@ type Message = {
   isAdmin: boolean;
   message: string;
   messageType: "default" | "invoice";
+  totalPrice?: string;
+  ceremonyDate?: string;
+  address?: string;
+  paymentUrl?: string;
+  title?: string;
   userId: number;
 };
 
