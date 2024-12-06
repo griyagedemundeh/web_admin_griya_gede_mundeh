@@ -1,3 +1,4 @@
+// Define the User type
 type User = {
   fullName: string;
   id: number;
@@ -26,9 +27,7 @@ type CeremonyService = {
 // Define the CeremonyPackage type
 type CeremonyPackage = {
   name: string;
-  ceremonyServiceId: number;
   id: number;
-  ceremonyService: CeremonyService;
 };
 
 // Define the InvoiceCeremonyHistory type
@@ -38,6 +37,7 @@ type InvoiceCeremonyHistory = {
   memberId: number;
   memberAddressId: number;
   consultationId: number | null;
+  ceremonyServiceId: number;
   ceremonyServicePackageId: number;
   title: string;
   packageName: string;
@@ -49,8 +49,9 @@ type InvoiceCeremonyHistory = {
   status: string;
   createdAt: string;
   updatedAt: string;
-  ceremonyAdmin: CeremonyAdmin;
   ceremonyPackage: CeremonyPackage;
+  ceremonyService: CeremonyService;
+  ceremonyAdmin: CeremonyAdmin;
 };
 
 // Define the main Invoice type
@@ -60,8 +61,8 @@ type Invoice = {
   ceremonyHistoryId: number;
   memberId: number;
   totalPrice: number;
-  paymentUrl: string;
-  paymentToken: string;
+  paymentUrl: string | null;
+  paymentToken: string | null;
   paymentMethod: string | null;
   isCash: boolean;
   status: string;

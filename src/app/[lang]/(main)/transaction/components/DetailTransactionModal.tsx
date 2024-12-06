@@ -59,6 +59,14 @@ const DetailTransactionModal = ({
             className="w-full"
             disabled
           />
+
+          <PrimaryInput
+            label="Nama Pemedek/Anggota"
+            value={invoice?.invoiceMember?.user?.fullName ?? "-"}
+            className="w-full"
+            disabled
+          />
+
           <PrimaryInput
             label="Metode Pembayaran"
             value={invoice?.paymentMethod ?? "-"}
@@ -79,41 +87,29 @@ const DetailTransactionModal = ({
             className="w-full"
             disabled
           />
-          {/* 
+
           <PrimaryInput
             label="Tanggal Upacara"
             value={
-              invoice?.createdAt
+              invoice?.invoiceCeremonyHistory?.ceremonyDate
                 ? formatDateIndonesia(
-                    invoice?.createdAt
+                    invoice?.invoiceCeremonyHistory?.ceremonyDate
                   )
                 : "-"
             }
             className="w-full"
             disabled
-          /> */}
+          />
 
-          {/* <PrimaryTextArea
-            value={`${invoice?.invoiceCeremonyHistory.ceremonyAddress}\n${
-              invoice?.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
-            }`}
-            label="Alamat/Lokasi Upacara"
-            disabled
+          <PrimaryInput
+            label="Nama Pengelola"
+            value={
+              invoice?.invoiceCeremonyHistory?.ceremonyAdmin?.user?.fullName ??
+              "-"
+            }
             className="w-full"
-          /> */}
-          {/* <PrimaryTextEditor
-            label="Deskripsi Upacara"
-            value={invoice?.invoiceCeremonyHistory.description}
             disabled
           />
-          {invoice?.invoiceCeremonyHistory.note && (
-            <PrimaryTextArea
-              value={`${invoice?.invoiceCeremonyHistory.note}`}
-              label="Catatan"
-              disabled
-              className="w-full"
-            />
-          )} */}
 
           <PrimaryInput
             label="Tanggal Pembuatan Invoice"
@@ -133,6 +129,28 @@ const DetailTransactionModal = ({
             className="w-full"
             disabled
           />
+
+          <PrimaryTextArea
+            value={`${invoice?.invoiceCeremonyHistory.ceremonyAddress}\n${
+              invoice?.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
+            }`}
+            label="Alamat/Lokasi Upacara"
+            disabled
+            className="w-full"
+          />
+          <PrimaryTextEditor
+            label="Deskripsi Upacara"
+            value={invoice?.invoiceCeremonyHistory?.description ?? ""}
+            disabled
+          />
+          {invoice?.invoiceCeremonyHistory?.note && (
+            <PrimaryTextArea
+              value={`${invoice?.invoiceCeremonyHistory?.note}`}
+              label="Catatan"
+              disabled
+              className="w-full"
+            />
+          )}
 
           {invoice?.status === "pending" && (
             <div className="flex flex-row justify-end w-full pt-2">
