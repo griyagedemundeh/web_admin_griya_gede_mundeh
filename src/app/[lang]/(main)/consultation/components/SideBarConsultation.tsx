@@ -21,7 +21,7 @@ function SidebarConsultation({
 }: {
   consultations: Consultation[] | undefined;
   selectedConsultation: Consultation | undefined;
-  setSelectedConsultation: (value: Consultation) => void;
+  setSelectedConsultation: (value: Consultation | undefined) => void;
 }) {
   const [activeTab, setActiveTab] = useState("ceremony-consultation");
   const renderContent = () => {
@@ -79,7 +79,13 @@ function SidebarConsultation({
               {tabOptions.map((tab) => (
                 <a
                   key={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
+                  onClick={() => {
+                    setActiveTab(tab.value);
+
+                    if (tab.value === "general-consultation") {
+                      setSelectedConsultation(undefined);
+                    }
+                  }}
                   aria-current={activeTab === tab.value ? "page" : undefined}
                   className={classNames(
                     activeTab === tab.value

@@ -27,6 +27,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
   const [openDetail, setOpenDetail] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [detailInvoice, setDetailInvoice] = useState<Invoice>();
 
   // Use a ref to track if invoice processing is in progress
@@ -35,7 +36,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
   // Memoize initial message request to prevent unnecessary re-renders
   const initialMessageRequest = useMemo<MessageRequest>(
     () => ({
-      consultationId: consultation?.consultationId ?? 0,
+      consultationId: consultation?.consultationId as number,
       isAdmin: true,
       createdAt: new Date().toISOString(),
       message: "",
@@ -54,21 +55,26 @@ function ChatSection({ consultation }: IChatSectionProps) {
 
   // Memoized getChats to prevent unnecessary recreations
   const getChats = useCallback(async () => {
+    // If no consultation ID, reset chats to an empty array
+    if (!consultation?.consultationId) {
+      setChats([]);
+      return;
+    }
+
     const { data: consultations } = await supabase
       .from(StorageKey.CEREMONY_CONSULTATION_MESSAGE)
       .select()
-      .eq("consultationId", consultation?.consultationId)
+      .eq("consultationId", consultation.consultationId)
       .order("id", { ascending: false });
 
-    if (consultations?.length) {
-      setChats(consultations);
-    }
+    // Always set the chats state, even if it's an empty array
+    setChats(consultations || []);
   }, [consultation?.consultationId]);
 
   // Fetch initial chats
   useEffect(() => {
     getChats();
-  }, [getChats, chats]);
+  }, [consultation?.consultationId, chats]);
 
   // Separate function to handle invoice sending with minimal state interactions
   const processInvoice = useCallback(async () => {
@@ -79,13 +85,14 @@ function ChatSection({ consultation }: IChatSectionProps) {
       isProcessingInvoice.current = true;
 
       const invoiceMessage: MessageRequest = {
-        ...initialMessageRequest,
+        ...messageRequest,
+        consultationId: consultation?.consultationId as number,
         invoiceId: invoice.id,
         messageType: "invoice",
         message: "Invoice sudah dibuat!",
         ceremonyDate: invoice.invoiceCeremonyHistory.ceremonyDate,
         address: invoice.invoiceCeremonyHistory.ceremonyAddress,
-        paymentUrl: invoice.paymentUrl,
+        paymentUrl: invoice.paymentUrl ?? "",
         title: invoice.invoiceCeremonyHistory.title,
         totalPrice: `${invoice.totalPrice}`,
       };
@@ -106,26 +113,38 @@ function ChatSection({ consultation }: IChatSectionProps) {
       // Always reset the processing flag
       isProcessingInvoice.current = false;
     }
-  }, [invoice, initialMessageRequest, setInvoice, getChats]);
+  }, [
+    invoice,
+    initialMessageRequest,
+    setInvoice,
+    getChats,
+    consultation?.consultationId,
+  ]);
 
   // Trigger invoice processing when invoice changes
   useEffect(() => {
     if (invoice !== undefined) {
       processInvoice();
     }
-  }, [invoice, processInvoice]);
+  }, [invoice]);
 
   // Memoized send message functions to prevent unnecessary recreations
   const sendMessage = useCallback(async () => {
     if (messageRequest.message.trim().length === 0) return;
 
-    await supabase
-      .from(StorageKey.CEREMONY_CONSULTATION_MESSAGE)
-      .insert(messageRequest);
+    await supabase.from(StorageKey.CEREMONY_CONSULTATION_MESSAGE).insert({
+      ...messageRequest,
+      consultationId: consultation?.consultationId,
+    });
 
     setMessageRequest(initialMessageRequest);
     getChats();
-  }, [messageRequest, getChats, initialMessageRequest]);
+  }, [
+    messageRequest,
+    getChats,
+    initialMessageRequest,
+    consultation?.consultationId,
+  ]);
 
   const getDetailInvoice = async ({
     id,
@@ -200,7 +219,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
                     <p>📍Lokasi: {chat.address}</p>
                   </div>
 
-                  <div>
+                  <div key={chat.id}>
                     <DetailTransactionModal
                       key={chat.id}
                       title={`Detail - ${chat?.invoiceId}`}
@@ -210,6 +229,7 @@ function ChatSection({ consultation }: IChatSectionProps) {
                       child={
                         <OutlinePrimaryButton
                           label="Detail"
+                          key={chat.id}
                           loading={isLoading}
                           onClick={async () => {
                             const response = await getDetailInvoice({
@@ -233,6 +253,74 @@ function ChatSection({ consultation }: IChatSectionProps) {
             </p>
           </div>
         ))}
+        {/* {isLoadingChat === false ? (
+          chats.map((chat) => (
+            <div key={chat.id} className="flex-col">
+              <div
+                className={`p-3 ${
+                  !chat.isAdmin
+                    ? "bg-white ring-1 ring-inset ring-gray-300 mr-40 rounded-tr-xl rounded-br-xl rounded-bl-xl"
+                    : "bg-primary1 ml-40 rounded-tl-xl rounded-br-xl rounded-bl-xl text-white"
+                }`}
+              >
+                {chat.messageType === "default" && <p>{chat.message}</p>}
+                {chat.messageType === "invoice" && (
+                  <div className="flex flex-col">
+                    <div className="">
+                      <p className="font-extrabold">Tagihan Upacara</p>
+                      <p>{chat.title}</p>
+                    </div>
+
+                    <div className="my-4">
+                      <p>
+                        💸Harga:{" "}
+                        {formatRupiah(parseInt(chat.totalPrice ?? "0"))}
+                      </p>
+                      <p>
+                        📅Tanggal dan Waktu:
+                        {formatDateIndonesia(chat.ceremonyDate ?? "")}
+                      </p>
+                      <p>📍Lokasi: {chat.address}</p>
+                    </div>
+
+                    <div>
+                      <DetailTransactionModal
+                        key={chat.id}
+                        title={`Detail - ${chat?.invoiceId}`}
+                        invoice={detailInvoice}
+                        open={openDetail}
+                        setOpen={setOpenDetail}
+                        child={
+                          <OutlinePrimaryButton
+                            label="Detail"
+                            loading={isLoading}
+                            onClick={async () => {
+                              const response = await getDetailInvoice({
+                                id: chat?.invoiceId ?? "",
+                              });
+                              setDetailInvoice(response.data);
+                            }}
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+              <p
+                className={`text-xs py-2 text-gray-500 ${
+                  !chat.isAdmin ? "" : "text-right"
+                }`}
+              >
+                {formatTimeAgo(chat.createdAt)}
+              </p>
+            </div>
+          ))
+        ) : (
+          <div className="h-full w-full flex flex-row items-center justify-center">
+            Loading...
+          </div>
+        )} */}
       </div>
       <div className="flex items-center border-t p-4 ">
         <PrimaryTextArea
