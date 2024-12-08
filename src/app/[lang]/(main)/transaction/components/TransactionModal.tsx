@@ -41,7 +41,7 @@ const TransactionModal = ({
   ceremonyServiceId,
 }: TransactionModalProps) => {
   const [openPayment, setOpenPayment] = useState<boolean>(false);
-  const [openAddAdress, setOpenAddAddress] = useState<boolean>(false);
+  const [openAddAddress, setOpenAddAddress] = useState<boolean>(false);
 
   const { allAdmin } = useAdmin();
 
@@ -488,7 +488,7 @@ const TransactionModal = ({
 
       <Modal
         title={`Tambah Alamat \n${selectedMember?.title ?? ""}`}
-        isOpen={openAddAdress}
+        isOpen={openAddAddress}
         setIsOpen={setOpenAddAddress}
       >
         {selectedMember?.title ? (

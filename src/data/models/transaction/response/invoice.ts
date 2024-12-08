@@ -1,40 +1,60 @@
+// Define the User type
 type User = {
   fullName: string;
   id: number;
 };
 
+// Define the InvoiceMember type
 type InvoiceMember = {
   userId: number;
   id: number;
   user: User;
 };
 
-type CeremonyService = {
-  title: string;
-  id: number;
-};
-
-type CeremonyPackage = {
-  name: string;
-  ceremonyServiceId: number;
-  id: number;
-  ceremonyService: CeremonyService;
-};
-
+// Define the CeremonyAdmin type
 type CeremonyAdmin = {
   userId: number;
   id: number;
   user: User;
 };
 
-type InvoiceCeremonyHistory = {
-  adminId: number;
-  ceremonyServicePackageId: number;
+// Define the CeremonyService type
+type CeremonyService = {
+  title: string;
   id: number;
+};
+
+// Define the CeremonyPackage type
+type CeremonyPackage = {
+  name: string;
+  id: number;
+};
+
+// Define the InvoiceCeremonyHistory type
+type InvoiceCeremonyHistory = {
+  id: number;
+  adminId: number;
+  memberId: number;
+  memberAddressId: number;
+  consultationId: number | null;
+  ceremonyServiceId: number;
+  ceremonyServicePackageId: number;
+  title: string;
+  packageName: string;
+  description: string;
+  note: string;
+  ceremonyAddress: string;
+  ceremonyAddressNote: string | null;
+  ceremonyDate: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
   ceremonyPackage: CeremonyPackage;
+  ceremonyService: CeremonyService;
   ceremonyAdmin: CeremonyAdmin;
 };
 
+// Define the main Invoice type
 type Invoice = {
   id: string;
   consultationId: number | null;
@@ -47,7 +67,7 @@ type Invoice = {
   isCash: boolean;
   status: string;
   createdAt: string;
-  paidAt: string;
+  paidAt: string | null;
   updatedAt: string;
   invoiceMember: InvoiceMember;
   invoiceCeremonyHistory: InvoiceCeremonyHistory;

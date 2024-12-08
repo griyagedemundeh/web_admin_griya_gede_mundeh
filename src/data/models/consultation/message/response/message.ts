@@ -4,10 +4,15 @@ type Message = {
   consultationId: number;
   createdAt: string;
   id: number;
-  invoiceId: number | null;
+  invoiceId: string | null;
   isAdmin: boolean;
   message: string;
   messageType: "default" | "invoice";
+  totalPrice?: string;
+  ceremonyDate?: string;
+  address?: string;
+  paymentUrl?: string;
+  title?: string;
   userId: number;
 };
 

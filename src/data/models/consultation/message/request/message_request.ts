@@ -3,11 +3,17 @@ type MessageRequest = {
   ceremonyServiceId?: number;
   consultationId: number;
   createdAt: string;
-  invoiceId?: number | null;
+  invoiceId?: string | null;
   isAdmin: boolean;
   message: string;
   messageType: "default" | "invoice";
   userId: number;
+  title?: string;
+  totalPrice?: string;
+  ceremonyDate?: string | Date;
+  addressId?: string;
+  address?: string;
+  paymentUrl?: string;
 };
 
 export default MessageRequest;

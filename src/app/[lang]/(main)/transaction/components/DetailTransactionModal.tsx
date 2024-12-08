@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import Modal from "@/components/modal/Modal";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import { DocumentCheckIcon } from "@heroicons/react/20/solid";
@@ -15,12 +15,18 @@ import { useTransaction } from "@/hooks/transaction/use_transaction";
 
 interface DetailTransactionModalProps {
   title: string;
-  invoice: Invoice;
+  invoice: Invoice | undefined;
+  child?: ReactElement;
+  open?: boolean;
+  setOpen?: (value: boolean) => void;
 }
 
 const DetailTransactionModal = ({
   title,
   invoice,
+  child,
+  open,
+  setOpen,
 }: DetailTransactionModalProps) => {
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openDetail, setOpenDetail] = useState(false);
@@ -30,83 +36,85 @@ const DetailTransactionModal = ({
 
   return (
     <div>
-      <IconBackgroundButton
-        icon={InformationCircleIcon}
-        colorBackground="blue"
-        className="bg-blue-100"
-        colorIcon="blue"
-        onClick={() => {
-          setOpenDetail(true);
-        }}
-      />
-      <Modal title={title} isOpen={openDetail} setIsOpen={setOpenDetail}>
+      {child ?? (
+        <IconBackgroundButton
+          icon={InformationCircleIcon}
+          colorBackground="blue"
+          className="bg-blue-100"
+          colorIcon="blue"
+          onClick={() => {
+            setOpenDetail(true);
+          }}
+        />
+      )}
+      <Modal
+        title={title}
+        isOpen={open ?? openDetail}
+        setIsOpen={setOpen ?? setOpenDetail}
+      >
         <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
           <PrimaryInput
             label="Status Pembayaran"
-            value={invoice.status ?? ""}
+            value={invoice?.status ?? ""}
             className="w-full"
             disabled
           />
+
+          <PrimaryInput
+            label="Nama Pemedek/Anggota"
+            value={invoice?.invoiceMember?.user?.fullName ?? "-"}
+            className="w-full"
+            disabled
+          />
+
           <PrimaryInput
             label="Metode Pembayaran"
-            value={invoice.paymentMethod ?? "-"}
+            value={invoice?.paymentMethod ?? "-"}
             className="w-full"
             disabled
           />
-          {invoice.invoiceCeremonyHistory?.ceremonyPackage?.name && (
+          {invoice?.invoiceCeremonyHistory?.ceremonyPackage?.name && (
             <PrimaryInput
               label="Paket"
-              value={invoice.invoiceCeremonyHistory?.ceremonyPackage?.name}
+              value={invoice?.invoiceCeremonyHistory?.ceremonyPackage?.name}
               className="w-full"
               disabled
             />
           )}
           <PrimaryInput
             label="Total Harga"
-            value={formatRupiah(invoice?.totalPrice) ?? ""}
+            value={formatRupiah(invoice?.totalPrice ?? 0) ?? ""}
             className="w-full"
             disabled
           />
-          {/* 
+
           <PrimaryInput
             label="Tanggal Upacara"
             value={
-              invoice?.createdAt
+              invoice?.invoiceCeremonyHistory?.ceremonyDate
                 ? formatDateIndonesia(
-                    invoice?.createdAt
+                    invoice?.invoiceCeremonyHistory?.ceremonyDate
                   )
                 : "-"
             }
             className="w-full"
             disabled
-          /> */}
+          />
 
-          {/* <PrimaryTextArea
-            value={`${invoice.invoiceCeremonyHistory.ceremonyAddress}\n${
-              invoice.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
-            }`}
-            label="Alamat/Lokasi Upacara"
-            disabled
+          <PrimaryInput
+            label="Nama Pengelola"
+            value={
+              invoice?.invoiceCeremonyHistory?.ceremonyAdmin?.user?.fullName ??
+              "-"
+            }
             className="w-full"
-          /> */}
-          {/* <PrimaryTextEditor
-            label="Deskripsi Upacara"
-            value={invoice.invoiceCeremonyHistory.description}
             disabled
           />
-          {invoice.invoiceCeremonyHistory.note && (
-            <PrimaryTextArea
-              value={`${invoice.invoiceCeremonyHistory.note}`}
-              label="Catatan"
-              disabled
-              className="w-full"
-            />
-          )} */}
 
           <PrimaryInput
             label="Tanggal Pembuatan Invoice"
             value={
-              invoice.createdAt ? formatDateIndonesia(invoice.createdAt) : "-"
+              invoice?.createdAt ? formatDateIndonesia(invoice?.createdAt) : "-"
             }
             className="w-full"
             disabled
@@ -114,15 +122,37 @@ const DetailTransactionModal = ({
           <PrimaryInput
             label="Tanggal Dibayar/Lunas"
             value={
-              invoice.paidAt
-                ? formatDateIndonesia(invoice.paidAt)
+              invoice?.paidAt
+                ? formatDateIndonesia(invoice?.paidAt)
                 : "Belum Bayar/Belum Lunas"
             }
             className="w-full"
             disabled
           />
 
-          {invoice.status === "pending" && (
+          <PrimaryTextArea
+            value={`${invoice?.invoiceCeremonyHistory.ceremonyAddress}\n${
+              invoice?.invoiceCeremonyHistory.ceremonyAddressNote ?? ""
+            }`}
+            label="Alamat/Lokasi Upacara"
+            disabled
+            className="w-full"
+          />
+          <PrimaryTextEditor
+            label="Deskripsi Upacara"
+            value={invoice?.invoiceCeremonyHistory?.description ?? ""}
+            disabled
+          />
+          {invoice?.invoiceCeremonyHistory?.note && (
+            <PrimaryTextArea
+              value={`${invoice?.invoiceCeremonyHistory?.note}`}
+              label="Catatan"
+              disabled
+              className="w-full"
+            />
+          )}
+
+          {invoice?.status === "pending" && (
             <div className="flex flex-row justify-end w-full pt-2">
               <PrimaryWithIconButton
                 label="Bayar Sekarang"
@@ -142,11 +172,11 @@ const DetailTransactionModal = ({
         isOpen={openPayment}
         setIsOpen={setOpenPayment}
       >
-        {invoice.paymentUrl ? (
+        {invoice?.paymentUrl ? (
           <iframe
-            src={invoice.paymentUrl}
+            src={invoice?.paymentUrl}
             className="h-[550px] w-full"
-            title={`Pembayaran untuk Invoice: ${invoice.id}`}
+            title={`Pembayaran untuk Invoice: ${invoice?.id}`}
             onChange={(e) => {
               console.log("====================================");
               console.log("e ---> ", e.target);
@@ -168,7 +198,7 @@ const DetailTransactionModal = ({
               onClick={(e) => {
                 e.preventDefault();
                 updateStatusInvoice({
-                  invoiceId: invoice.id,
+                  invoiceId: invoice?.id ?? "",
                   status: "success",
                 });
               }}

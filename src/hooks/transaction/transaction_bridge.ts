@@ -66,3 +66,29 @@ export const useGetAllInvoiceQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<Invoice[]>, unknown> =>
   useQuery("allInvoice", () => getAllInvoice(request));
+
+export const getDetailInvoice = async ({
+  id,
+}: {
+  id: string;
+}): Promise<ApiResponse<Invoice>> => {
+  const response = await authService
+    .getDetailInvoice({ id })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<Invoice>> | unknown) => {
+      console.error("========================");
+      console.error(`${TAG_ERROR} GET Detail INVOICE `, error);
+      console.error("========================");
+      throw error;
+    });
+  return response;
+};
+
+export const useGetDetailInvoiceQuery = ({
+  id,
+}: {
+  id: string;
+}): UseQueryResult<ApiResponse<Invoice>, unknown> =>
+  useQuery("detailInvoice", () => getDetailInvoice({ id }));

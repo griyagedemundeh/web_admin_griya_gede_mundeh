@@ -105,7 +105,11 @@ export default function CeremonyHistoryPage({
         header: "Hitung Mundur",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            <CountDown date={info.row.original.ceremonyDate} />
+            {info.row.original.status !== "cancel" ? (
+              <CountDown date={info.row.original.ceremonyDate} />
+            ) : (
+              <p>-</p>
+            )}
           </div>
         ),
       },

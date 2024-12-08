@@ -10,4 +10,6 @@ export interface ITransactionService {
   updateInvoiceStatus(
     request: UpdateInvoiceStatusRequest
   ): Promise<ApiResponse<Invoice>>;
+
+  getDetailInvoice({ id }: { id: string }): Promise<ApiResponse<Invoice>>;
 }
