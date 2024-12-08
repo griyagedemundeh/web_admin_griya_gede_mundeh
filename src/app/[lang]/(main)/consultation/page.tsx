@@ -103,7 +103,7 @@ export default function ConsultationPage({
       if (!generalConsultations) {
         fetchGeneralConsultations();
       }
-    }, 30000); // 30 seconds, much less frequent than before
+    }, 10000); // 10 seconds, much less frequent than before
 
     return () => clearInterval(pollInterval);
   }, [
