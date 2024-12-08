@@ -136,7 +136,7 @@ const TransactionModal = ({
     }
     if (allCeremonyPackageByCeremonyServiceId?.data) {
       setPackages(
-        allCeremonyPackageByCeremonyServiceId.data.map((ceremonyPackage) => ({
+        allCeremonyPackageByCeremonyServiceId?.data?.map((ceremonyPackage) => ({
           id: ceremonyPackage?.id,
           title: `${ceremonyPackage?.name}`,
         }))

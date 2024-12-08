@@ -129,9 +129,13 @@ function InvoiceSection({ ceremonyServiceId }: InvoiceSectionProps) {
         }))
       );
     }
-    if (allCeremonyPackageByCeremonyServiceId?.data) {
+
+    if (
+      allCeremonyPackageByCeremonyServiceId !== undefined &&
+      Array.isArray(allCeremonyPackageByCeremonyServiceId?.data)
+    ) {
       setPackages(
-        allCeremonyPackageByCeremonyServiceId.data.map((ceremonyPackage) => ({
+        allCeremonyPackageByCeremonyServiceId?.data?.map((ceremonyPackage) => ({
           id: ceremonyPackage?.id,
           title: `${ceremonyPackage?.name}`,
         }))
