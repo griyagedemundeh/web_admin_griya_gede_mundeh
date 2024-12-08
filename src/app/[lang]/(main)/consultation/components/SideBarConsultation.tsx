@@ -4,6 +4,8 @@ import CeremonyConsultation from "./CeremonyConsultation";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import IconButton from "@/components/button/IconButton";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import GeneralConsultationSection from "./GeneralConsultation";
+import GeneralConsultation from "@/data/models/consultation/response/general_consultation";
 
 const tabOptions = [
   { name: "Upacara Agama", value: "ceremony-consultation" },
@@ -18,10 +20,20 @@ function SidebarConsultation({
   consultations,
   selectedConsultation,
   setSelectedConsultation,
+  generalConsultations,
+  selectedGeneralConsultation,
+  setSelectedGeneralConsultation,
 }: {
   consultations: Consultation[] | undefined;
   selectedConsultation: Consultation | undefined;
   setSelectedConsultation: (value: Consultation | undefined) => void;
+
+  // GENERAL
+  generalConsultations: GeneralConsultation[] | undefined;
+  selectedGeneralConsultation: GeneralConsultation | undefined;
+  setSelectedGeneralConsultation: (
+    value: GeneralConsultation | undefined
+  ) => void;
 }) {
   const [activeTab, setActiveTab] = useState("ceremony-consultation");
   const renderContent = () => {
@@ -36,22 +48,15 @@ function SidebarConsultation({
         );
       case "general-consultation":
         return (
-          // <CeremonyConsultation
-          //   consultations={consultations}
-          //   selectedCeremonyConsultation={selectedConsultation}
-          //   setSelectedCeremonyConsultation={setSelectedConsultation}
-          // />
-          <div></div>
+          <GeneralConsultationSection
+            consultations={generalConsultations}
+            selectedGeneralConsultation={selectedGeneralConsultation}
+            setSelectedGeneralConsultation={setSelectedGeneralConsultation}
+          />
         );
 
       default:
-        return (
-          <CeremonyConsultation
-            consultations={consultations}
-            selectedCeremonyConsultation={selectedConsultation}
-            setSelectedCeremonyConsultation={setSelectedConsultation}
-          />
-        );
+        return <div></div>;
     }
   };
 
@@ -84,6 +89,10 @@ function SidebarConsultation({
 
                     if (tab.value === "general-consultation") {
                       setSelectedConsultation(undefined);
+                    }
+
+                    if (tab.value === "ceremony-consultation") {
+                      setSelectedGeneralConsultation(undefined);
                     }
                   }}
                   aria-current={activeTab === tab.value ? "page" : undefined}
