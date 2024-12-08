@@ -181,9 +181,7 @@ const TransactionModal = ({
 
     const date = `${ceremonyDate.getFullYear()}-${
       ceremonyDate.toLocaleDateString().split("/")[0]
-    }-${ceremonyDate.getDate()} ${
-      ceremonyDate.toTimeString().split("GMT+0800 (Central Indonesia Time)")[0]
-    }`;
+    }-${ceremonyDate.getDate()} ${ceremonyDate.toTimeString().split(" ")[0]}`;
 
     createInvoice({
       ...invoiceRequest,
