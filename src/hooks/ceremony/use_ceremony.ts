@@ -10,7 +10,7 @@ import {
   addCeremonyPackages as addCeremonyPackagesBridge,
   editCeremonyPackages as editCeremonyPackagesBridge,
   deleteCeremonyPackage as deleteCeremonyPackageBridge,
-  getPackageByCeremonyServiceId as getPackageByCeremonyServiceIdBridge,
+  // getPackageByCeremonyServiceId as getPackageByCeremonyServiceIdBridge,
   useGetAllCeremonyQuery,
   useGetCermonyPackageByCeremonyServiceIdQuery,
 } from "./ceremony_bridge";
@@ -312,12 +312,12 @@ export const useCeremony = ({
   useEffect(() => {
     setIsLoading(isCeremonyPackageByCeremonyServiceIdLoading);
 
-    if (isCeremonyPackageByCeremonyServiceIdError) {
-      statusMessage({
-        message: errorCeremonyPackageByCeremonyServiceId,
-        status: "error",
-      });
-    }
+    // if (isCeremonyPackageByCeremonyServiceIdError) {
+    //   statusMessage({
+    //     message: errorCeremonyPackageByCeremonyServiceId,
+    //     status: "error",
+    //   });
+    // }
   }, [
     isCeremonyPackageByCeremonyServiceIdLoading,
     isCeremonyPackageByCeremonyServiceIdError,

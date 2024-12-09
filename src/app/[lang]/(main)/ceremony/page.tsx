@@ -22,11 +22,6 @@ export default function CeremonyPage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-
-  const [selectedStatusItem, setSelectedStatusItem] =
-    useState<DropdownFilterItemProps>();
 
   const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
     limit: 100,
@@ -202,19 +197,6 @@ export default function CeremonyPage({
 
       {/* Dialog Add Ceremony*/}
       <AddCeremonyModal open={open} setOpen={setOpen} />
-
-      {/* Delete Dialog */}
-      {/* <AlertDangerModal
-        onRightClick={() => {
-          setOpenDelete(false);
-        }}
-        open={openDelete}
-        setOpen={setOpenDelete}
-        title="Hapus"
-        description="Are you sure you want to deactivate your account? All of your data will be permanently removed from our servers forever. This action cannot be undone."
-        rightButtonLabel="Lanjutkan"
-        leftButtonLabel="Batal"
-      /> */}
     </>
   );
 }
