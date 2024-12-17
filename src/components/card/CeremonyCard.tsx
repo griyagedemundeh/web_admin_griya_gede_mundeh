@@ -6,7 +6,7 @@ import {
   ClockIcon,
   MapPinIcon,
 } from "@heroicons/react/24/outline";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 
 interface ICeremonyCardProps {
   ceremonyHistory: CeremonyHistory;
