@@ -156,6 +156,36 @@ export const formatDateIndonesia = (dateString: string): string => {
   return formattedDate;
 };
 
+export function formatDateOnly(dateString: string): string {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  };
+  return date.toLocaleDateString("en-GB", options);
+}
+
+export function formatTimeOnly(dateString: string): string {
+  const timezoneAbbreviations: { [key: string]: string } = {
+    "Asia/Jakarta": "WIB",
+    "Asia/Makassar": "WITA",
+    "Asia/Jayapura": "WIT",
+    // Add more timezones and their abbreviations as needed
+  };
+
+  const date = new Date(dateString);
+  const hours = date.toLocaleString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  });
+  const abbreviation =
+    timezoneAbbreviations[Intl.DateTimeFormat().resolvedOptions().timeZone]; // Default to empty if not found
+  return `${hours} ${abbreviation}`;
+}
+
 export function getCountdown(targetDate: string): string {
   const targetTime = new Date(targetDate).getTime();
   const now = new Date().getTime();

@@ -30,6 +30,27 @@ class CeremonyHistoryService implements ICeremonyHistoryService {
     }
   }
 
+  async getAllCeremonyHistoryOnProgress(
+    request: ListDataRequest
+  ): Promise<ApiResponse<CeremonyHistory[]>> {
+    const uri = `${this.BASE_CATEGORY_ENDPOINT}/on-going`;
+
+    try {
+      const response: AxiosResponse<ApiResponse<CeremonyHistory[]>> =
+        await api.get(uri, { params: request });
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<CeremonyHistory[]>> | any) {
+      console.error("====================================");
+      console.error(
+        "ERROR GET ALL CEREMONY HISTORY ON PROGRESS --> ",
+        error.response.data.message
+      );
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
   async updateStatusCeremonyHistory(
     request: CeremonyHistoryUpdateStatusRequest
   ): Promise<ApiResponse<null>> {

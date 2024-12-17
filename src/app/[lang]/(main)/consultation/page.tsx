@@ -97,12 +97,8 @@ export default function ConsultationPage({
   // Optional: Add polling with reduced frequency if needed
   useEffect(() => {
     const pollInterval = setInterval(() => {
-      if (!consultations) {
-        fetchConsultations();
-      }
-      if (!generalConsultations) {
-        fetchGeneralConsultations();
-      }
+      fetchConsultations();
+      fetchGeneralConsultations();
     }, 10000); // 10 seconds, much less frequent than before
 
     return () => clearInterval(pollInterval);

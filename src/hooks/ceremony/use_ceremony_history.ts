@@ -1,6 +1,7 @@
 import type ApiResponse from "@/data/models/base/api-base-response";
 import {
   useGetAllCeremonyHistoryQuery,
+  useGetAllCeremonyHistoryOnProgressQuery,
   updateStatusCeremonyHistory as updateStatusCeremonyHistoryBridge,
 } from "./ceremony_history_bridge";
 import type CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
@@ -24,6 +25,10 @@ interface IUseCeremonyHistory {
   isLoadingUpdateStatusCeremonyHistory: boolean;
   isUpdateStatusCeremonyHistorySuccess: boolean;
   isUpdateStatusCeremonyHistoryError: boolean;
+
+  allCeremonyHistoryOnProgress: ApiResponse<CeremonyHistory[]> | undefined;
+  isAllCeremonyHistoryOnProgressLoading: boolean;
+  isAllCeremonyHistoryOnProgressError: boolean;
 }
 
 export const useCeremonyHistory = (): IUseCeremonyHistory => {
@@ -35,6 +40,13 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
     isError: isAllCeremonyHistoryError,
     error: errorAllCeremonyHistory,
   } = useGetAllCeremonyHistoryQuery({ page: 1, limit: 1000 });
+
+  const {
+    data: allCeremonyHistoryOnProgress,
+    isLoading: isAllCeremonyHistoryOnProgressLoading,
+    isError: isAllCeremonyHistoryOnProgressError,
+    error: errorAllCeremonyHistoryOnProgress,
+  } = useGetAllCeremonyHistoryOnProgressQuery({ page: 1, limit: 1000 });
 
   const {
     mutate: updateStatusCeremonyHistory,
@@ -63,12 +75,24 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
   });
 
   useEffect(() => {
-    setIsLoading(isAllCeremonyHistoryLoading);
+    setIsLoading(
+      isAllCeremonyHistoryLoading || isAllCeremonyHistoryOnProgressLoading
+    );
 
     if (isAllCeremonyHistoryError) {
       statusMessage({ message: errorAllCeremonyHistory, status: "error" });
     }
-  }, [isAllCeremonyHistoryLoading, isAllCeremonyHistoryError]);
+    if (isAllCeremonyHistoryOnProgressError) {
+      statusMessage({
+        message: errorAllCeremonyHistoryOnProgress,
+        status: "error",
+      });
+    }
+  }, [
+    isAllCeremonyHistoryLoading,
+    isAllCeremonyHistoryError,
+    isAllCeremonyHistoryOnProgressError,
+  ]);
 
   return {
     allCeremonyHistory,
@@ -78,5 +102,9 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
     isLoadingUpdateStatusCeremonyHistory,
     isUpdateStatusCeremonyHistoryError,
     isUpdateStatusCeremonyHistorySuccess,
+
+    allCeremonyHistoryOnProgress,
+    isAllCeremonyHistoryOnProgressError,
+    isAllCeremonyHistoryOnProgressLoading,
   };
 };

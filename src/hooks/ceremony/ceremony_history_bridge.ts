@@ -52,3 +52,31 @@ export const useGetAllCeremonyHistoryQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<CeremonyHistory[]>, unknown> =>
   useQuery("allCeremonyHistory", () => getAllCeremonyHistory(request));
+
+export const getAllCeremonyHistoryOnProgress = async (
+  request: ListDataRequest
+): Promise<ApiResponse<CeremonyHistory[]>> => {
+  const response = await ceremonyService
+    .getAllCeremonyHistoryOnProgress(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<CeremonyHistory[]>> | unknown) => {
+      console.error("====================================");
+      console.error(
+        `${TAG_ERROR} GET ALL CEREMONY HISTORY ON PROGRESS `,
+        error
+      );
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const useGetAllCeremonyHistoryOnProgressQuery = (
+  request: ListDataRequest
+): UseQueryResult<ApiResponse<CeremonyHistory[]>, unknown> =>
+  useQuery("allCeremonyHistoryOnProgress", () =>
+    getAllCeremonyHistoryOnProgress(request)
+  );

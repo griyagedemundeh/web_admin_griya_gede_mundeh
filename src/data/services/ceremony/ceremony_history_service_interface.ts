@@ -8,6 +8,10 @@ export interface ICeremonyHistoryService {
     request: ListDataRequest
   ): Promise<ApiResponse<CeremonyHistory[]>>;
 
+  getAllCeremonyHistoryOnProgress(
+    request: ListDataRequest
+  ): Promise<ApiResponse<CeremonyHistory[]>>;
+
   updateStatusCeremonyHistory(
     request: CeremonyHistoryUpdateStatusRequest
   ): Promise<ApiResponse<null>>;
