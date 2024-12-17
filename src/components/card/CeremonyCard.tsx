@@ -24,31 +24,37 @@ const CountDown = ({ date }: { date: string }): ReactElement => {
       }
     }, 1000);
 
-    () => clearInterval(timer);
-  }, [countDown]);
+    return () => clearInterval(timer);
+  }, [countDown, date]);
 
   return <p className="font-semibold">{countDown}</p>;
 };
 
 const CeremonyCard = ({ ceremonyHistory }: ICeremonyCardProps) => {
-  // Determine styles based on status
-  const statusStyles = {
-    onProgress: {
-      color: "primary1",
-      bgColor: "yellow-300",
-      borderColor: "primary1",
-      dotColor: "primary1",
-    },
-    onGoing: {
-      color: "blue",
-      bgColor: "blue-100",
-      borderColor: "blue-500",
-      dotColor: "blue-500",
-    },
-  };
+  let statusColor: string;
+  let bgColor: string;
+  let borderColor: string;
+  let dotColor: string;
 
-  const currentStatus =
-    statusStyles[ceremonyHistory.status] || statusStyles.onProgress;
+  switch (ceremonyHistory.status) {
+    case "onProgress":
+      statusColor = "primary1"; // Text color
+      bgColor = "yellow-300"; // Background color
+      borderColor = "primary1"; // Border color
+      dotColor = "primary1"; // Dot color
+      break;
+    case "onGoing":
+      statusColor = "blue"; // Text color
+      bgColor = "blue-100"; // Background color
+      borderColor = "blue-500"; // Border color
+      dotColor = "blue-500"; // Dot color
+      break;
+    default:
+      statusColor = "gray"; // Default text color
+      bgColor = "gray-100"; // Default background color
+      borderColor = "gray-400"; // Default border color
+      dotColor = "gray-400"; // Default dot color
+  }
 
   return (
     <div className="bg-white rounded-xl mx-auto my-4 hover:bg-yellow-50 hover:cursor-pointer flex-shrink-0 shadow-md w-1/3">
@@ -61,11 +67,9 @@ const CeremonyCard = ({ ceremonyHistory }: ICeremonyCardProps) => {
             </p>
           </div>
           <div
-            className={`text-sm text-${currentStatus.color}-500 bg-${currentStatus.bgColor} py-1 px-3 rounded-full border-2 border-${currentStatus.borderColor} font-bold flex flex-row items-center`}
+            className={`text-sm text-${statusColor}-500 bg-${bgColor} py-1 px-3 rounded-full border-2 border-${borderColor} font-bold flex flex-row items-center`}
           >
-            <div
-              className={`rounded-full h-2 w-2 bg-${currentStatus.dotColor}`}
-            ></div>
+            <div className={`rounded-full h-2 w-2 bg-${dotColor}`}></div>
             <p className="ml-1 text-xs">{ceremonyHistory.status}</p>
           </div>
         </div>
