@@ -57,7 +57,7 @@ const CeremonyCard = ({ ceremonyHistory }: ICeremonyCardProps) => {
   }
 
   return (
-    <div className="bg-white rounded-xl mx-auto my-4 hover:bg-yellow-50 hover:cursor-pointer flex-shrink-0 shadow-md w-1/3">
+    <div className="bg-white rounded-xl mx-auto my-4 hover:bg-yellow-50 hover:cursor-pointer flex-shrink-0 shadow-md w-full">
       <div className="px-4 pt-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex flex-row space-x-1 w-1/2 items-center">

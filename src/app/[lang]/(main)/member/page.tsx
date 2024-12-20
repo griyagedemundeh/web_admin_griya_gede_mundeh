@@ -4,7 +4,6 @@ import { getDictionary, Locale } from "../../dictionaries";
 
 import Image from "next/image";
 
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
