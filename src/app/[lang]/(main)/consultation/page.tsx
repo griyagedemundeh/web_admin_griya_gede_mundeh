@@ -126,6 +126,7 @@ export default function ConsultationPage({
           <ChatSection consultation={selectedConsultation} />
           <InvoiceSection
             ceremonyServiceId={selectedConsultation?.ceremonyServiceId ?? 0}
+            consultation={selectedConsultation}
           />
         </>
       );

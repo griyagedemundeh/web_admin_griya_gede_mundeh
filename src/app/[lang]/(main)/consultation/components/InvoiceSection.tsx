@@ -29,12 +29,17 @@ import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 import { useCentralStore } from "@/store";
+import Consultation from "@/data/models/consultation/response/consultation";
 
 interface InvoiceSectionProps {
   ceremonyServiceId: number;
+  consultation: Consultation;
 }
 
-function InvoiceSection({ ceremonyServiceId }: InvoiceSectionProps) {
+function InvoiceSection({
+  ceremonyServiceId,
+  consultation,
+}: InvoiceSectionProps) {
   const [openCreate, setOpenCreate] = useState<boolean>(false);
   const [openAddAddress, setOpenAddAddress] = useState<boolean>(false);
 
@@ -92,7 +97,7 @@ function InvoiceSection({ ceremonyServiceId }: InvoiceSectionProps) {
     memberId: 0,
     note: "",
     totalPrice: "",
-    consultationId: 0,
+    consultationId: consultation.consultationId,
     ceremonyServiceId: 0,
     title: "",
     ceremonyServicePackageId: 0,
@@ -185,6 +190,7 @@ function InvoiceSection({ ceremonyServiceId }: InvoiceSectionProps) {
     createInvoice({
       ...invoiceRequest,
       ceremonyDate: date,
+      consultationId: consultation.consultationId,
     });
   };
 
