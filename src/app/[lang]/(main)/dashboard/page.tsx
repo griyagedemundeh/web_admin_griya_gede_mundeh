@@ -13,7 +13,7 @@ import SecondaryWithIconButton from "@/components/button/SecondaryWithIconButton
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import { formatDateIndonesia } from "@/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlertConfirmationModal from "@/components/modal/AlertConfirmationModal";
 import { useCentralStore } from "@/store";
 import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
@@ -30,7 +30,10 @@ export default function Dashboard({
 }) {
   const { account } = useAuth();
 
-  const { allCeremonyHistoryOnProgress } = useCeremonyHistory();
+  const {
+    allCeremonyHistoryOnProgress,
+    isAllCeremonyHistoryOnProgressLoading,
+  } = useCeremonyHistory();
 
   const [openModalCompleteStatus, setOpenModalCompleteStatus] =
     useState<boolean>(false);
@@ -49,6 +52,10 @@ export default function Dashboard({
 
     updateStatusCeremonyHistory(request);
   };
+
+  useEffect(() => {
+    setIsLoading(isAllCeremonyHistoryOnProgressLoading);
+  }, [isAllCeremonyHistoryOnProgressLoading, setIsLoading]);
 
   return (
     <div>

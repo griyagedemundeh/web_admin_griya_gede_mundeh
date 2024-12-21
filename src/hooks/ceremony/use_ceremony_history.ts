@@ -75,9 +75,7 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
   });
 
   useEffect(() => {
-    setIsLoading(
-      isAllCeremonyHistoryLoading || isAllCeremonyHistoryOnProgressLoading
-    );
+    setIsLoading(isAllCeremonyHistoryLoading);
 
     if (isAllCeremonyHistoryError) {
       statusMessage({ message: errorAllCeremonyHistory, status: "error" });
