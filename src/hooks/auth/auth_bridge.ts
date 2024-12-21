@@ -25,3 +25,7 @@ export const login = async (
 
   return response;
 };
+
+export const logout = (): void => {
+  auth_service.logout();
+};

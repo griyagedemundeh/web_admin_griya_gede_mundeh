@@ -14,7 +14,7 @@ interface HeaderProps {
 }
 
 const Header = ({ navigations, onClose, t }: HeaderProps) => {
-  const { account } = useAuth();
+  const { account, logout } = useAuth();
 
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
@@ -76,12 +76,25 @@ const Header = ({ navigations, onClose, t }: HeaderProps) => {
             >
               {navigations.map((item) => (
                 <MenuItem key={item.name}>
-                  <a
-                    href={item.href}
-                    className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-rose-50"
-                  >
-                    {item.name}
-                  </a>
+                  {item.name.toLowerCase() === "keluar" ? (
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        logout();
+                      }}
+                      href=""
+                      className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-rose-50"
+                    >
+                      {item.name}
+                    </a>
+                  ) : (
+                    <a
+                      href={item.href}
+                      className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-rose-50"
+                    >
+                      {item.name}
+                    </a>
+                  )}
                 </MenuItem>
               ))}
             </MenuItems>

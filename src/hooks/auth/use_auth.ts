@@ -1,5 +1,5 @@
 import { UseMutateFunction, useMutation } from "react-query";
-import { login as loginBridge } from "./auth_bridge";
+import { login as loginBridge, logout } from "./auth_bridge";
 import ApiResponse from "@/data/models/base/api-base-response";
 import Auth from "@/data/models/auth/response/auth";
 import LoginRequest from "@/data/models/auth/request/login_request";
@@ -13,6 +13,7 @@ interface IUseAuth {
   login: UseMutateFunction<ApiResponse<Auth>, unknown, LoginRequest, unknown>;
   isLoadingLogin: boolean;
   account: Auth | undefined;
+  logout: () => void;
 }
 
 export const useAuth = (): IUseAuth => {
@@ -51,5 +52,6 @@ export const useAuth = (): IUseAuth => {
     account,
     login,
     isLoadingLogin,
+    logout,
   };
 };

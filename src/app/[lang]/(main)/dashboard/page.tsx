@@ -4,7 +4,6 @@ import CeremonyCard from "@/components/card/CeremonyCard";
 import { Locale } from "../../dictionaries";
 import { useAuth } from "@/hooks/auth/use_auth";
 import { useCeremonyHistory } from "@/hooks/ceremony/use_ceremony_history";
-import CeremonyScheduleModal from "../ceremony-schedule/components/CeremonyScheduleModal";
 import Modal from "@/components/modal/Modal";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/20/solid";

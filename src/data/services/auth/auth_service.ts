@@ -52,6 +52,25 @@ export class AuthService implements IAuthService {
     }
   }
 
+  logout(): void {
+    try {
+      this.clearToken();
+    } catch (error) {
+      console.error("Logout Error", error);
+      throw error;
+    }
+  }
+
+  private clearToken(): void {
+    setCookie("access_token", "");
+
+    setCookie("isLoggedin", false);
+
+    LocalStorage.remove(StorageKey.ACCOUNT);
+
+    window.location.reload();
+  }
+
   private setToken({
     access_token,
     admin_role,
