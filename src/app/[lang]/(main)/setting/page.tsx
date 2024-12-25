@@ -183,72 +183,161 @@ const SocialMediaSettingContent = () => (
   </div>
 );
 
-const AdminProfileSettingContent = () => (
-  <form>
-    <div className="space-y-12 px-4 py-5 sm:p-6">
-      <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3">
-        <div className="grid grid-cols-1">
-          <BigFileInput
-            label="Upload Photo Profile"
-            onChange={(e) => {}}
-            src={""}
-          />
-        </div>
+const AdminProfileSettingContent = () => {
+  const { profileGriya, updateProfileGriya, isLoadingUpdateProfileGriya } =
+    useSetting();
 
-        <div className="grid max-w-2xl gap-4 sm:grid-cols-6 md:col-span-2">
-          <PrimaryInput
-            value={""}
-            label="Nama Lengkap"
-            type="text"
-            placeholder="Nama Lengkap"
-            className="w-full sm:col-span-2"
-            onChange={(e) => {}}
-          />
-          <PrimaryInput
-            value={""}
-            label="Email"
-            type="text"
-            placeholder="admin@domain.com"
-            className="w-full sm:col-span-2"
-            onChange={(e) => {}}
-          />
-          <PrimaryInput
-            value={""}
-            label="No. Handphone"
-            type="text"
-            placeholder="+62 819-xxxx-xxxx"
-            className="w-full sm:col-span-2"
-            onChange={(e) => {}}
-          />
-          <PrimaryInput
-            value={""}
-            label="Password"
-            type="password"
-            placeholder="Password saat ini"
-            className="w-full sm:col-span-6"
-            onChange={(e) => {}}
-          />
-          <PrimaryInput
-            value={""}
-            label="Password Baru"
-            type="password"
-            placeholder="Password Baru"
-            className="w-full sm:col-span-6"
-            onChange={(e) => {}}
-          />
-          <PrimaryInput
-            value={""}
-            label="Konfirmasi Password Baru"
-            type="password"
-            placeholder="Konfirmasi Password Baru"
-            className="w-full sm:col-span-6"
-            onChange={(e) => {}}
-          />
-        </div>
-      </div>
-    </div>
-  </form>
-);
+  const [profileGriyaRequest, setProfileGriyaRequest] =
+    useState<ProfileGriyaRequest>({
+      about: "",
+      address: "",
+      email: "",
+      mission: "",
+      name: "",
+      phoneNumber: "",
+      vision: "",
+      logo: undefined,
+    });
+
+  useEffect(() => {
+    if (profileGriya?.data) {
+      const {
+        about,
+        address,
+        email,
+        mission,
+        name,
+        phoneNumber,
+        vision,
+        logo,
+      } = profileGriya.data;
+
+      setProfileGriyaRequest({
+        about: about ?? "",
+        address: address ?? "",
+        email: email ?? "",
+        mission: mission ?? "",
+        name: name ?? "",
+        phoneNumber: phoneNumber ?? "",
+        vision: vision ?? "",
+        logo: undefined,
+      });
+
+      if (logo) {
+        getFile(logo);
+      }
+    }
+  }, [profileGriya]);
+
+  const getFile = async (logoUrl: string) => {
+    const file = await urlToFile({
+      fileName: "thumbnail.png",
+      url: logoUrl,
+      mimeType: "image/png",
+    });
+
+    setProfileGriyaRequest((prev) => ({
+      ...prev,
+      logo: file,
+    }));
+  };
+
+  const handleUpdateProfileGriya = (request: ProfileGriyaRequest) => {
+    updateProfileGriya(request);
+  };
+
+  return (
+    <Formik
+      initialValues={profileGriyaRequest}
+      onSubmit={handleUpdateProfileGriya}
+      validationSchema={profileGriyaValidation}
+      enableReinitialize
+    >
+      {({ errors, handleChange, handleSubmit, values, setFieldValue }) => (
+        <Form onSubmit={handleSubmit}>
+          <div className="space-y-12 px-4 py-5 sm:p-6">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3">
+              <div className="grid grid-cols-1">
+                <BigFileInput
+                  label="Upload Photo Profile"
+                  onChange={(e) => {
+                    setFieldValue("logo", e);
+                  }}
+                  src={profileGriya?.data.logo}
+                />
+              </div>
+
+              <div className="grid max-w-2xl gap-4 sm:grid-cols-6 md:col-span-2">
+                <PrimaryInput
+                  value={values.name}
+                  label="Nama Lengkap"
+                  type="text"
+                  placeholder="Nama Lengkap"
+                  className="w-full sm:col-span-2"
+                  onChange={handleChange("name")}
+                  error={errors.name}
+                />
+
+                <PrimaryInput
+                  value={values.email}
+                  label="Email"
+                  type="email"
+                  placeholder="admin@gmail.com"
+                  className="w-full sm:col-span-2"
+                  onChange={handleChange("email")}
+                  error={errors.email}
+                />
+
+                <PrimaryInput
+                  value={values.email}
+                  label="No. Handphone"
+                  type="email"
+                  placeholder="+62 819-xxxx-xxxx"
+                  className="w-full sm:col-span-2"
+                  onChange={handleChange("phone")}
+                  error={errors.email}
+                />
+
+                <PrimaryInput
+                  value={""}
+                  label="Password"
+                  type="password"
+                  placeholder="Password saat ini"
+                  className="w-full sm:col-span-6"
+                  onChange={(e) => {}}
+                />
+                <PrimaryInput
+                  value={""}
+                  label="Password Baru"
+                  type="password"
+                  placeholder="Password baru"
+                  className="w-full sm:col-span-6"
+                  onChange={(e) => {}}
+                />
+                <PrimaryInput
+                  value={""}
+                  label="Konfirmasi Password Baru"
+                  type="password"
+                  placeholder="Konfirmasi Password Baru"
+                  className="w-full sm:col-span-6"
+                  onChange={(e) => {}}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="px-4 sm:px-6">
+            <div className="my-4 flex items-center justify-end gap-x-6">
+              <PrimaryButton
+                label="Simpan"
+                loading={isLoadingUpdateProfileGriya}
+              />
+            </div>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  );
+};
 
 export default function SettingPage({
   params: { lang },

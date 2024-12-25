@@ -18,7 +18,6 @@ import { useCentralStore } from "@/store";
 import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
-// import TransactionChart from "@/components/chart/TransactionChart";
 
 const data = [{}, {}, {}, {}, {}, {}];
 
@@ -68,7 +67,7 @@ export default function Dashboard({
       </div>
 
       <div className="flex flex-row space-x-6 overflow-x-scroll w-full no-scrollbar mt-4">
-        {allCeremonyHistoryOnProgress?.data ? (
+        {(allCeremonyHistoryOnProgress?.data?.length ?? 0) > 0 ? (
           allCeremonyHistoryOnProgress?.data.map((item, index) => (
             <div
               key={item.id}
@@ -93,7 +92,9 @@ export default function Dashboard({
         )}
       </div>
 
-      <div>{/* <TransactionChart /> */}</div>
+      {/* <div className="mt-8">
+        <TransactionChart />
+      </div> */}
 
       <Modal
         title={ceremonyHistory?.title ?? "-"}
