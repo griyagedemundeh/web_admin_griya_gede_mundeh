@@ -1,6 +1,6 @@
 import type ApiResponse from "@/data/models/base/api-base-response";
-import type ListDataRequest from "@/data/models/base/list_data_request";
 import ProfileGriyaRequest from "@/data/models/setting/request/profile_griya_request";
+import ProfileAdmin from "@/data/models/setting/response/profile_admin";
 import ProfileGriya from "@/data/models/setting/response/profile_griya";
 import { SettingService } from "@/data/services/setting/setting_service";
 import type { AxiosError } from "axios";
@@ -49,3 +49,31 @@ export const useGetProfileGriyaQuery = (): UseQueryResult<
   ApiResponse<ProfileGriya>,
   unknown
 > => useQuery("allProfileGriya", () => getProfileGriya());
+
+// GET DATA ADMIN
+export const getProfileAdmin = async ({
+  id,
+}: {
+  id: number;
+}): Promise<ApiResponse<ProfileAdmin>> => {
+  const response = await settingService
+    .getProfileAdmin({ id })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<ProfileAdmin>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} GET PROFILE ADMIN `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const useGetProfileAdminQuery = ({
+  id,
+}: {
+  id: number;
+}): UseQueryResult<ApiResponse<ProfileAdmin>, unknown> =>
+  useQuery("allProfileAdmin", () => getProfileAdmin({ id }));

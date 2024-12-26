@@ -2,6 +2,7 @@ import type ApiResponse from "@/data/models/base/api-base-response";
 import {
   updateProfileGriya as updateProfileGriyaBridge,
   useGetProfileGriyaQuery,
+  useGetProfileAdminQuery,
 } from "./setting_bridge";
 import { useEffect } from "react";
 import { useCentralStore } from "@/store";
@@ -10,6 +11,8 @@ import { type UseMutateFunction, useMutation } from "react-query";
 import type { AxiosError } from "axios";
 import ProfileGriya from "@/data/models/setting/response/profile_griya";
 import ProfileGriyaRequest from "@/data/models/setting/request/profile_griya_request";
+import { useAuth } from "../auth/use_auth";
+import ProfileAdmin from "@/data/models/setting/response/profile_admin";
 
 interface IUseSetting {
   profileGriya: ApiResponse<ProfileGriya> | undefined;
@@ -24,10 +27,16 @@ interface IUseSetting {
   isLoadingUpdateProfileGriya: boolean;
   isUpdateProfileGriyaSuccess: boolean;
   isUpdateProfileGriyaError: boolean;
+
+  // ADMIN
+  profileAdmin: ApiResponse<ProfileAdmin> | undefined;
+  isProfileAdminLoading: boolean;
+  isProfileAdminError: boolean;
 }
 
 export const useSetting = (): IUseSetting => {
   const { setIsLoading } = useCentralStore();
+  const { account } = useAuth();
 
   const {
     data: profileGriya,
@@ -35,6 +44,13 @@ export const useSetting = (): IUseSetting => {
     isError: isProfileGriyaError,
     error: errorProfileGriya,
   } = useGetProfileGriyaQuery();
+
+  const {
+    data: profileAdmin,
+    isLoading: isProfileAdminLoading,
+    isError: isProfileAdminError,
+    error: errorProfileAdmin,
+  } = useGetProfileAdminQuery({ id: account?.id ?? 0 });
 
   const {
     mutate: updateProfileGriya,
@@ -67,12 +83,16 @@ export const useSetting = (): IUseSetting => {
   });
 
   useEffect(() => {
-    setIsLoading(isProfileGriyaLoading);
+    setIsLoading(isProfileGriyaLoading || isProfileAdminLoading);
 
     if (isProfileGriyaError) {
       statusMessage({ message: errorProfileGriya, status: "error" });
     }
-  }, [isProfileGriyaLoading, isProfileGriyaError]);
+
+    if (isProfileAdminError) {
+      statusMessage({ message: errorProfileAdmin, status: "error" });
+    }
+  }, [isProfileGriyaLoading, isProfileGriyaError, isProfileAdminError]);
 
   return {
     profileGriya,
@@ -82,5 +102,10 @@ export const useSetting = (): IUseSetting => {
     isLoadingUpdateProfileGriya,
     isUpdateProfileGriyaError,
     isUpdateProfileGriyaSuccess,
+
+    // ADMIN
+    profileAdmin,
+    isProfileAdminError,
+    isProfileAdminLoading,
   };
 };
