@@ -62,7 +62,8 @@ export default function Dashboard({
           Selamat Datang, {account?.fullName}🎉
         </h1>
         <p className="text-gray-500">
-          Lihat statistik transaksi dan acaramu disini.
+          {/* Lihat statistik transaksi dan acaramu disini. */}
+          Lihat daftar Upacara Agama yang akan dilaksanakan.
         </p>
       </div>
 

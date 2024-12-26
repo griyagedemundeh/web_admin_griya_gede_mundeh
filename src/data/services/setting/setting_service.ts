@@ -5,6 +5,7 @@ import { ISettingService } from "./setting_service_interface";
 import type { AxiosError, AxiosResponse } from "axios";
 import api from "@/configs/api";
 import ProfileAdmin from "@/data/models/setting/response/profile_admin";
+import ProfileAdminRequest from "@/data/models/setting/request/profila_admin_request";
 
 export class SettingService implements ISettingService {
   private readonly uri = "griya-profile";
@@ -68,6 +69,24 @@ export class SettingService implements ISettingService {
     } catch (error: AxiosError<ApiResponse<ProfileAdmin>> | any) {
       console.error("==================================");
       console.error("Error PROFILE ADMIN -->", error.response.data.message);
+      console.error("==================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async updateProfileAdmin(
+    request: ProfileAdminRequest
+  ): Promise<ApiResponse<ProfileAdmin>> {
+    try {
+      const response: AxiosResponse<ApiResponse<ProfileAdmin>> =
+        await api.patch(`${this.uriAdmin}/${request.id}`, request);
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<ProfileAdmin>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error UPDATE PROFILE ADMIN -->",
+        error.response.data.message
+      );
       console.error("==================================");
       throw error.response.data.message;
     }

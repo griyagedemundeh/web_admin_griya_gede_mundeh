@@ -13,6 +13,8 @@ import ProfileGriyaRequest from "@/data/models/setting/request/profile_griya_req
 import { useSetting } from "@/hooks/setting/use_setting";
 import { urlToFile } from "@/utils";
 import profileGriyaValidation from "./validation/profile_griya_validation";
+import ProfileAdminRequest from "@/data/models/setting/request/profila_admin_request";
+import profileAdminValidation from "./validation/profile_admin_validation";
 const ProfileSettingsContent = (): ReactElement => {
   const { profileGriya, updateProfileGriya, isLoadingUpdateProfileGriya } =
     useSetting();
@@ -184,73 +186,43 @@ const SocialMediaSettingContent = () => (
 );
 
 const AdminProfileSettingContent = () => {
-  const { profileGriya, updateProfileGriya, isLoadingUpdateProfileGriya } =
+  const { profileAdmin, updateProfileAdmin, isLoadingUpdateProfileAdmin, id } =
     useSetting();
 
-  const [profileGriyaRequest, setProfileGriyaRequest] =
-    useState<ProfileGriyaRequest>({
-      about: "",
-      address: "",
+  const [profileAdminRequest, setProfileAdminRequest] =
+    useState<ProfileAdminRequest>({
+      id: id,
       email: "",
-      mission: "",
-      name: "",
+      fullName: "",
+      oldPassword: "",
+      password: "",
+      passwordConfirm: "",
       phoneNumber: "",
-      vision: "",
-      logo: undefined,
     });
 
   useEffect(() => {
-    if (profileGriya?.data) {
-      const {
-        about,
-        address,
-        email,
-        mission,
-        name,
-        phoneNumber,
-        vision,
-        logo,
-      } = profileGriya.data;
+    if (profileAdmin?.data) {
+      const { user } = profileAdmin.data;
 
-      setProfileGriyaRequest({
-        about: about ?? "",
-        address: address ?? "",
-        email: email ?? "",
-        mission: mission ?? "",
-        name: name ?? "",
-        phoneNumber: phoneNumber ?? "",
-        vision: vision ?? "",
-        logo: undefined,
+      setProfileAdminRequest({
+        ...profileAdminRequest,
+        id: id,
+        email: user.email ?? "",
+        fullName: user.fullName ?? "",
+        phoneNumber: user.phoneNumber ?? "",
       });
-
-      if (logo) {
-        getFile(logo);
-      }
     }
-  }, [profileGriya]);
+  }, [profileAdmin]);
 
-  const getFile = async (logoUrl: string) => {
-    const file = await urlToFile({
-      fileName: "thumbnail.png",
-      url: logoUrl,
-      mimeType: "image/png",
-    });
-
-    setProfileGriyaRequest((prev) => ({
-      ...prev,
-      logo: file,
-    }));
-  };
-
-  const handleUpdateProfileGriya = (request: ProfileGriyaRequest) => {
-    updateProfileGriya(request);
+  const handleUpdateProfileAdmin = (request: ProfileAdminRequest) => {
+    updateProfileAdmin(request);
   };
 
   return (
     <Formik
-      initialValues={profileGriyaRequest}
-      onSubmit={handleUpdateProfileGriya}
-      validationSchema={profileGriyaValidation}
+      initialValues={profileAdminRequest}
+      onSubmit={handleUpdateProfileAdmin}
+      validationSchema={profileAdminValidation}
       enableReinitialize
     >
       {({ errors, handleChange, handleSubmit, values, setFieldValue }) => (
@@ -263,19 +235,19 @@ const AdminProfileSettingContent = () => {
                   onChange={(e) => {
                     setFieldValue("logo", e);
                   }}
-                  src={profileGriya?.data.logo}
+                  src={""}
                 />
               </div>
 
               <div className="grid max-w-2xl gap-4 sm:grid-cols-6 md:col-span-2">
                 <PrimaryInput
-                  value={values.name}
+                  value={values.fullName}
                   label="Nama Lengkap"
                   type="text"
                   placeholder="Nama Lengkap"
                   className="w-full sm:col-span-2"
-                  onChange={handleChange("name")}
-                  error={errors.name}
+                  onChange={handleChange("fullName")}
+                  error={errors.fullName}
                 />
 
                 <PrimaryInput
@@ -289,38 +261,42 @@ const AdminProfileSettingContent = () => {
                 />
 
                 <PrimaryInput
-                  value={values.email}
+                  value={values.phoneNumber}
                   label="No. Handphone"
-                  type="email"
+                  type="tel"
                   placeholder="+62 819-xxxx-xxxx"
                   className="w-full sm:col-span-2"
-                  onChange={handleChange("phone")}
-                  error={errors.email}
+                  onChange={handleChange("phoneNumber")}
+                  error={errors.phoneNumber}
                 />
 
                 <PrimaryInput
-                  value={""}
-                  label="Password"
-                  type="password"
-                  placeholder="Password saat ini"
-                  className="w-full sm:col-span-6"
-                  onChange={(e) => {}}
-                />
-                <PrimaryInput
-                  value={""}
+                  value={values.password}
                   label="Password Baru"
                   type="password"
                   placeholder="Password baru"
                   className="w-full sm:col-span-6"
-                  onChange={(e) => {}}
+                  onChange={handleChange("password")}
+                  error={errors.password}
                 />
                 <PrimaryInput
-                  value={""}
+                  value={values.passwordConfirm}
                   label="Konfirmasi Password Baru"
                   type="password"
                   placeholder="Konfirmasi Password Baru"
                   className="w-full sm:col-span-6"
-                  onChange={(e) => {}}
+                  onChange={handleChange("passwordConfirm")}
+                  error={errors.passwordConfirm}
+                />
+
+                <PrimaryInput
+                  value={values.oldPassword}
+                  label="Password"
+                  type="password"
+                  placeholder="Password saat ini"
+                  className="w-full sm:col-span-6"
+                  onChange={handleChange("oldPassword")}
+                  error={errors.oldPassword}
                 />
               </div>
             </div>
@@ -329,7 +305,7 @@ const AdminProfileSettingContent = () => {
             <div className="my-4 flex items-center justify-end gap-x-6">
               <PrimaryButton
                 label="Simpan"
-                loading={isLoadingUpdateProfileGriya}
+                loading={isLoadingUpdateProfileAdmin}
               />
             </div>
           </div>

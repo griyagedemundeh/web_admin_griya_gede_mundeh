@@ -1,4 +1,5 @@
 import type ApiResponse from "@/data/models/base/api-base-response";
+import ProfileAdminRequest from "@/data/models/setting/request/profila_admin_request";
 import ProfileGriyaRequest from "@/data/models/setting/request/profile_griya_request";
 import ProfileAdmin from "@/data/models/setting/response/profile_admin";
 import ProfileGriya from "@/data/models/setting/response/profile_griya";
@@ -50,6 +51,25 @@ export const useGetProfileGriyaQuery = (): UseQueryResult<
   unknown
 > => useQuery("allProfileGriya", () => getProfileGriya());
 
+// UPDATE
+export const updateProfileAdmin = async (
+  request: ProfileAdminRequest
+): Promise<ApiResponse<ProfileAdmin>> => {
+  const response = await settingService
+    .updateProfileAdmin(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<ProfileAdmin>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} UPDATE PROFILE ADMIN `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
 // GET DATA ADMIN
 export const getProfileAdmin = async ({
   id,
@@ -76,4 +96,6 @@ export const useGetProfileAdminQuery = ({
 }: {
   id: number;
 }): UseQueryResult<ApiResponse<ProfileAdmin>, unknown> =>
-  useQuery("allProfileAdmin", () => getProfileAdmin({ id }));
+  useQuery("allProfileAdmin", () => getProfileAdmin({ id }), {
+    enabled: false,
+  });

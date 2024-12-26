@@ -2,9 +2,10 @@ import type ApiResponse from "@/data/models/base/api-base-response";
 import {
   updateProfileGriya as updateProfileGriyaBridge,
   useGetProfileGriyaQuery,
+  updateProfileAdmin as updateProfileAdminBridge,
   useGetProfileAdminQuery,
 } from "./setting_bridge";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCentralStore } from "@/store";
 import { showToast, statusMessage } from "@/utils";
 import { type UseMutateFunction, useMutation } from "react-query";
@@ -13,6 +14,7 @@ import ProfileGriya from "@/data/models/setting/response/profile_griya";
 import ProfileGriyaRequest from "@/data/models/setting/request/profile_griya_request";
 import { useAuth } from "../auth/use_auth";
 import ProfileAdmin from "@/data/models/setting/response/profile_admin";
+import ProfileAdminRequest from "@/data/models/setting/request/profila_admin_request";
 
 interface IUseSetting {
   profileGriya: ApiResponse<ProfileGriya> | undefined;
@@ -32,11 +34,24 @@ interface IUseSetting {
   profileAdmin: ApiResponse<ProfileAdmin> | undefined;
   isProfileAdminLoading: boolean;
   isProfileAdminError: boolean;
+
+  updateProfileAdmin: UseMutateFunction<
+    ApiResponse<ProfileAdmin>,
+    unknown,
+    ProfileAdminRequest,
+    unknown
+  >;
+  isLoadingUpdateProfileAdmin: boolean;
+  isUpdateProfileAdminSuccess: boolean;
+  isUpdateProfileAdminError: boolean;
+
+  id: number;
 }
 
 export const useSetting = (): IUseSetting => {
   const { setIsLoading } = useCentralStore();
   const { account } = useAuth();
+  const [id, setId] = useState<number>(account?.id!);
 
   const {
     data: profileGriya,
@@ -50,7 +65,8 @@ export const useSetting = (): IUseSetting => {
     isLoading: isProfileAdminLoading,
     isError: isProfileAdminError,
     error: errorProfileAdmin,
-  } = useGetProfileAdminQuery({ id: account?.id ?? 0 });
+    refetch: refetchProfileAdmin,
+  } = useGetProfileAdminQuery({ id });
 
   const {
     mutate: updateProfileGriya,
@@ -82,8 +98,40 @@ export const useSetting = (): IUseSetting => {
     },
   });
 
+  const {
+    mutate: updateProfileAdmin,
+    isLoading: isLoadingUpdateProfileAdmin,
+    isSuccess: isUpdateProfileAdminSuccess,
+    isError: isUpdateProfileAdminError,
+  } = useMutation(updateProfileAdminBridge, {
+    onSuccess: async (value) => {
+      if (typeof value.message === "string") {
+        showToast({ status: "success", message: value.message });
+      } else {
+        value.message.forEach((message) => {
+          showToast({ status: "success", message: message });
+        });
+      }
+
+      setIsLoading(false);
+      window.location.reload();
+    },
+    onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
   useEffect(() => {
-    setIsLoading(isProfileGriyaLoading || isProfileAdminLoading);
+    setIsLoading(isProfileGriyaLoading);
+    setIsLoading(isProfileAdminLoading);
+    setId(account?.id!);
 
     if (isProfileGriyaError) {
       statusMessage({ message: errorProfileGriya, status: "error" });
@@ -92,7 +140,17 @@ export const useSetting = (): IUseSetting => {
     if (isProfileAdminError) {
       statusMessage({ message: errorProfileAdmin, status: "error" });
     }
-  }, [isProfileGriyaLoading, isProfileGriyaError, isProfileAdminError]);
+
+    if (id) {
+      refetchProfileAdmin();
+    }
+  }, [
+    account,
+    isProfileGriyaLoading,
+    isProfileAdminLoading,
+    isProfileGriyaError,
+    isProfileAdminError,
+  ]);
 
   return {
     profileGriya,
@@ -107,5 +165,10 @@ export const useSetting = (): IUseSetting => {
     profileAdmin,
     isProfileAdminError,
     isProfileAdminLoading,
+    updateProfileAdmin,
+    isLoadingUpdateProfileAdmin,
+    isUpdateProfileAdminError,
+    isUpdateProfileAdminSuccess,
+    id,
   };
 };
