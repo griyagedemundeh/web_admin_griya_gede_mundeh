@@ -2,7 +2,7 @@ import React, { ForwardRefExoticComponent, MouseEventHandler } from "react";
 
 interface PrimaryWithIconButtonProps {
   label: string;
-  onClick: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   icon: ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
       title?: string;

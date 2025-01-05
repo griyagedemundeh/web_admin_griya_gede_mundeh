@@ -47,7 +47,6 @@ AddArticleModalProps): ReactElement => {
   const { allArticleCategory } = useArticleCategory();
 
   const handleAddArticle = (articleRequest: ArticleRequest) => {
-    console.log("anjay");
     setIsLoading(true);
     addArticle(articleRequest);
     setOpen(false);
@@ -144,9 +143,7 @@ AddArticleModalProps): ReactElement => {
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                   <PrimaryWithIconButton
                     label="Simpan"
-                    onClick={() => {
-                      handleAddArticle(values);
-                    }}
+                    type="submit"
                     icon={CheckCircleIcon}
                   />
                 </div>

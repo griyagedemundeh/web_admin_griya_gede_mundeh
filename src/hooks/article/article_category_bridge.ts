@@ -5,10 +5,7 @@ import ListDataRequest from "@/data/models/base/list_data_request";
 
 import { ArticleCategoryService } from "@/data/services/article/article_category_service";
 import { AxiosError } from "axios";
-import { error } from "console";
-import { request } from "http";
 import { useQuery, UseQueryResult } from "react-query";
-import { number, string } from "yup";
 
 const articleService = new ArticleCategoryService();
 const TAG_ERROR = "Error during :";

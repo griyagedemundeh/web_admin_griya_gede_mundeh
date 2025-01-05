@@ -55,13 +55,13 @@ const DetailArticleCategoryModal = ({
         }}
       />
       <Modal
-        title="Detail Artikel Upacara"
+        title="Detail Kategori Artikel"
         isOpen={openDetail}
         setIsOpen={setOpenDetail}
       >
         <Formik
           initialValues={data}
-          onSubmit={(values) => handleEditAdmin(values)}
+          onSubmit={handleEditAdmin}
           validationSchema={editArticleCategoryValidation}
         >
           {({ errors, handleChange, values }) => (
@@ -81,9 +81,7 @@ const DetailArticleCategoryModal = ({
                   <PrimaryWithIconButton
                     label="Simpan"
                     icon={PencilIcon}
-                    onClick={() => {
-                      handleEditAdmin(values);
-                    }}
+                    type="submit" // Add this line
                   />
                 </div>
               </div>

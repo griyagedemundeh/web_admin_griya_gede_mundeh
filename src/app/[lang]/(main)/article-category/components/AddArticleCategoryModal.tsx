@@ -71,9 +71,7 @@ const AddArticleCategoryModal = ({
               <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                 <PrimaryWithIconButton
                   label="Simpan"
-                  onClick={() => {
-                    handleSubmit();
-                  }}
+                  type="submit"
                   icon={CheckCircleIcon}
                 />
               </div>

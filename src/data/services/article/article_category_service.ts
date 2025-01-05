@@ -64,7 +64,7 @@ export class ArticleCategoryService implements IArticleCategoryService {
     const uri = `${this.BASE_ENDPOINT}/${id}`;
     const data = new FormData();
     data.append("name", request.name);
-    data.append("isActive", "true")
+    data.append("isActive", "true");
     try {
       const response: AxiosResponse<ApiResponse<ArticleCategory>> =
         await api.patch(uri, data);
