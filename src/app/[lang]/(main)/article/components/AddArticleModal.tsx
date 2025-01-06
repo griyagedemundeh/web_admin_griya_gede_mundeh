@@ -35,7 +35,7 @@ const AddArticleModal = ({
   setSelectedArticleCategory,
 }: // CATEGORY
 AddArticleModalProps): ReactElement => {
-  const { setIsLoading } = useCentralStore();
+  const { setIsLoading, isLoading } = useCentralStore();
 
   const { addArticle, isAddArticleError, isAddArticleSuccess } = useArticle();
 
@@ -98,7 +98,11 @@ AddArticleModalProps): ReactElement => {
             setValues,
           }) => (
             <Form
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log("====================================");
+                console.log("VALUE ---> ", values);
+                console.log("====================================");
                 handleAddArticle(values);
               }}
             >
@@ -144,6 +148,7 @@ AddArticleModalProps): ReactElement => {
                   <PrimaryWithIconButton
                     label="Simpan"
                     type="submit"
+                    loading={isLoading}
                     icon={CheckCircleIcon}
                   />
                 </div>

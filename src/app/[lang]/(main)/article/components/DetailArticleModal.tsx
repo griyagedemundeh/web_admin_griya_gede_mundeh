@@ -28,7 +28,7 @@ const DetailArticleModal = ({
   id,
   category,
 }: DetailArticleModalProps) => {
-  const { setIsLoading } = useCentralStore();
+  const { setIsLoading, isLoading } = useCentralStore();
   const { editArticle, isEditArticleError, isEditArticleSuccess } =
     useArticle();
   const [openDetail, setOpenDetail] = useState(false);
@@ -122,7 +122,11 @@ const DetailArticleModal = ({
             setValues,
           }) => (
             <Form
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log("====================================");
+                console.log("VALUE ---> ", values);
+                console.log("====================================");
                 handleEditArticle(values);
               }}
             >
@@ -166,6 +170,7 @@ const DetailArticleModal = ({
                   <PrimaryWithIconButton
                     label="Simpan"
                     type="submit"
+                    loading={isLoading}
                     icon={CheckIcon}
                   />
                 </div>
