@@ -131,18 +131,13 @@ export class CeremonyService implements ICeremonyService {
     id: number | string;
     request: CeremonyDocumentationRequest;
   }): Promise<ApiResponse<CeremonyDocumentation>> {
-    console.log("====================================");
-    console.log("adssadsad --->>>", { id, request });
-    console.log("====================================");
-
     const uri = `${this.BASE_ENDPOINT}/documentation/${id}`;
 
-    console.log("====================================");
-    console.log("URL --->>> ", uri);
-    console.log("====================================");
-
     const data = new FormData();
-    data.append("photo", request.photo as File);
+
+    if (request.photo) {
+      data.append("photo", request.photo as File);
+    }
 
     try {
       const response: AxiosResponse<ApiResponse<CeremonyDocumentation>> =

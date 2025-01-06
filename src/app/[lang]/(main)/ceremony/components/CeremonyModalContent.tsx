@@ -47,6 +47,7 @@ interface CeremonyModalProps {
 
   // DOCUMENTATION
   ceremonyDocumentationRequest: CeremonyDocumentationRequest;
+  documentation?: string;
   handleCeremonyDocumentationSubmit: (
     ceremonyDocumentationRequest: CeremonyDocumentationRequest
   ) => void;
@@ -83,6 +84,7 @@ const CeremonyModalContent = ({
   // DOCUMENTATION
   ceremonyDocumentationRequest,
   handleCeremonyDocumentationSubmit,
+  documentation,
 
   // CATEGORY
   selectedCeremonyCategory,
@@ -244,7 +246,7 @@ const CeremonyModalContent = ({
                 }}
               >
                 <BigFileInput
-                  src={ceremonyDocumentationRequest.photoUrl ?? ""}
+                  src={documentation as string}
                   onChange={(e) => {
                     setFieldValue("photo", e);
                   }}

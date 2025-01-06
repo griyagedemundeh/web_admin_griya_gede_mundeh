@@ -5,7 +5,6 @@ import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useCentralStore } from "@/store";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
-import { urlToFile } from "@/utils";
 import CeremonyModalContent from "./CeremonyModalContent";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
 import { CeremonyPackagesRequest } from "@/data/models/ceremony/request/ceremony_package_request";
@@ -55,7 +54,6 @@ const DetailCeremonyModal = ({
   const [ceremonyDocumentationRequest, setCeremonyDocumentationRequest] =
     useState<CeremonyDocumentationRequest>({
       ceremonyServiceId: id as number,
-      photo: null,
     });
 
   const handleEditCeremony = (ceremonyRequest: CeremonyRequest) => {
@@ -89,24 +87,22 @@ const DetailCeremonyModal = ({
   const [ceremonyPackages, setCeremonyPackages] =
     useState<CeremonyPackagesRequest>({ packages: [] });
 
-  const getFile = async () => {
-    const file = await urlToFile({
-      fileName: "avatar.png",
-      url: documentation.photo as string,
-      mimeType: "image/png",
-    });
+  // const getFile = async () => {
+  //   const file = await urlToFile({
+  //     fileName: "avatar.png",
+  //     url: documentation.photo as string,
+  //     mimeType: "image/png",
+  //   });
 
-    setCeremonyDocumentationRequest({
-      ...ceremonyDocumentationRequest,
-      ceremonyServiceId: id as number,
-      photo: file,
-      photoUrl: documentation.photo,
-    });
-  };
+  //   setCeremonyDocumentationRequest({
+  //     ...ceremonyDocumentationRequest,
+  //     ceremonyServiceId: id as number,
+  //     photo: file,
+  //     photoUrl: documentation.photo,
+  //   });
+  // };
 
   useEffect(() => {
-    getFile();
-
     setCeremonyPackages({
       packages: packages as any,
     });
@@ -140,6 +136,7 @@ const DetailCeremonyModal = ({
           handleCeremonySubmit={handleEditCeremony}
           // DOCUMENTATION
           ceremonyDocumentationRequest={ceremonyDocumentationRequest}
+          documentation={documentation.photo}
           handleCeremonyDocumentationSubmit={handleEditCeremonyDocumentation}
           // PACKAGE
           ceremonyPackagesRequest={

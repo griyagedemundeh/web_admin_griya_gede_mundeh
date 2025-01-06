@@ -30,12 +30,15 @@ export class SettingService implements ISettingService {
     const data = new FormData();
     data.append("name", request.name);
     data.append("about", request.about);
-    data.append("logo", request.logo as File);
     data.append("address", request.address);
     data.append("email", request.email);
     data.append("mission", request.mission);
     data.append("vision", request.vision);
     data.append("phoneNumber", request.phoneNumber);
+
+    if (request.logo) {
+      data.append("logo", request.logo as File);
+    }
 
     try {
       const response: AxiosResponse<ApiResponse<ProfileGriya>> =

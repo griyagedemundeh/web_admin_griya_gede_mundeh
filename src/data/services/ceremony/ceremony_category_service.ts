@@ -74,7 +74,10 @@ export class CeremonyCategoryService implements ICeremonyCategoryService {
     const data = new FormData();
     data.append("name", request.name);
     data.append("description", request.description);
-    data.append("icon", request.icon as File);
+
+    if (request.icon) {
+      data.append("icon", request.icon as File);
+    }
 
     try {
       const response: AxiosResponse<ApiResponse<CeremonyCategory>> =

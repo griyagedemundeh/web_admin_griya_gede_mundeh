@@ -11,7 +11,6 @@ import { ReactElement, useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import ProfileGriyaRequest from "@/data/models/setting/request/profile_griya_request";
 import { useSetting } from "@/hooks/setting/use_setting";
-import { urlToFile } from "@/utils";
 import profileGriyaValidation from "./validation/profile_griya_validation";
 import ProfileAdminRequest from "@/data/models/setting/request/profila_admin_request";
 import profileAdminValidation from "./validation/profile_admin_validation";
@@ -33,16 +32,8 @@ const ProfileSettingsContent = (): ReactElement => {
 
   useEffect(() => {
     if (profileGriya?.data) {
-      const {
-        about,
-        address,
-        email,
-        mission,
-        name,
-        phoneNumber,
-        vision,
-        logo,
-      } = profileGriya.data;
+      const { about, address, email, mission, name, phoneNumber, vision } =
+        profileGriya.data;
 
       setProfileGriyaRequest({
         about: about ?? "",
@@ -52,34 +43,11 @@ const ProfileSettingsContent = (): ReactElement => {
         name: name ?? "",
         phoneNumber: phoneNumber ?? "",
         vision: vision ?? "",
-        logo: undefined,
       });
-
-      if (logo) {
-        getFile(logo);
-      }
     }
   }, [profileGriya]);
 
-  const getFile = async (logoUrl: string) => {
-    const file = await urlToFile({
-      fileName: `thumbnail.png`,
-      url: logoUrl,
-      mimeType: "image/png",
-    });
-
-    setProfileGriyaRequest((prev) => ({
-      ...prev,
-      logo: file,
-    }));
-  };
-
   const handleUpdateProfileGriya = (request: ProfileGriyaRequest) => {
-    if ((request.logo as File).name.startsWith("thumbnail")) {
-      updateProfileGriya({ ...request, logo: null, logoUrl: "" });
-      return;
-    }
-
     updateProfileGriya(request);
   };
 

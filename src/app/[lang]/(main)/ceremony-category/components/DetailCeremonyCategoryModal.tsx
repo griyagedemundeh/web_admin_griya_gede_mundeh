@@ -11,7 +11,6 @@ import { useCeremonyCategory } from "@/hooks/ceremony/use_ceremony_category";
 import PhotoProfileInput from "@/components/input/image/profile/PhotoProfileInput";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
 import editCeremonyCategoryValidation from "../validation/edit_admin_validation";
-import { urlToFile } from "@/utils";
 
 interface DetailCeremonyCategoryModalProps {
   id: number | string;
@@ -30,26 +29,21 @@ const DetailCeremonyCategoryModal = ({
   } = useCeremonyCategory();
 
   const [openDetail, setOpenDetail] = useState(false);
-  const [fileFromApi, setFileFromApi] = useState<File>();
+  const [ceremonyCategoryRequest, setCeremonyCategoryRequest] =
+    useState<CeremonyCategoryRequest>({
+      description: data.description,
+      name: data.name,
+    });
 
-  const handleEditAdmin = (ceremonyCategory: CeremonyCategoryRequest) => {
+  const handleEditCeremonyCategory = (
+    ceremonyCategory: CeremonyCategoryRequest
+  ) => {
     setIsLoading(true);
     editCeremonyCategory({ id, request: ceremonyCategory });
     setOpenDetail(false);
   };
 
-  const getFile = async () => {
-    const file = await urlToFile({
-      fileName: "avatar.png",
-      url: data.icon as string,
-    });
-
-    setFileFromApi(file);
-  };
-
   useEffect(() => {
-    getFile();
-
     if (isEditCeremonyCategorySuccess) {
       setOpenDetail(false);
     }
@@ -76,12 +70,17 @@ const DetailCeremonyCategoryModal = ({
         setIsOpen={setOpenDetail}
       >
         <Formik
-          initialValues={{ ...data, icon: fileFromApi as File }}
-          onSubmit={(values) => handleEditAdmin(values)}
+          initialValues={ceremonyCategoryRequest}
+          onSubmit={handleEditCeremonyCategory}
           validationSchema={editCeremonyCategoryValidation}
         >
           {({ errors, handleChange, setFieldValue, values }) => (
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleEditCeremonyCategory(values);
+              }}
+            >
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   <PhotoProfileInput
@@ -112,9 +111,7 @@ const DetailCeremonyCategoryModal = ({
                 <PrimaryWithIconButton
                   label="Simpan"
                   icon={PencilIcon}
-                  onClick={() => {
-                    handleEditAdmin(values);
-                  }}
+                  type="submit"
                 />
               </div>
             </Form>

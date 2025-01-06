@@ -1,6 +1,6 @@
 type CeremonyDocumentationRequest = {
   ceremonyServiceId: number | string;
-  photo: File | null;
+  photo?: File | string | null | undefined;
   photoUrl?: string | null | undefined;
 };
 

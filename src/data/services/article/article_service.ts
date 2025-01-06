@@ -91,9 +91,11 @@ export class ArticleService implements IArticleService {
     const data = new FormData();
     data.append("title", request.title);
     data.append("content", request.content);
-    data.append("thumbnail", request.thumbnail as File);
     data.append("isPublish", String(request.isPublish));
     data.append("articleCategoryId", String(request.articleCategoryId));
+    if (request.thumbnail) {
+      data.append("thumbnail", request.thumbnail as File);
+    }
 
     try {
       const response: AxiosResponse<ApiResponse<Article>> = await api.patch(

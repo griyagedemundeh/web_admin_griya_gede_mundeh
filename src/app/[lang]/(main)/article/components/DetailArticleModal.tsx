@@ -2,7 +2,6 @@ import ArticleRequest from "@/data/models/article/request/article_request";
 import { useCentralStore } from "@/store";
 import { useArticle } from "@/hooks/article/use_article";
 import { useEffect, useState } from "react";
-import { urlToFile } from "@/utils";
 import Modal from "@/components/modal/Modal";
 import { Form, Formik } from "formik";
 import articleValidation from "../validation/article_validation";
@@ -39,8 +38,6 @@ const DetailArticleModal = ({
     content: data.content,
     title: data.title,
     isPublish: data.isPublish ?? true,
-    thumbnail: data.thumbnail,
-    thumbnailUrl: "",
   });
 
   const handleEditArticle = (article: ArticleRequest) => {
@@ -55,24 +52,6 @@ const DetailArticleModal = ({
       id: category?.id ?? 0,
       title: category?.name ?? "",
     });
-
-  const getFile = async () => {
-    const file = await urlToFile({
-      fileName: `thumbnail.png`,
-      url: data.thumbnail as string,
-      mimeType: "image/png",
-    });
-
-    setArticleRequest({
-      ...articleRequest,
-      thumbnail: file,
-      thumbnailUrl: data.thumbnail as string,
-    });
-  };
-
-  useEffect(() => {
-    getFile();
-  }, []);
 
   useEffect(() => {
     if (allArticleCategory?.data) {
@@ -124,23 +103,13 @@ const DetailArticleModal = ({
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
-
-                if ((values.thumbnail as File).name.startsWith("thumbnail")) {
-                  handleEditArticle({
-                    ...values,
-                    thumbnail: null,
-                    thumbnailUrl: "",
-                  });
-                  return;
-                }
-
                 handleEditArticle(values);
               }}
             >
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   <BigFileInput
-                    src={values.thumbnailUrl as string}
+                    src={data.thumbnail as string}
                     onChange={(file) => setFieldValue("thumbnail", file)}
                     label="Kover Artikel"
                   />

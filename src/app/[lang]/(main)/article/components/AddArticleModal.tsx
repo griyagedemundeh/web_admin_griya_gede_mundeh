@@ -100,9 +100,7 @@ AddArticleModalProps): ReactElement => {
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log("====================================");
-                console.log("VALUE ---> ", values);
-                console.log("====================================");
+
                 handleAddArticle(values);
               }}
             >
