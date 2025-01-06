@@ -63,7 +63,7 @@ const ProfileSettingsContent = (): ReactElement => {
 
   const getFile = async (logoUrl: string) => {
     const file = await urlToFile({
-      fileName: "thumbnail.png",
+      fileName: `thumbnail.png`,
       url: logoUrl,
       mimeType: "image/png",
     });
@@ -75,6 +75,11 @@ const ProfileSettingsContent = (): ReactElement => {
   };
 
   const handleUpdateProfileGriya = (request: ProfileGriyaRequest) => {
+    if ((request.logo as File).name.startsWith("thumbnail")) {
+      updateProfileGriya({ ...request, logo: null, logoUrl: "" });
+      return;
+    }
+
     updateProfileGriya(request);
   };
 

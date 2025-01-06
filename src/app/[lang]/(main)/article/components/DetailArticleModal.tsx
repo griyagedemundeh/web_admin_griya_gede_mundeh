@@ -58,7 +58,7 @@ const DetailArticleModal = ({
 
   const getFile = async () => {
     const file = await urlToFile({
-      fileName: "thumbnail.png",
+      fileName: `thumbnail.png`,
       url: data.thumbnail as string,
       mimeType: "image/png",
     });
@@ -124,9 +124,16 @@ const DetailArticleModal = ({
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log("====================================");
-                console.log("VALUE ---> ", values);
-                console.log("====================================");
+
+                if ((values.thumbnail as File).name.startsWith("thumbnail")) {
+                  handleEditArticle({
+                    ...values,
+                    thumbnail: null,
+                    thumbnailUrl: "",
+                  });
+                  return;
+                }
+
                 handleEditArticle(values);
               }}
             >
