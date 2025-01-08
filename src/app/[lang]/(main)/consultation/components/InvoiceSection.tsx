@@ -68,7 +68,11 @@ function InvoiceSection({
   const [selectedAddress, setSelectedAddress] =
     useState<DropdownFilterItemProps>();
 
-  const { allCeremonyPackageByCeremonyServiceId, allCeremony } = useCeremony({
+  const {
+    allCeremonyPackageByCeremonyServiceId,
+    allCeremony,
+    refetchCeremonyPackageByCeremonyServiceId,
+  } = useCeremony({
     ceremonyServiceId: ceremonyServiceId ?? selectedCeremony?.id,
   });
 
@@ -135,6 +139,8 @@ function InvoiceSection({
       );
     }
 
+    // refetch package
+    refetchCeremonyPackageByCeremonyServiceId();
     if (
       allCeremonyPackageByCeremonyServiceId !== undefined &&
       Array.isArray(allCeremonyPackageByCeremonyServiceId?.data)
@@ -163,6 +169,7 @@ function InvoiceSection({
   ]);
 
   useEffect(() => {
+    refecthAllAddress();
     if (allAddress?.data) {
       setAddresses(
         allAddress.data.map((address, index) => ({
@@ -265,16 +272,10 @@ function InvoiceSection({
             validationSchema={invoiceValidation}
             suppressHydrationWarning={true}
           >
-            {({
-              errors,
-              handleChange,
-              handleSubmit,
-              values,
-
-              setValues,
-            }) => (
+            {({ errors, handleChange, handleSubmit, values, setValues }) => (
               <Form
-                onSubmit={() => {
+                onSubmit={(e) => {
+                  e.preventDefault();
                   handleAddInvoice(values);
                 }}
               >
@@ -487,10 +488,7 @@ function InvoiceSection({
                     <PrimaryWithIconButton
                       label="Buat Invoice"
                       loading={isLoadingCreateInvoice}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={DocumentCheckIcon}
                     />
                   </div>

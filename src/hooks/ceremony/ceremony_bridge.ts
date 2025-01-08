@@ -223,11 +223,14 @@ export const getPackageByCeremonyServiceId = async ({
   return response;
 };
 
-export const useGetCermonyPackageByCeremonyServiceIdQuery = ({
+export const useGetCeremonyPackageByCeremonyServiceIdQuery = ({
   ceremonyServiceId,
 }: {
   ceremonyServiceId: number | string;
 }): UseQueryResult<ApiResponse<CeremonyPackage[]>, unknown> =>
-  useQuery(`ceremonyPackage_${ceremonyServiceId}`, () =>
-    getPackageByCeremonyServiceId({ ceremonyServiceId: ceremonyServiceId })
+  useQuery(
+    `ceremonyPackage_${ceremonyServiceId}`,
+    () =>
+      getPackageByCeremonyServiceId({ ceremonyServiceId: ceremonyServiceId }),
+    { enabled: false }
   );

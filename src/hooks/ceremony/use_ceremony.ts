@@ -1,4 +1,10 @@
-import { UseMutateFunction, useMutation } from "react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  UseMutateFunction,
+  useMutation,
+} from "react-query";
 import ApiResponse from "@/data/models/base/api-base-response";
 import { AxiosError } from "axios";
 import {
@@ -12,7 +18,7 @@ import {
   deleteCeremonyPackage as deleteCeremonyPackageBridge,
   // getPackageByCeremonyServiceId as getPackageByCeremonyServiceIdBridge,
   useGetAllCeremonyQuery,
-  useGetCermonyPackageByCeremonyServiceIdQuery,
+  useGetCeremonyPackageByCeremonyServiceIdQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
 import { useEffect, useState } from "react";
@@ -121,6 +127,9 @@ interface IUseCeremony {
   allCeremonyPackageByCeremonyServiceId:
     | ApiResponse<CeremonyPackage[]>
     | undefined;
+  refetchCeremonyPackageByCeremonyServiceId: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<CeremonyPackage[]>, unknown>>;
 }
 
 export const useCeremony = ({
@@ -144,8 +153,8 @@ export const useCeremony = ({
     data: allCeremonyPackageByCeremonyServiceId,
     isLoading: isCeremonyPackageByCeremonyServiceIdLoading,
     isError: isCeremonyPackageByCeremonyServiceIdError,
-    error: errorCeremonyPackageByCeremonyServiceId,
-  } = useGetCermonyPackageByCeremonyServiceIdQuery({
+    refetch: refetchCeremonyPackageByCeremonyServiceId,
+  } = useGetCeremonyPackageByCeremonyServiceIdQuery({
     ceremonyServiceId: ceremonyServiceId ?? 0,
   });
 
@@ -363,6 +372,9 @@ export const useCeremony = ({
     isDeleteCeremonyPackageError,
     isDeleteCeremonyPackageSuccess,
     isLoadingDeleteCeremonyPackage,
+
+    // package by ceremonyId
     allCeremonyPackageByCeremonyServiceId,
+    refetchCeremonyPackageByCeremonyServiceId,
   };
 };
