@@ -68,7 +68,11 @@ const TransactionModal = ({
   const [selectedAddress, setSelectedAddress] =
     useState<DropdownFilterItemProps>();
 
-  const { allCeremonyPackageByCeremonyServiceId, allCeremony } = useCeremony({
+  const {
+    allCeremonyPackageByCeremonyServiceId,
+    allCeremony,
+    refetchCeremonyPackageByCeremonyServiceId,
+  } = useCeremony({
     ceremonyServiceId: ceremonyServiceId ?? selectedCeremony?.id,
   });
 
@@ -134,6 +138,9 @@ const TransactionModal = ({
         }))
       );
     }
+
+    // Refetch Package
+    refetchCeremonyPackageByCeremonyServiceId();
     if (allCeremonyPackageByCeremonyServiceId?.data) {
       setPackages(
         allCeremonyPackageByCeremonyServiceId?.data?.map((ceremonyPackage) => ({
@@ -159,6 +166,7 @@ const TransactionModal = ({
   ]);
 
   useEffect(() => {
+    refecthAllAddress();
     if (allAddress?.data) {
       setAddresses(
         allAddress.data.map((address, index) => ({
