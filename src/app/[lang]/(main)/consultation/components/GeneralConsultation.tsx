@@ -1,4 +1,6 @@
+import StorageKey from "@/constants/storage_key";
 import GeneralConsultation from "@/data/models/consultation/response/general_consultation";
+import { supabase } from "@/utils/supabase";
 
 import Image from "next/image";
 import React from "react";
@@ -14,6 +16,22 @@ const GeneralConsultationSection = ({
   selectedGeneralConsultation,
   setSelectedGeneralConsultation,
 }: IGeneralConsultationProps) => {
+  const updateRead = async (consultation: GeneralConsultation) => {
+    try {
+      await supabase
+        .from(StorageKey.GENERAL_CONSULTATION)
+        .update({
+          ...consultation,
+          isRead: true,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("consultationId", consultation.consultationId)
+        .eq("isRead", false);
+    } catch (error) {
+      console.error("Error processing update read:", error);
+    }
+  };
+
   return (
     <div
       className="overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white"
@@ -21,15 +39,16 @@ const GeneralConsultationSection = ({
     >
       {consultations?.map((consultation, index) => (
         <div
-          onClick={() => {
+          onClick={async () => {
             setSelectedGeneralConsultation(consultation);
+            await updateRead(consultation);
           }}
           key={`${consultation.id}`}
           className={` ${
             selectedGeneralConsultation?.id === consultation.id
               ? "bg-yellow-50"
               : ""
-          }  flex flex-row items-center space-x-4 hover:cursor-pointer hover:bg-yellow-50 p-4 rounded-lg`}
+          }  flex flex-row items-center space-x-4 hover:cursor-pointer hover:bg-yellow-50 px-4 py-6 relative border-b-2`}
         >
           <Image
             alt=""
@@ -47,6 +66,14 @@ const GeneralConsultationSection = ({
               <b className="ml-1">{consultation.userName}</b>
             </span> */}
           </div>
+          {!consultation.isRead && (
+            <div
+              className="bg-rose-600 py-1 px-2 rounded-full absolute top-1 right-2 text-white"
+              style={{ fontSize: 8 }}
+            >
+              Ada Pesan Baru
+            </div>
+          )}
         </div>
       ))}
     </div>

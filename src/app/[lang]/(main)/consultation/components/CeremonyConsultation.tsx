@@ -1,4 +1,6 @@
+import StorageKey from "@/constants/storage_key";
 import Consultation from "@/data/models/consultation/response/consultation";
+import { supabase } from "@/utils/supabase";
 import Image from "next/image";
 import React from "react";
 
@@ -13,6 +15,22 @@ const CeremonyConsultation = ({
   selectedCeremonyConsultation,
   setSelectedCeremonyConsultation,
 }: ICeremonyConsultationProps) => {
+  const updateRead = async (consultation: Consultation) => {
+    try {
+      await supabase
+        .from(StorageKey.CEREMONY_CONSULTATION)
+        .update({
+          ...consultation,
+          isRead: true,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("consultationId", consultation.consultationId)
+        .eq("isRead", false);
+    } catch (error) {
+      console.error("Error processing update read:", error);
+    }
+  };
+
   return (
     <div
       className="overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-200 scrollbar-track-white"
@@ -20,8 +38,9 @@ const CeremonyConsultation = ({
     >
       {consultations?.map((consultation, index) => (
         <div
-          onClick={() => {
+          onClick={async () => {
             setSelectedCeremonyConsultation(consultation);
+            await updateRead(consultation);
           }}
           key={`${consultation.id}`}
           className={` ${

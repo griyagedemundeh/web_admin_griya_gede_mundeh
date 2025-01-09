@@ -65,6 +65,16 @@ function GeneralChatSection({ consultation }: IGeneralChatSectionProps) {
       consultationId: consultation?.consultationId,
     });
 
+    await supabase
+      .from(StorageKey.GENERAL_CONSULTATION)
+      .update({
+        ...consultation,
+        isRead: true,
+        updatedAt: new Date().toISOString(),
+      })
+      .eq("consultationId", consultation?.consultationId as number)
+      .eq("isRead", false);
+
     setMessageRequest(initialMessageRequest);
     getChats();
   }, [

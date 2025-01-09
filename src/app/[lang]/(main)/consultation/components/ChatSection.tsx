@@ -104,6 +104,16 @@ function ChatSection({ consultation }: IChatSectionProps) {
         .from(StorageKey.CEREMONY_CONSULTATION_MESSAGE)
         .insert(invoiceMessage);
 
+      await supabase
+        .from(StorageKey.CEREMONY_CONSULTATION)
+        .update({
+          ...consultation,
+          isRead: true,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("consultationId", consultation?.consultationId as number)
+        .eq("isRead", false);
+
       // Reset message request and refresh chats
       setMessageRequest(initialMessageRequest);
       await getChats();

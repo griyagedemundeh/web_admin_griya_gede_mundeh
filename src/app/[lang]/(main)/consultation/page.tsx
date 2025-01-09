@@ -42,6 +42,7 @@ export default function ConsultationPage({
       const { data, error } = await supabase
         .from(StorageKey.CEREMONY_CONSULTATION)
         .select()
+        .order("isRead")
         .order("updatedAt", { ascending: false });
 
       if (error) {
@@ -67,7 +68,9 @@ export default function ConsultationPage({
       setIsFetchingGeneralConsultations(true);
       const { data, error } = await supabase
         .from(StorageKey.GENERAL_CONSULTATION)
-        .select();
+        .select()
+        .order("isRead")
+        .order("updatedAt", { ascending: false });
 
       if (error) {
         console.error("Error fetching general consultations:", error);
@@ -100,7 +103,7 @@ export default function ConsultationPage({
     const pollInterval = setInterval(() => {
       fetchConsultations();
       fetchGeneralConsultations();
-    }, 10000); // 10 seconds, much less frequent than before
+    }, 5000);
 
     return () => clearInterval(pollInterval);
   }, [
