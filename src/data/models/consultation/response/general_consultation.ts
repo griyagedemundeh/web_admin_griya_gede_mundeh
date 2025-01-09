@@ -5,6 +5,7 @@ type GeneralConsultation = {
   userId: number;
   userName: string;
   userPhoto?: string;
+  isRead: boolean;
 };
 
 export default GeneralConsultation;

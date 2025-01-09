@@ -28,7 +28,7 @@ const CeremonyConsultation = ({
             selectedCeremonyConsultation?.id === consultation.id
               ? "bg-yellow-50"
               : ""
-          }  flex flex-row items-center space-x-4 hover:cursor-pointer hover:bg-yellow-50 p-4 rounded-lg`}
+          }  flex flex-row items-center space-x-4 hover:cursor-pointer hover:bg-yellow-50 px-4 py-6 relative border-b-2`}
         >
           <Image
             alt=""
@@ -46,6 +46,15 @@ const CeremonyConsultation = ({
               <b className="ml-1">{consultation.ceremonyName}</b>
             </span>
           </div>
+
+          {!consultation.isRead && (
+            <div
+              className="bg-rose-600 py-1 px-2 rounded-full absolute top-1 right-2 text-white"
+              style={{ fontSize: 8 }}
+            >
+              Ada Pesan Baru
+            </div>
+          )}
         </div>
       ))}
     </div>

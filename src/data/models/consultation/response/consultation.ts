@@ -9,6 +9,7 @@ type Consultation = {
   userName: string;
   userPhoto: string;
   status: string;
+  isRead: boolean;
 };
 
 export default Consultation;
