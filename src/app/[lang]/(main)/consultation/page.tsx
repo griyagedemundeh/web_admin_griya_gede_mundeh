@@ -41,7 +41,8 @@ export default function ConsultationPage({
       setIsFetchingConsultations(true);
       const { data, error } = await supabase
         .from(StorageKey.CEREMONY_CONSULTATION)
-        .select();
+        .select()
+        .order("updatedAt", { ascending: false });
 
       if (error) {
         console.error("Error fetching consultations:", error);

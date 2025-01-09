@@ -10,6 +10,7 @@ type Consultation = {
   userPhoto: string;
   status: string;
   isRead: boolean;
+  updatedAt: string;
 };
 
 export default Consultation;
