@@ -54,6 +54,12 @@ const EmailVerificationPage = () => {
         </div>
 
         <div className="w-full mt-10">
+          <div className="px-52 mb-10">
+            <p className="text-center">
+              Akun anda masih belum terverifikasi, segera verifikasi untuk
+              menggunakan aplikasi!
+            </p>
+          </div>
           <div className="px-52 flex flex-col space-y-4">
             <PrimaryButton
               label={"Kirim Verifikasi Email"}

@@ -5,7 +5,12 @@ import CookieKey from "./constants/cookie_key";
 
 const locales = ["id", "en"];
 const defaultLocale = "id";
-const PUBLIC_PATHS = ["/login", "/register", "/forgot-password"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/email-verification",
+];
 
 function getLocale(request: NextRequest) {
   const acceptLang = request.headers.get("Accept-Language");
@@ -48,10 +53,9 @@ export function middleware(request: NextRequest) {
     let redirectPath;
 
     if (isLoggedIn) {
-      redirectPath =
-        emailVerified === true
-          ? `/${locale}/dashboard`
-          : `/${locale}/email-verification`;
+      redirectPath = emailVerified
+        ? `/${locale}/dashboard`
+        : `/${locale}/email-verification`;
     } else {
       redirectPath = `/${locale}/login`;
     }
@@ -62,17 +66,22 @@ export function middleware(request: NextRequest) {
   // Check if the current path (without locale) is public
   const isPublicPath = PUBLIC_PATHS.some((path) => pathWithoutLocale === path);
 
-  // Redirect logic
+  // Restrict access based on email verification status
+  if (isLoggedIn && !emailVerified && !isPublicPath) {
+    // Redirect unverified users to the email verification page
+    return NextResponse.redirect(
+      new URL(`/${locale}/email-verification`, request.url)
+    );
+  }
+
+  // Redirect unauthenticated users trying to access protected routes
   if (!isLoggedIn && !isPublicPath) {
-    // Redirect to login if trying to access protected route while not logged in
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
-  } else if (isLoggedIn && isPublicPath) {
-    // Redirect to dashboard if trying to access public route while logged in
-    return emailVerified === true
-      ? NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
-      : NextResponse.redirect(
-          new URL(`/${locale}/email-verification`, request.url)
-        );
+  }
+
+  // Redirect verified users trying to access public paths to the dashboard
+  if (isLoggedIn && isPublicPath && emailVerified) {
+    return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 
   // Add locale to URL if it's missing
