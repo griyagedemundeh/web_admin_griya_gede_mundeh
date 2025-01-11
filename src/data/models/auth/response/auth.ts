@@ -6,6 +6,7 @@ type Auth = {
   phoneNumber: string;
   token: string;
   role: "superAdmin" | "admin";
+  emailVerified: 0 | 1;
 };
 
 export default Auth;

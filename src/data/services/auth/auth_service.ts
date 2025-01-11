@@ -40,6 +40,7 @@ export class AuthService implements IAuthService {
       this.setToken({
         access_token: response.data.data.token,
         admin_role: response.data.data.role,
+        emailVerified: response.data.data.emailVerified,
       });
       LocalStorage.set(StorageKey.ACCOUNT, response.data.data);
 
@@ -48,6 +49,38 @@ export class AuthService implements IAuthService {
       console.error("====================================");
       console.error("ERROR LOGIN --> ", error.response.data.message);
       console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async resendEmailVerification(): Promise<ApiResponse<null>> {
+    const uri = `auth/resend-verification`;
+    try {
+      const response: AxiosResponse<ApiResponse<null>> = await api.post(uri);
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<null>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error RESEND EMAIL VERIFICATION -->",
+        error.response.data.message
+      );
+      console.error("==================================");
+      throw error.response.data.message;
+    }
+  }
+
+  async cekStatusEmailVerification(): Promise<ApiResponse<null>> {
+    const uri = `auth/cek-status-email-verification`;
+    try {
+      const response: AxiosResponse<ApiResponse<null>> = await api.get(uri);
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<null>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error CEK EMAIL VERIFICATION -->",
+        error.response.data.message
+      );
+      console.error("==================================");
       throw error.response.data.message;
     }
   }
@@ -62,9 +95,10 @@ export class AuthService implements IAuthService {
   }
 
   private clearToken(): void {
-    setCookie("access_token", "");
+    setCookie(CookieKey.ACCESS_TOKEN, "");
 
-    setCookie("isLoggedin", false);
+    setCookie(CookieKey.IS_LOGGED_IN, false);
+    setCookie(CookieKey.EMAIL_VERIFIED, 0);
 
     LocalStorage.remove(StorageKey.ACCOUNT);
 
@@ -74,9 +108,11 @@ export class AuthService implements IAuthService {
   private setToken({
     access_token,
     admin_role,
+    emailVerified,
   }: {
     access_token: string;
     admin_role: string;
+    emailVerified: 0 | 1;
   }) {
     setCookie(CookieKey.ACCESS_TOKEN, access_token, {
       domain: appBaseUrl(),
@@ -87,6 +123,9 @@ export class AuthService implements IAuthService {
     });
 
     setCookie(CookieKey.ADMIN_ROLE, admin_role, {
+      domain: appBaseUrl(),
+    });
+    setCookie(CookieKey.EMAIL_VERIFIED, emailVerified, {
       domain: appBaseUrl(),
     });
   }

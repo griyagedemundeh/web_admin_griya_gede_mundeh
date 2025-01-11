@@ -6,4 +6,6 @@ export interface IAuthService {
   getAccount(): Auth;
   login(request: LoginRequest): Promise<ApiResponse<Auth>>;
   logout(): void;
+  resendEmailVerification(): Promise<ApiResponse<null>>;
+  cekStatusEmailVerification(): Promise<ApiResponse<null>>;
 }

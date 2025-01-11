@@ -199,6 +199,11 @@ export const useAdmin = (): IUseAdmin => {
         showToast({ status: "error", message: `${message}` });
       });
     }
+    if (isAllAdminError) {
+      (errorAllAdmin as any).forEach((message: any) => {
+        showToast({ status: "error", message: `${message}` });
+      });
+    }
   }, [isAllAdminLoading, isAllAdminError]);
 
   return {

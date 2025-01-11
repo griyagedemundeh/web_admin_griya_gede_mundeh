@@ -39,14 +39,24 @@ export function middleware(request: NextRequest) {
   const isLoggedIn =
     request.cookies.get(CookieKey.IS_LOGGED_IN)?.value === "true";
 
+  // Check if the user is email verified
+  const emailVerified =
+    request.cookies.get(CookieKey.EMAIL_VERIFIED)?.value === "1";
+
   // Handle root path
   if (pathname === "/") {
-    return NextResponse.redirect(
-      new URL(
-        isLoggedIn ? `/${locale}/dashboard` : `/${locale}/login`,
-        request.url
-      )
-    );
+    let redirectPath;
+
+    if (isLoggedIn) {
+      redirectPath =
+        emailVerified === true
+          ? `/${locale}/dashboard`
+          : `/${locale}/email-verification`;
+    } else {
+      redirectPath = `/${locale}/login`;
+    }
+
+    return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
   // Check if the current path (without locale) is public
@@ -58,7 +68,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   } else if (isLoggedIn && isPublicPath) {
     // Redirect to dashboard if trying to access public route while logged in
-    return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
+    return emailVerified === true
+      ? NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
+      : NextResponse.redirect(
+          new URL(`/${locale}/email-verification`, request.url)
+        );
   }
 
   // Add locale to URL if it's missing
