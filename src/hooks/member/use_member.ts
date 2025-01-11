@@ -13,6 +13,7 @@ import {
   addMember as addMemberBridge,
   deleteMember as deleteMemberBridge,
   editMember as editMemberBridge,
+  resendEmailVerification as resendEmailVerificationBridge,
   createMemberAddress as createMemberAddressBridge,
   useGetAllMemberQuery,
   useGetMemberAddressQuery,
@@ -75,6 +76,20 @@ interface IUseMember {
   isLoadingCreateMemberAddress: boolean;
   isCreateMemberAddressSuccess: boolean;
   isCreateMemberAddressError: boolean;
+
+  // Resend Email Verificattion
+  resendEmailVerification: UseMutateFunction<
+    ApiResponse<null>,
+    unknown,
+    {
+      id: number;
+      request: MemberRequest;
+    },
+    unknown
+  >;
+  isLoadingResendEmailVerification: boolean;
+  isResendEmailVerificationSuccess: boolean;
+  isResendEmailVerificationError: boolean;
 }
 
 export const useMember = ({
@@ -117,6 +132,32 @@ export const useMember = ({
       window.location.reload();
     },
     onError: async (error: AxiosError<ApiResponse<Member>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
+  // RESEND EMAIL VERIFICATION
+  const {
+    mutate: resendEmailVerification,
+    isLoading: isLoadingResendEmailVerification,
+    isSuccess: isResendEmailVerificationSuccess,
+    isError: isResendEmailVerificationError,
+  } = useMutation(resendEmailVerificationBridge, {
+    onSuccess: async (value) => {
+      value.message.forEach((message) => {
+        showToast({ status: "success", message: message });
+      });
+
+      setIsLoading(false);
+    },
+    onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
       setIsLoading(false);
       if (error instanceof Array) {
         error.forEach((message) => {
@@ -245,5 +286,11 @@ export const useMember = ({
     isDeleteMemberError,
     isDeleteMemberSuccess,
     isLoadingDeleteMember,
+
+    // resend email
+    resendEmailVerification,
+    isLoadingResendEmailVerification,
+    isResendEmailVerificationError,
+    isResendEmailVerificationSuccess,
   };
 };

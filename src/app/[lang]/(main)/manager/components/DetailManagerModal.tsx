@@ -3,12 +3,17 @@ import AdminRequest from "@/data/models/admin/request/admin_request";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
-import { PencilIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import {
+  PaperAirplaneIcon,
+  PencilIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/20/solid";
 import { useAdmin } from "@/hooks/admin/use_admin";
 import Modal from "@/components/modal/Modal";
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import { useCentralStore } from "@/store";
 import editAdminValidation from "../validation/edit_admin_validation";
+import { useAuth } from "@/hooks/auth/use_auth";
 
 interface DetailManagerModalProps {
   id: number | string;
@@ -17,7 +22,14 @@ interface DetailManagerModalProps {
 
 const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { editAdmin, isEditAdminSuccess, isEditAdminError } = useAdmin();
+  const {
+    editAdmin,
+    isEditAdminSuccess,
+    isEditAdminError,
+    resendEmailVerification,
+    isLoadingResendEmailVerification,
+  } = useAdmin();
+  const { account } = useAuth();
 
   const [openDetail, setOpenDetail] = useState(false);
 
@@ -25,6 +37,13 @@ const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
     setIsLoading(true);
     editAdmin({ id, request: adminRequest });
     setOpenDetail(false);
+  };
+
+  const handleResendEmailVerification = (adminRequest: AdminRequest) => {
+    resendEmailVerification({
+      id: adminRequest.userId as number,
+      request: adminRequest,
+    });
   };
 
   useEffect(() => {
@@ -60,7 +79,17 @@ const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
           suppressHydrationWarning={true}
         >
           {({ errors, handleChange, handleSubmit, values }) => (
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+
+                if (data.emailVerified) {
+                  handleSubmit();
+                } else {
+                  handleResendEmailVerification(values);
+                }
+              }}
+            >
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   {/* <PhotoProfileInput isNull={true} onclose={toggleModalUpload} /> */}
@@ -124,13 +153,23 @@ const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
                   )} */}
                 </div>
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
-                  <PrimaryWithIconButton
-                    label="Simpan"
-                    onClick={() => {
-                      handleSubmit();
-                    }}
-                    icon={PencilIcon}
-                  />
+                  {account?.role === "superAdmin" &&
+                    data.emailVerified === 1 && (
+                      <PrimaryWithIconButton
+                        label="Simpan"
+                        type="submit"
+                        icon={PencilIcon}
+                      />
+                    )}
+                  {account?.role === "superAdmin" &&
+                    data.emailVerified === 0 && (
+                      <PrimaryWithIconButton
+                        label="Kirim Ulang Verifikasi Email"
+                        type="submit"
+                        loading={isLoadingResendEmailVerification}
+                        icon={PaperAirplaneIcon}
+                      />
+                    )}
                 </div>
               </div>
             </Form>

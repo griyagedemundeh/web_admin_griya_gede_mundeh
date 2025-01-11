@@ -38,6 +38,7 @@ export default function UserPage({
     passwordConfirm: "",
     phoneNumber: "",
     address: "",
+    emailVerified: 0,
   });
 
   // Tolong ubah Dummy User ini pakai model Member
@@ -111,6 +112,7 @@ export default function UserPage({
                   passwordConfirm: "",
                   email: info.row.original.user.email,
                   address: info.row.original.memberAddress[0].address,
+                  emailVerified: info.row.original.user.emailVerified ?? 0,
                 }}
               />
               {account?.role !== "admin" ? (

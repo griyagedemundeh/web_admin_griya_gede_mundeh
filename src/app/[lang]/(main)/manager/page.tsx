@@ -47,6 +47,7 @@ export default function ManagerPage({
     password: "",
     passwordConfirm: "",
     phoneNumber: "",
+    userId: 0,
   });
 
   useEffect(() => {
@@ -116,11 +117,13 @@ export default function ManagerPage({
                 <DetailManagerModal
                   id={info.row.original.id}
                   data={{
+                    userId: info.row.original.user.id,
                     fullName: info.row.original.user.fullName,
                     phoneNumber: info.row.original.user.phoneNumber,
                     password: "",
                     passwordConfirm: "",
                     email: info.row.original.user.email,
+                    emailVerified: info.row.original.user.emailVerified,
                   }}
                 />
                 <DeleteManagerModal
@@ -144,32 +147,32 @@ export default function ManagerPage({
       <PrimaryTable
         title="Daftar Pengelola"
         mainActionTitle="Tambah Pengelola"
-        onFilterReset={() => {}}
-        filters={
-          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-            <DropdownFilter
-              label="Status"
-              selectedItem={selectedStatusItem}
-              setSelectedItem={setSelectedStatusItem}
-              icon={CheckCircleIcon}
-              items={status}
-            />
+        // onFilterReset={() => {}}
+        // filters={
+        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
+        //     <DropdownFilter
+        //       label="Status"
+        //       selectedItem={selectedStatusItem}
+        //       setSelectedItem={setSelectedStatusItem}
+        //       icon={CheckCircleIcon}
+        //       items={status}
+        //     />
 
-            <PrimaryInput
-              onChange={(e) => {}}
-              value={""}
-              placeholder="Cari Pengelola"
-              className="w-full"
-              trailing={
-                <IconButton
-                  icon={MagnifyingGlassIcon}
-                  onClick={() => {}}
-                  className="absolute top-1 right-1"
-                />
-              }
-            />
-          </div>
-        }
+        //     <PrimaryInput
+        //       onChange={(e) => {}}
+        //       value={""}
+        //       placeholder="Cari Pengelola"
+        //       className="w-full"
+        //       trailing={
+        //         <IconButton
+        //           icon={MagnifyingGlassIcon}
+        //           onClick={() => {}}
+        //           className="absolute top-1 right-1"
+        //         />
+        //       }
+        //     />
+        //   </div>
+        // }
         mainActionOnClick={() => {
           setOpen(true);
         }}

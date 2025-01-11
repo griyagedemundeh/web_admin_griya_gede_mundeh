@@ -5,6 +5,7 @@ import PrimaryWithIconButton from "@/components/button/PrimaryWithIconButton";
 import {
   CheckCircleIcon,
   MapPinIcon,
+  PaperAirplaneIcon,
   PencilIcon,
   PencilSquareIcon,
 } from "@heroicons/react/20/solid";
@@ -33,6 +34,8 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
     createMemberAddress,
     isCreateMemberAddressSuccess,
     isLoadingCreateMemberAddress,
+    resendEmailVerification,
+    isLoadingResendEmailVerification,
   } = useMember({});
 
   const { account } = useAuth();
@@ -58,6 +61,10 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
     memberAddressRequest: MemberAddressRequest
   ) => {
     createMemberAddress(memberAddressRequest);
+  };
+
+  const handleResendEmailVerification = (memberRequest: MemberRequest) => {
+    resendEmailVerification({ id: id as number, request: memberRequest });
   };
 
   useEffect(() => {
@@ -99,7 +106,16 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
           suppressHydrationWarning={true}
         >
           {({ errors, handleChange, handleSubmit, values }) => (
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (data.emailVerified) {
+                  handleSubmit();
+                } else {
+                  handleResendEmailVerification(data);
+                }
+              }}
+            >
               <div>
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                   {/* <PhotoProfileInput isNull={true} onclose={toggleModalUpload} /> */}
@@ -189,15 +205,23 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   )} */}
                 </div>
                 <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
-                  {account?.role === "superAdmin" && (
-                    <PrimaryWithIconButton
-                      label="Simpan"
-                      onClick={() => {
-                        handleSubmit();
-                      }}
-                      icon={PencilIcon}
-                    />
-                  )}
+                  {account?.role === "superAdmin" &&
+                    data.emailVerified === 1 && (
+                      <PrimaryWithIconButton
+                        label="Simpan"
+                        type="submit"
+                        icon={PencilIcon}
+                      />
+                    )}
+                  {account?.role === "superAdmin" &&
+                    data.emailVerified === 0 && (
+                      <PrimaryWithIconButton
+                        label="Kirim Ulang Verifikasi Email"
+                        type="submit"
+                        loading={isLoadingResendEmailVerification}
+                        icon={PaperAirplaneIcon}
+                      />
+                    )}
                 </div>
               </div>
             </Form>
@@ -226,8 +250,9 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
               setValues,
             }) => (
               <Form
-                onSubmit={() => {
-                  handleCreateMemberAddress(values);
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
                 }}
               >
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
@@ -260,10 +285,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     <PrimaryWithIconButton
                       label="Simpan"
                       loading={isLoadingCreateMemberAddress}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={CheckCircleIcon}
                     />
                   </div>

@@ -51,6 +51,27 @@ export const editAdmin = async ({
   return response;
 };
 
+export const resendEmailVerification = async ({
+  id,
+  request,
+}: {
+  id: number;
+  request: AdminRequest;
+}): Promise<ApiResponse<null>> => {
+  const response = await authService
+    .resendEmailVerification({ id, request })
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<null>> | unknown) => {
+      console.error("========================");
+      console.error(`${TAG_ERROR} RESEND EMAIL VERIFICATION `, error);
+      console.error("========================");
+      throw error;
+    });
+  return response;
+};
+
 export const deleteAdmin = async ({
   id,
 }: {

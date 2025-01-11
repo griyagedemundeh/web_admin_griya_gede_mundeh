@@ -18,4 +18,12 @@ export interface IAdminService {
   }): Promise<ApiResponse<User>>;
 
   getAllAdmin(request: ListDataRequest): Promise<ApiResponse<Admin[]>>;
+
+  resendEmailVerification({
+    id,
+    request,
+  }: {
+    id: number;
+    request: AdminRequest;
+  }): Promise<ApiResponse<null>>;
 }

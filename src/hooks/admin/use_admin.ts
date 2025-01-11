@@ -8,6 +8,7 @@ import {
   addAdmin as addAdminBridge,
   deleteAdmin as deleteAdminBridge,
   editAdmin as editAdminBridge,
+  resendEmailVerification as resendEmailVerificationBridge,
   useGetAllAdminQuery,
 } from "./admin_bridge";
 import { useCentralStore } from "@/store";
@@ -48,6 +49,20 @@ interface IUseAdmin {
   isLoadingDeleteAdmin: boolean;
   isDeleteAdminSuccess: boolean;
   isDeleteAdminError: boolean;
+
+  // Resend Email Verificattion
+  resendEmailVerification: UseMutateFunction<
+    ApiResponse<null>,
+    unknown,
+    {
+      id: number;
+      request: AdminRequest;
+    },
+    unknown
+  >;
+  isLoadingResendEmailVerification: boolean;
+  isResendEmailVerificationSuccess: boolean;
+  isResendEmailVerificationError: boolean;
 }
 
 export const useAdmin = (): IUseAdmin => {
@@ -104,6 +119,32 @@ export const useAdmin = (): IUseAdmin => {
       window.location.reload();
     },
     onError: async (error: AxiosError<ApiResponse<Admin>> | unknown) => {
+      setIsLoading(false);
+      if (error instanceof Array) {
+        error.forEach((message) => {
+          showToast({ status: "error", message: `${message}` });
+        });
+        return;
+      }
+      showToast({ status: "error", message: `${error}` });
+    },
+  });
+
+  // RESEND EMAIL VERIFICATION
+  const {
+    mutate: resendEmailVerification,
+    isLoading: isLoadingResendEmailVerification,
+    isSuccess: isResendEmailVerificationSuccess,
+    isError: isResendEmailVerificationError,
+  } = useMutation(resendEmailVerificationBridge, {
+    onSuccess: async (value) => {
+      value.message.forEach((message) => {
+        showToast({ status: "success", message: message });
+      });
+
+      setIsLoading(false);
+    },
+    onError: async (error: AxiosError<ApiResponse<null>> | unknown) => {
       setIsLoading(false);
       if (error instanceof Array) {
         error.forEach((message) => {
@@ -174,5 +215,10 @@ export const useAdmin = (): IUseAdmin => {
     isDeleteAdminError,
     isDeleteAdminSuccess,
     isLoadingDeleteAdmin,
+    // resend email
+    resendEmailVerification,
+    isLoadingResendEmailVerification,
+    isResendEmailVerificationError,
+    isResendEmailVerificationSuccess,
   };
 };

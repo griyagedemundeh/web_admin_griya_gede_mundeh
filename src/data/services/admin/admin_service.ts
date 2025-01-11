@@ -85,4 +85,29 @@ export class AdminService implements IAdminService {
       throw error.response.data.message;
     }
   }
+
+  async resendEmailVerification({
+    id,
+    request,
+  }: {
+    id: number;
+    request: AdminRequest;
+  }): Promise<ApiResponse<null>> {
+    const uri = `/super-admin/admin/resend-verification/${id}`;
+    try {
+      const response: AxiosResponse<ApiResponse<null>> = await api.post(
+        uri,
+        request
+      );
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<null>> | any) {
+      console.error("==================================");
+      console.error(
+        "Error RESEND EMAIL VERIFICATION -->",
+        error.response.data.message
+      );
+      console.error("==================================");
+      throw error.response.data.message;
+    }
+  }
 }

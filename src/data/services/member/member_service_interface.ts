@@ -30,4 +30,12 @@ export interface IMemberService {
   createMemberAddress(
     request: MemberAddressRequest
   ): Promise<ApiResponse<MemberAddress>>;
+
+  resendEmailVerification({
+    id,
+    request,
+  }: {
+    id: number;
+    request: MemberRequest;
+  }): Promise<ApiResponse<null>>;
 }

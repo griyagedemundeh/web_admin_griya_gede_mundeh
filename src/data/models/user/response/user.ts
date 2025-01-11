@@ -8,7 +8,8 @@ type User = {
   createdAt?: string;
   updatedAt?: string;
   role?: string | null;
-  address: string
+  address: string;
+  emailVerified?: 0 | 1;
 };
 
 export default User;
