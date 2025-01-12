@@ -103,7 +103,7 @@ export default function UserPage({
             <div className="flex flex-row space-x-2">
               <DetailMemberModal
                 // sesuaikan dengan id Member
-                id={info.row.original.id} // Ensure info.row.original has an id
+                id={info.row.original.userId} // Ensure info.row.original has an id
                 data={{
                   // Sesuaikan dengan Member
                   fullName: info.row.original.user.fullName,
