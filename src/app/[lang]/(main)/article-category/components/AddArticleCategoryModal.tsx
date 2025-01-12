@@ -27,6 +27,7 @@ const AddArticleCategoryModal = ({
     addArticleCategory,
     isAddArticleCategoryError,
     isAddArticleCategorySucces,
+    isLoadingAddArticleCategory,
   } = useArticleCategory();
 
   const handleAddArticleCategory = (
@@ -56,7 +57,12 @@ const AddArticleCategoryModal = ({
         suppressHydrationWarning={true}
       >
         {({ errors, handleChange, handleSubmit, values }) => (
-          <Form>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div>
               <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                 <PrimaryInput
@@ -72,6 +78,7 @@ const AddArticleCategoryModal = ({
                 <PrimaryWithIconButton
                   label="Simpan"
                   type="submit"
+                  loading={isLoadingAddArticleCategory}
                   icon={CheckCircleIcon}
                 />
               </div>

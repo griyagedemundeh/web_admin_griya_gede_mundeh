@@ -29,6 +29,7 @@ const AddCeremonyCategoryModal = ({
     addCeremonyCategory,
     isAddCeremonyCategoryError,
     isAddCeremonyCategorySuccess,
+    isLoadingAddCeremonyCategory,
   } = useCeremonyCategory();
 
   const handleAddCeremonyCategory = (
@@ -62,7 +63,12 @@ const AddCeremonyCategoryModal = ({
         suppressHydrationWarning={true}
       >
         {({ errors, handleChange, handleSubmit, values }) => (
-          <Form>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div>
               <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                 <PhotoProfileInput
@@ -90,9 +96,8 @@ const AddCeremonyCategoryModal = ({
               <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                 <PrimaryWithIconButton
                   label="Simpan"
-                  onClick={() => {
-                    handleSubmit();
-                  }}
+                  type="submit"
+                  loading={isLoadingAddCeremonyCategory}
                   icon={UserPlusIcon}
                 />
               </div>

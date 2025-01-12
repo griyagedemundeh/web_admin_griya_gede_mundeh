@@ -130,7 +130,6 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   />
                   <PrimaryInput
                     label="Email"
-                    isOptional={true}
                     value={values.email}
                     placeholder="Masukkan email member"
                     error={errors.email ?? undefined}

@@ -157,7 +157,8 @@ const CeremonyModalContent = ({
           >
             {({ errors, handleChange, values, setValues, handleSubmit }) => (
               <Form
-                onSubmit={() => {
+                onSubmit={(e) => {
+                  e.preventDefault();
                   handleCeremonySubmit(values);
                 }}
               >
@@ -199,9 +200,7 @@ const CeremonyModalContent = ({
                       label="Simpan Perubahan"
                       loading={loading}
                       className={progress > 50 ? "w-full" : ""}
-                      onClick={() => {
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={CheckIcon}
                     />
                     <PrimaryWithIconButton
@@ -219,9 +218,7 @@ const CeremonyModalContent = ({
                       label="Selanjutnya"
                       loading={loading}
                       className={progress > 50 ? "w-full" : ""}
-                      onClick={() => {
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={ChevronDoubleRightIcon}
                     />
                   </div>
@@ -241,7 +238,8 @@ const CeremonyModalContent = ({
           >
             {({ handleSubmit, setFieldValue, values }) => (
               <Form
-                onSubmit={() => {
+                onSubmit={(e) => {
+                  e.preventDefault();
                   handleCeremonyDocumentationSubmit(values);
                 }}
               >
@@ -267,9 +265,7 @@ const CeremonyModalContent = ({
                       label="Simpan Perubahan"
                       loading={loading}
                       className={progress > 50 ? "w-full" : ""}
-                      onClick={() => {
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={CheckIcon}
                     />
                     <PrimaryWithIconButton
@@ -287,9 +283,7 @@ const CeremonyModalContent = ({
                       label="Selanjutnya"
                       loading={loading}
                       className={progress > 50 ? "w-full" : ""}
-                      onClick={() => {
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={ChevronDoubleRightIcon}
                     />
                   </div>
@@ -307,7 +301,8 @@ const CeremonyModalContent = ({
           >
             {({ values, errors, handleSubmit, handleChange }) => (
               <Form
-                onSubmit={() => {
+                onSubmit={(e) => {
+                  e.preventDefault();
                   handleSubmit();
                 }}
               >
@@ -340,7 +335,8 @@ const CeremonyModalContent = ({
                                         name: "",
                                         description: "",
                                         price: 0,
-                                        ceremonyServiceId: ceremonyId as number,
+                                        ceremonyServiceId:
+                                          values.packages[0].ceremonyServiceId,
                                       });
                                     }
 
@@ -393,7 +389,8 @@ const CeremonyModalContent = ({
                                   name: "",
                                   description: "",
                                   price: 0,
-                                  ceremonyServiceId: ceremonyId as number,
+                                  ceremonyServiceId:
+                                    values.packages[0].ceremonyServiceId,
                                 });
                               }}
                               label="Klik disini untuk tambah jenis paket"
@@ -423,9 +420,7 @@ const CeremonyModalContent = ({
                       label="Simpan Perubahan"
                       loading={loading}
                       className={progress > 50 ? "w-full" : ""}
-                      onClick={() => {
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={CheckIcon}
                     />
                     <PrimaryWithIconButton
@@ -443,9 +438,7 @@ const CeremonyModalContent = ({
                       label="Selanjutnya"
                       className={progress > 50 ? "w-full" : ""}
                       loading={loading}
-                      onClick={() => {
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={ChevronDoubleRightIcon}
                     />
                   </div>

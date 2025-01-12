@@ -103,7 +103,6 @@ const DetailManagerModal = ({ data, id }: DetailManagerModalProps) => {
                   />
                   <PrimaryInput
                     label="Email"
-                    isOptional={true}
                     value={values.email}
                     placeholder="Masukkan email admin"
                     error={errors.email ?? undefined}

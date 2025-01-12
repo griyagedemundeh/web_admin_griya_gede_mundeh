@@ -44,7 +44,12 @@ const AddManagerModal = ({ open, setOpen, data }: AddManagerModalProps) => {
         suppressHydrationWarning={true}
       >
         {({ errors, handleChange, handleSubmit, values }) => (
-          <Form>
+          <Form
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div>
               <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
                 {/* <PhotoProfileInput isNull={true} onclose={toggleModalUpload} /> */}
@@ -58,7 +63,6 @@ const AddManagerModal = ({ open, setOpen, data }: AddManagerModalProps) => {
                 />
                 <PrimaryInput
                   label="Email"
-                  isOptional={true}
                   value={values.email}
                   placeholder="Masukkan email admin"
                   error={errors.email ?? undefined}
@@ -96,9 +100,7 @@ const AddManagerModal = ({ open, setOpen, data }: AddManagerModalProps) => {
               <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                 <PrimaryWithIconButton
                   label="Simpan"
-                  onClick={() => {
-                    handleSubmit();
-                  }}
+                  type="submit"
                   icon={UserPlusIcon}
                 />
               </div>

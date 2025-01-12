@@ -26,6 +26,7 @@ const DetailCeremonyCategoryModal = ({
     editCeremonyCategory,
     isEditCeremonyCategorySuccess,
     isEditCeremonyCategoryError,
+    isLoadingEditCeremonyCategory,
   } = useCeremonyCategory();
 
   const [openDetail, setOpenDetail] = useState(false);
@@ -110,6 +111,7 @@ const DetailCeremonyCategoryModal = ({
               <div className="flex flex-row justify-end w-full px-6 pb-4 space-x-4">
                 <PrimaryWithIconButton
                   label="Simpan"
+                  loading={isLoadingEditCeremonyCategory}
                   icon={PencilIcon}
                   type="submit"
                 />
