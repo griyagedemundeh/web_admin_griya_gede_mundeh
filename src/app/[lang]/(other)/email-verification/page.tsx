@@ -9,21 +9,32 @@ import Routes from "@/constants/routes";
 import { useAuth } from "@/hooks/auth/use_auth";
 import { setCookie } from "cookies-next";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 const EmailVerificationPage = () => {
   const {
     resendEmailVerification,
     isLoadingResendEmailVerification,
-    isResendEmailVerificationSuccess,
     refetchCekStatusEmailVerification,
     isCekStatusEmailVerificationSuccess,
-    isCekStatusEmailVerificationLoading,
   } = useAuth();
 
   const handleResendEmailVerification = () => {
     resendEmailVerification();
   };
+
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      refetchCekStatusEmailVerification();
+    }, 2000);
+
+    if (isCekStatusEmailVerificationSuccess) {
+      clearInterval(pollInterval);
+    }
+
+    return () => clearInterval(pollInterval);
+  }, []);
 
   useEffect(() => {
     if (isCekStatusEmailVerificationSuccess) {
@@ -35,6 +46,8 @@ const EmailVerificationPage = () => {
       }, 2000);
     }
   }, [isCekStatusEmailVerificationSuccess]);
+
+  const route = useRouter();
 
   return (
     <main className="h-screen w-screen flex flex-row p-16 justify-between space-x-6">
@@ -68,15 +81,12 @@ const EmailVerificationPage = () => {
                 handleResendEmailVerification();
               }}
             />
-            {isResendEmailVerificationSuccess && (
-              <SecondaryButton
-                label={"Cek Status Verifikasi"}
-                loading={isCekStatusEmailVerificationLoading}
-                onClick={() => {
-                  refetchCekStatusEmailVerification();
-                }}
-              />
-            )}
+            <SecondaryButton
+              label={"Kembali Ke Login"}
+              onClick={() => {
+                route.push(Routes.login);
+              }}
+            />
           </div>
         </div>
       </div>

@@ -1,5 +1,3 @@
-import Transaction from "@/data/models/transaction";
-import User from "@/data/models/user";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 
 export const status: DropdownFilterItemProps[] = [
@@ -84,31 +82,31 @@ export const categories: DropdownFilterItemProps[] = [
 //   },
 // ];
 
-export const users: User[] = [
-  {
-    name: "Mahesa Widiana",
-    email: "kt.mahesa@gmail.com",
-    phone: "085858603320",
-    status: true,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Bimo Adnyana",
-    email: "bimo@gmail.com",
-    phone: "0824237646883",
-    status: true,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Rafika Wardah",
-    email: "fika@gmail.com",
-    phone: "081231232445",
-    status: false,
-    avatarUrl: null,
-  },
-];
+// export const users: User[] = [
+//   {
+//     name: "Mahesa Widiana",
+//     email: "kt.mahesa@gmail.com",
+//     phone: "085858603320",
+//     status: true,
+//     avatarUrl:
+//       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+//   },
+//   {
+//     name: "Bimo Adnyana",
+//     email: "bimo@gmail.com",
+//     phone: "0824237646883",
+//     status: true,
+//     avatarUrl:
+//       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+//   },
+//   {
+//     name: "Rafika Wardah",
+//     email: "fika@gmail.com",
+//     phone: "081231232445",
+//     status: false,
+//     avatarUrl: null,
+//   },
+// ];
 
 // export const articles: Article[] = [
 //   {
@@ -163,93 +161,93 @@ export const users: User[] = [
 //   },
 // ];
 
-export const transactions: Transaction[] = [
-  {
-    id: "1",
-    ceremonyDate: new Date(),
-    paymentType: "BCA",
-    status: "Sukses",
-    title: "Upacara Mebayuh Bapak Kadek",
-    invoiceNumber: "INV-32131231230214124242",
-    totalPrice: 2500000,
-  },
-  {
-    id: "2",
-    ceremonyDate: new Date(),
-    paymentType: "BCA",
-    status: "Sukses",
-    title: "Upacara Mebayuh Bapak Kadek",
-    invoiceNumber: "INV-32131231230214124242",
-    totalPrice: 2500000,
-  },
-  {
-    id: "3",
-    ceremonyDate: new Date(),
-    paymentType: "BCA",
-    status: "Sukses",
-    title: "Upacara Mebayuh Bapak Kadek",
-    invoiceNumber: "INV-32131231230214124242",
-    totalPrice: 2500000,
-  },
-  {
-    id: "4",
-    ceremonyDate: new Date(),
-    paymentType: "BCA",
-    status: "Sukses",
-    title: "Upacara Mebayuh Bapak Kadek",
-    invoiceNumber: "INV-32131231230214124242",
-    totalPrice: 2500000,
-  },
-  {
-    id: "5",
-    ceremonyDate: new Date(),
-    paymentType: "BCA",
-    status: "Sukses",
-    title: "Upacara Mebayuh Bapak Kadek",
-    invoiceNumber: "INV-32131231230214124242",
-    totalPrice: 2500000,
-  },
-];
+// export const transactions: Transaction[] = [
+//   {
+//     id: "1",
+//     ceremonyDate: new Date(),
+//     paymentType: "BCA",
+//     status: "Sukses",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//     invoiceNumber: "INV-32131231230214124242",
+//     totalPrice: 2500000,
+//   },
+//   {
+//     id: "2",
+//     ceremonyDate: new Date(),
+//     paymentType: "BCA",
+//     status: "Sukses",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//     invoiceNumber: "INV-32131231230214124242",
+//     totalPrice: 2500000,
+//   },
+//   {
+//     id: "3",
+//     ceremonyDate: new Date(),
+//     paymentType: "BCA",
+//     status: "Sukses",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//     invoiceNumber: "INV-32131231230214124242",
+//     totalPrice: 2500000,
+//   },
+//   {
+//     id: "4",
+//     ceremonyDate: new Date(),
+//     paymentType: "BCA",
+//     status: "Sukses",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//     invoiceNumber: "INV-32131231230214124242",
+//     totalPrice: 2500000,
+//   },
+//   {
+//     id: "5",
+//     ceremonyDate: new Date(),
+//     paymentType: "BCA",
+//     status: "Sukses",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//     invoiceNumber: "INV-32131231230214124242",
+//     totalPrice: 2500000,
+//   },
+// ];
 
-export const ceremonySchedules: CeremonySchedule[] = [
-  {
-    id: "1",
-    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
-    category: "Dewa Yadnya",
-    countDown: new Date(),
-    status: "Persiapan",
-    title: "Upacara Mebayuh Bapak Kadek",
-  },
-  {
-    id: "2",
-    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
-    category: "Dewa Yadnya",
-    countDown: new Date(),
-    status: "Persiapan",
-    title: "Upacara Mebayuh Bapak Kadek",
-  },
-  {
-    id: "3",
-    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
-    category: "Dewa Yadnya",
-    countDown: new Date(),
-    status: "Persiapan",
-    title: "Upacara Mebayuh Bapak Kadek",
-  },
-  {
-    id: "4",
-    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
-    category: "Dewa Yadnya",
-    countDown: new Date(),
-    status: "Persiapan",
-    title: "Upacara Mebayuh Bapak Kadek",
-  },
-  {
-    id: "5",
-    address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
-    category: "Dewa Yadnya",
-    countDown: new Date(),
-    status: "Persiapan",
-    title: "Upacara Mebayuh Bapak Kadek",
-  },
-];
+// export const ceremonySchedules: CeremonySchedule[] = [
+//   {
+//     id: "1",
+//     address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+//     category: "Dewa Yadnya",
+//     countDown: new Date(),
+//     status: "Persiapan",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//   },
+//   {
+//     id: "2",
+//     address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+//     category: "Dewa Yadnya",
+//     countDown: new Date(),
+//     status: "Persiapan",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//   },
+//   {
+//     id: "3",
+//     address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+//     category: "Dewa Yadnya",
+//     countDown: new Date(),
+//     status: "Persiapan",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//   },
+//   {
+//     id: "4",
+//     address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+//     category: "Dewa Yadnya",
+//     countDown: new Date(),
+//     status: "Persiapan",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//   },
+//   {
+//     id: "5",
+//     address: "Gg.III, Semarapura Kangin, Kab. Klungkung",
+//     category: "Dewa Yadnya",
+//     countDown: new Date(),
+//     status: "Persiapan",
+//     title: "Upacara Mebayuh Bapak Kadek",
+//   },
+// ];

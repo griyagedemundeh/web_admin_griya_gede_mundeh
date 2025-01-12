@@ -110,14 +110,6 @@ export const useAuth = (): IUseAuth => {
     setAccount(authService.getAccount());
   }, []); // No dependencies
 
-  useEffect(() => {
-    if (isErrorCekStatusEmailVerification) {
-      (errorCekStatusEmailVerification as any).forEach((message: any) => {
-        showToast({ status: "error", message: `${message}` });
-      });
-    }
-  }, [isErrorCekStatusEmailVerification]);
-
   return {
     account,
     login,
