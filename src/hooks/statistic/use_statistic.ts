@@ -5,13 +5,21 @@ import { statusMessage } from "@/utils";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import StatisticRequest from "@/data/models/statistic/request/statistic_request";
 import TransactionStatistic from "@/data/models/statistic/response/transaction_statistic_response";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "react-query";
 
 interface IUseStatistic {
   // transaction
   filterTransaction: StatisticRequest;
   setFilterTransaction: Dispatch<SetStateAction<StatisticRequest>>;
-  transactionStatistic: ApiResponse<TransactionStatistic[]> | undefined;
+  transactionStatistic: ApiResponse<TransactionStatistic> | undefined;
   isLoadingGetTransactionStatistic: boolean;
+  refetchTransactionStatistic: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<TransactionStatistic>, unknown>>;
 }
 
 export const useStatistic = (): IUseStatistic => {
@@ -23,7 +31,7 @@ export const useStatistic = (): IUseStatistic => {
   const [filterTransaction, setFilterTransaction] = useState<StatisticRequest>({
     interval: "week",
     startDate: new Date(oneMonthPastDate),
-    endDate: todayDate,
+    endDate: new Date(),
   });
 
   const {
@@ -31,6 +39,7 @@ export const useStatistic = (): IUseStatistic => {
     isLoading: isLoadingGetTransactionStatistic,
     isError: isErrorGetTransactionStatistic,
     error: errorGetTransactionStatistic,
+    refetch: refetchTransactionStatistic,
   } = useGetTransactionStatisticQuery(filterTransaction);
 
   useEffect(() => {
@@ -47,5 +56,6 @@ export const useStatistic = (): IUseStatistic => {
     setFilterTransaction,
     transactionStatistic,
     isLoadingGetTransactionStatistic,
+    refetchTransactionStatistic,
   };
 };

@@ -202,7 +202,7 @@ const AdminProfileSettingContent = () => {
         <Form onSubmit={handleSubmit}>
           <div className="space-y-12 px-4 py-5 sm:p-6">
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3">
-              <div className="grid grid-cols-1">
+              {/* <div className="grid grid-cols-1">
                 <BigFileInput
                   label="Upload Photo Profile"
                   onChange={(e) => {
@@ -210,7 +210,7 @@ const AdminProfileSettingContent = () => {
                   }}
                   src={""}
                 />
-              </div>
+              </div> */}
 
               <div className="grid max-w-2xl gap-4 sm:grid-cols-6 md:col-span-2">
                 <PrimaryInput
@@ -299,8 +299,8 @@ export default function SettingPage({
     switch (activeTab) {
       case "profile-griya":
         return <ProfileSettingsContent />;
-      case "social-media-griya":
-        return <SocialMediaSettingContent />;
+      // case "social-media-griya":
+      //   return <SocialMediaSettingContent />;
       case "profile-admin":
         return <AdminProfileSettingContent />;
       default:

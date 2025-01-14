@@ -1,6 +1,6 @@
 import BasicNavigation from "@/interfaces/BasicNavigation";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import React from "react";
@@ -32,13 +32,13 @@ const Header = ({ navigations, onClose, t }: HeaderProps) => {
 
       <div className="flex flex-1 justify-end gap-x-4 self-stretch lg:gap-x-6">
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <button
+          {/* <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
           >
             <span className="sr-only">View notifications</span>
             <BellIcon aria-hidden="true" className="h-6 w-6" />
-          </button>
+          </button> */}
 
           {/* Separator */}
           <div

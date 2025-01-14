@@ -5,5 +5,5 @@ import TransactionStatistic from "@/data/models/statistic/response/transaction_s
 export interface IStatisticService {
   getTransactionStatistic(
     request: StatisticRequest
-  ): Promise<ApiResponse<TransactionStatistic[]>>;
+  ): Promise<ApiResponse<TransactionStatistic>>;
 }

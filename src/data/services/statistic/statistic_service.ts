@@ -9,12 +9,12 @@ export class StatisticService implements IStatisticService {
   private readonly uri = "admin/invoice/statistic";
   async getTransactionStatistic(
     request: StatisticRequest
-  ): Promise<ApiResponse<TransactionStatistic[]>> {
+  ): Promise<ApiResponse<TransactionStatistic>> {
     try {
-      const response: AxiosResponse<ApiResponse<TransactionStatistic[]>> =
+      const response: AxiosResponse<ApiResponse<TransactionStatistic>> =
         await api.get(this.uri, { params: request });
       return response.data;
-    } catch (error: AxiosError<ApiResponse<TransactionStatistic[]>> | any) {
+    } catch (error: AxiosError<ApiResponse<TransactionStatistic>> | any) {
       console.error("==================================");
       console.error(
         "Error GET ALL TransactionStatistic -->",

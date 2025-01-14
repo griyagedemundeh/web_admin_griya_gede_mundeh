@@ -18,12 +18,10 @@ import { useCentralStore } from "@/store";
 import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
-import { LineChart } from "@tremor/react";
+import { Card, LineChart } from "@tremor/react";
 import FilterInput from "@/components/input/FilterInput";
 import Datepicker from "react-tailwindcss-datepicker";
 import type { DateValueType } from "react-tailwindcss-datepicker";
-import PrimaryDatePicker from "@/components/input/PrimaryDatePicker";
-import PrimaryRangeDatePicker from "@/components/input/PrimaryRangeDatePicker";
 import { Interval } from "@/types";
 import { useStatistic } from "@/hooks/statistic/use_statistic";
 
@@ -72,7 +70,21 @@ export default function Dashboard({
     endDate: new Date(),
   });
 
-  const { transactionStatistic } = useStatistic();
+  const {
+    transactionStatistic,
+    setFilterTransaction,
+    refetchTransactionStatistic,
+  } = useStatistic();
+
+  useEffect(() => {
+    setFilterTransaction({
+      interval: orderStatFilter as any,
+      startDate: orderStatDate?.startDate!,
+      endDate: orderStatDate?.endDate!,
+    });
+
+    refetchTransactionStatistic();
+  }, [orderStatFilter, orderStatDate]);
 
   useEffect(() => {
     setIsLoading(isAllCeremonyHistoryOnProgressLoading);
@@ -117,7 +129,7 @@ export default function Dashboard({
       </div>
 
       <div className="mt-8">
-        <div>
+        <Card>
           <div className="w-full grid grid-cols-2 gap-3">
             <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong col-span-1 mr-auto my-auto whitespace-nowrap">
               Transaksi
@@ -141,9 +153,12 @@ export default function Dashboard({
                 displayFormat={"YYYY-MM-DD"}
                 placeholder={"Filter by date"}
                 value={orderStatDate}
-                maxDate={todayDate}
+                maxDate={new Date()}
                 separator="-"
                 onChange={(newValue: DateValueType) => {
+                  console.log("====================================");
+                  console.log("new value ===> ", newValue);
+                  console.log("====================================");
                   setOrderStatDate(newValue);
                 }}
                 inputClassName="relative w-full rounded-md border border-secondary text-black text-sm bg-white px-2 py-1"
@@ -153,13 +168,13 @@ export default function Dashboard({
           <div className="flex justify-between items-center gap-x-4">
             <LineChart
               className="w-8/12 mt-6"
-              data={[]}
+              data={transactionStatistic?.data.statistics ?? []}
               categories={[
                 "total_success_orders",
                 "total_pending_orders",
                 "total_cancel_orders",
               ]}
-              colors={["green", "yellow", "orange", "red"]}
+              colors={["emerald", "yellow", "rose"]}
               index="interval"
               curveType="natural"
               noDataText={"Tidak ada data"}
@@ -170,15 +185,15 @@ export default function Dashboard({
                   <p className="text-primary text-base">Total Transaksi</p>
                   <p
                     className="text-center truncate text-4xl font-bold text-primary"
-                    title={`${20}`}
+                    title={`${transactionStatistic?.data.total ?? 0}`}
                   >
-                    {20}
+                    {`${transactionStatistic?.data.total ?? 0}`}
                   </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       <Modal

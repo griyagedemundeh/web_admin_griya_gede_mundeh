@@ -10,24 +10,22 @@ const TAG_ERROR = "Error during :";
 
 export const getTransactionStatistic = async (
   request: StatisticRequest
-): Promise<ApiResponse<TransactionStatistic[]>> => {
+): Promise<ApiResponse<TransactionStatistic>> => {
   const response = await statisticService
     .getTransactionStatistic(request)
     .then(async (value) => {
       return value;
     })
-    .catch(
-      (error: AxiosError<ApiResponse<TransactionStatistic[]>> | unknown) => {
-        console.error("========================");
-        console.error(`${TAG_ERROR} GET ALL TransactionStatistic `, error);
-        console.error("========================");
-        throw error;
-      }
-    );
+    .catch((error: AxiosError<ApiResponse<TransactionStatistic>> | unknown) => {
+      console.error("========================");
+      console.error(`${TAG_ERROR} GET ALL TransactionStatistic `, error);
+      console.error("========================");
+      throw error;
+    });
   return response;
 };
 
 export const useGetTransactionStatisticQuery = (
   request: StatisticRequest
-): UseQueryResult<ApiResponse<TransactionStatistic[]>, unknown> =>
+): UseQueryResult<ApiResponse<TransactionStatistic>, unknown> =>
   useQuery("transactionStatistic", () => getTransactionStatistic(request));
