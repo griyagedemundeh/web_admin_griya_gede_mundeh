@@ -10,11 +10,15 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
+import { intervals } from "@/types";
+import { DateValueType } from "react-tailwindcss-datepicker";
 
 interface IUseStatistic {
   // transaction
-  filterTransaction: StatisticRequest;
-  setFilterTransaction: Dispatch<SetStateAction<StatisticRequest>>;
+  orderStatFilter: string;
+  setOrderStatFilter: Dispatch<SetStateAction<string>>;
+  orderStatDate: DateValueType;
+  setOrderStatDate: Dispatch<SetStateAction<DateValueType>>;
   transactionStatistic: ApiResponse<TransactionStatistic> | undefined;
   isLoadingGetTransactionStatistic: boolean;
   refetchTransactionStatistic: <TPageData>(
@@ -25,11 +29,11 @@ interface IUseStatistic {
 export const useStatistic = (): IUseStatistic => {
   const { setIsLoading } = useCentralStore();
 
+  const [orderStatFilter, setOrderStatFilter] = useState(intervals[1].value);
   const todayDate = new Date();
   const oneMonthPastDate = todayDate.setMonth(todayDate.getMonth() - 1);
 
-  const [filterTransaction, setFilterTransaction] = useState<StatisticRequest>({
-    interval: "week",
+  const [orderStatDate, setOrderStatDate] = useState<DateValueType>({
     startDate: new Date(oneMonthPastDate),
     endDate: new Date(),
   });
@@ -40,7 +44,11 @@ export const useStatistic = (): IUseStatistic => {
     isError: isErrorGetTransactionStatistic,
     error: errorGetTransactionStatistic,
     refetch: refetchTransactionStatistic,
-  } = useGetTransactionStatisticQuery(filterTransaction);
+  } = useGetTransactionStatisticQuery({
+    interval: orderStatFilter as any,
+    startDate: orderStatDate?.startDate!,
+    endDate: orderStatDate?.endDate!,
+  });
 
   useEffect(() => {
     setIsLoading(isLoadingGetTransactionStatistic);
@@ -52,8 +60,10 @@ export const useStatistic = (): IUseStatistic => {
 
   return {
     // transaction
-    filterTransaction,
-    setFilterTransaction,
+    orderStatDate,
+    orderStatFilter,
+    setOrderStatDate,
+    setOrderStatFilter,
     transactionStatistic,
     isLoadingGetTransactionStatistic,
     refetchTransactionStatistic,

@@ -79,7 +79,7 @@ const FilterInput = ({ props }: { props: IFilterInputProps }): ReactElement => {
                             selected ? "font-medium" : "font-normal"
                           }`}
                         >
-                          {option.name.replaceAll("_", " ")}
+                          {option.value.replaceAll("_", " ")}
                         </span>
                         {selected ? (
                           <span

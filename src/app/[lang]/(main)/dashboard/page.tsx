@@ -22,8 +22,9 @@ import { Card, LineChart } from "@tremor/react";
 import FilterInput from "@/components/input/FilterInput";
 import Datepicker from "react-tailwindcss-datepicker";
 import type { DateValueType } from "react-tailwindcss-datepicker";
-import { Interval } from "@/types";
+
 import { useStatistic } from "@/hooks/statistic/use_statistic";
+import { intervals } from "@/types";
 
 export default function Dashboard({
   params: { lang },
@@ -55,40 +56,29 @@ export default function Dashboard({
     updateStatusCeremonyHistory(request);
   };
 
-  const intervals = [
-    { name: "Bulan", value: "month" } as Interval,
-    { name: "Minggu", value: "week" } as Interval,
-    { name: "Hari", value: "day" } as Interval,
-  ];
-
-  const [orderStatFilter, setOrderStatFilter] = useState(intervals[1].value);
-  const todayDate = new Date();
-  const oneMonthPastDate = todayDate.setMonth(todayDate.getMonth() - 1);
-
-  const [orderStatDate, setOrderStatDate] = useState<DateValueType>({
-    startDate: new Date(oneMonthPastDate),
-    endDate: new Date(),
-  });
-
   const {
     transactionStatistic,
-    setFilterTransaction,
+    orderStatDate,
+    orderStatFilter,
+    setOrderStatFilter,
+    setOrderStatDate,
+    isLoadingGetTransactionStatistic,
     refetchTransactionStatistic,
   } = useStatistic();
 
   useEffect(() => {
-    setFilterTransaction({
-      interval: orderStatFilter as any,
-      startDate: orderStatDate?.startDate!,
-      endDate: orderStatDate?.endDate!,
-    });
-
     refetchTransactionStatistic();
   }, [orderStatFilter, orderStatDate]);
 
   useEffect(() => {
-    setIsLoading(isAllCeremonyHistoryOnProgressLoading);
-  }, [isAllCeremonyHistoryOnProgressLoading, setIsLoading]);
+    setIsLoading(
+      isAllCeremonyHistoryOnProgressLoading || isLoadingGetTransactionStatistic
+    );
+  }, [
+    isAllCeremonyHistoryOnProgressLoading,
+    setIsLoading,
+    isLoadingGetTransactionStatistic,
+  ]);
 
   return (
     <div>
@@ -159,7 +149,10 @@ export default function Dashboard({
                   console.log("====================================");
                   console.log("new value ===> ", newValue);
                   console.log("====================================");
-                  setOrderStatDate(newValue);
+                  setOrderStatDate({
+                    startDate: newValue?.startDate!,
+                    endDate: newValue?.endDate!,
+                  });
                 }}
                 inputClassName="relative w-full rounded-md border border-secondary text-black text-sm bg-white px-2 py-1"
               />
