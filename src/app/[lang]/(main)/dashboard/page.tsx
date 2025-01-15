@@ -18,8 +18,13 @@ import { useCentralStore } from "@/store";
 import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
 import AlertDangerModal from "@/components/modal/AlertDangerModal";
 import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
+import { Card, LineChart } from "@tremor/react";
+import FilterInput from "@/components/input/FilterInput";
+import Datepicker from "react-tailwindcss-datepicker";
+import type { DateValueType } from "react-tailwindcss-datepicker";
 
-const data = [{}, {}, {}, {}, {}, {}];
+import { useStatistic } from "@/hooks/statistic/use_statistic";
+import { intervals } from "@/types";
 
 export default function Dashboard({
   params: { lang },
@@ -51,9 +56,29 @@ export default function Dashboard({
     updateStatusCeremonyHistory(request);
   };
 
+  const {
+    transactionStatistic,
+    orderStatDate,
+    orderStatFilter,
+    setOrderStatFilter,
+    setOrderStatDate,
+    isLoadingGetTransactionStatistic,
+    refetchTransactionStatistic,
+  } = useStatistic();
+
   useEffect(() => {
-    setIsLoading(isAllCeremonyHistoryOnProgressLoading);
-  }, [isAllCeremonyHistoryOnProgressLoading, setIsLoading]);
+    refetchTransactionStatistic();
+  }, [orderStatFilter, orderStatDate]);
+
+  useEffect(() => {
+    setIsLoading(
+      isAllCeremonyHistoryOnProgressLoading || isLoadingGetTransactionStatistic
+    );
+  }, [
+    isAllCeremonyHistoryOnProgressLoading,
+    setIsLoading,
+    isLoadingGetTransactionStatistic,
+  ]);
 
   return (
     <div>
@@ -93,9 +118,76 @@ export default function Dashboard({
         )}
       </div>
 
-      {/* <div className="mt-8">
-        <TransactionChart />
-      </div> */}
+      <div className="mt-8">
+        <Card>
+          <div className="w-full grid grid-cols-2 gap-3">
+            <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong col-span-1 mr-auto my-auto whitespace-nowrap">
+              Transaksi
+            </h3>
+            <div className="ml-auto w-2/4 flex flex-col gap-y-3">
+              <FilterInput
+                props={{
+                  value: orderStatFilter,
+                  query: "",
+                  label: "Interval",
+                  setValue: setOrderStatFilter,
+                  setQuery: () => {},
+                  filter: intervals,
+                  setPage: () => {},
+                }}
+              />
+
+              <Datepicker
+                popoverDirection="down"
+                primaryColor={"amber"}
+                displayFormat={"YYYY-MM-DD"}
+                placeholder={"Filter by date"}
+                value={orderStatDate}
+                maxDate={new Date()}
+                separator="-"
+                onChange={(newValue: DateValueType) => {
+                  console.log("====================================");
+                  console.log("new value ===> ", newValue);
+                  console.log("====================================");
+                  setOrderStatDate({
+                    startDate: newValue?.startDate!,
+                    endDate: newValue?.endDate!,
+                  });
+                }}
+                inputClassName="relative w-full rounded-md border border-secondary text-black text-sm bg-white px-2 py-1"
+              />
+            </div>
+          </div>
+          <div className="flex justify-between items-center gap-x-4">
+            <LineChart
+              className="w-8/12 mt-6"
+              data={transactionStatistic?.data.statistics ?? []}
+              categories={[
+                "total_success_orders",
+                "total_pending_orders",
+                "total_cancel_orders",
+              ]}
+              colors={["emerald", "yellow", "rose"]}
+              index="interval"
+              curveType="natural"
+              noDataText={"Tidak ada data"}
+            />
+            <div className="h-52 flex rounded-full overflow-hidden aspect-square border-[10px] border-primary1 mx-auto">
+              <div className="m-auto">
+                <div className="flex flex-col gap-y-1">
+                  <p className="text-primary text-base">Total Transaksi</p>
+                  <p
+                    className="text-center truncate text-4xl font-bold text-primary"
+                    title={`${transactionStatistic?.data.total ?? 0}`}
+                  >
+                    {`${transactionStatistic?.data.total ?? 0}`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
 
       <Modal
         title={ceremonyHistory?.title ?? "-"}

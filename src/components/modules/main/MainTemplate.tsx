@@ -107,7 +107,7 @@ const MainTemplate = ({ t, children }: MainTemplateProps) => {
       {/* Static sidebar for desktop */}
       <SideBar navigationAdmin={teams} navigations={navigation} t={t} />
 
-      <div className="lg:pl-72 bg-gray-50 h-screen">
+      <div className="lg:pl-72">
         <Header navigations={userNavigation} onClose={setSidebarOpen} t={t} />
 
         <main className="py-10">

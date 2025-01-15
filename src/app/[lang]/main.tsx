@@ -27,7 +27,7 @@ const Main = ({
           isLoading ? "overflow-hidden" : ""
         }`}
       >
-        <body className={params.className}>
+        <body className={params.className + " bg-gray-50"}>
           <div className="relative">
             {children}
             {isLoading && (

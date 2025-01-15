@@ -39,7 +39,7 @@ const CeremonyCard = ({ ceremonyHistory }: ICeremonyCardProps) => {
   switch (ceremonyHistory.status) {
     case "onProgress":
       statusColor = "primary1"; // Text color
-      bgColor = "yellow-300"; // Background color
+      bgColor = "yellow-100"; // Background color
       borderColor = "primary1"; // Border color
       dotColor = "primary1"; // Dot color
       break;
