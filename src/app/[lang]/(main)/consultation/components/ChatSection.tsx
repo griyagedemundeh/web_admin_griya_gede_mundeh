@@ -147,6 +147,11 @@ function ChatSection({ consultation }: IChatSectionProps) {
       consultationId: consultation?.consultationId,
     });
 
+    await supabase
+      .from(StorageKey.CEREMONY_CONSULTATION_INDICATOR)
+      .update({ isNew: false })
+      .eq("id", 1);
+
     setMessageRequest(initialMessageRequest);
     getChats();
   }, [

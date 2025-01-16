@@ -66,6 +66,11 @@ function GeneralChatSection({ consultation }: IGeneralChatSectionProps) {
     });
 
     await supabase
+      .from(StorageKey.GENERAL_CONSULTATION_INDICATOR)
+      .update({ isNew: false })
+      .eq("id", 1);
+
+    await supabase
       .from(StorageKey.GENERAL_CONSULTATION)
       .update({
         ...consultation,

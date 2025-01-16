@@ -103,7 +103,7 @@ export default function ConsultationPage({
     const pollInterval = setInterval(() => {
       fetchConsultations();
       fetchGeneralConsultations();
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(pollInterval);
   }, [

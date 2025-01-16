@@ -1,16 +1,13 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import Consultation from "@/data/models/consultation/response/consultation";
-import { useState } from "react";
 import CeremonyConsultation from "./CeremonyConsultation";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import IconButton from "@/components/button/IconButton";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import GeneralConsultationSection from "./GeneralConsultation";
 import GeneralConsultation from "@/data/models/consultation/response/general_consultation";
-
-const tabOptions = [
-  { name: "Upacara Agama", value: "ceremony-consultation" },
-  { name: "Umum", value: "general-consultation" },
-];
+import StorageKey from "@/constants/storage_key";
+import { supabase } from "@/utils/supabase";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -27,8 +24,6 @@ function SidebarConsultation({
   consultations: Consultation[] | undefined;
   selectedConsultation: Consultation | undefined;
   setSelectedConsultation: (value: Consultation | undefined) => void;
-
-  // GENERAL
   generalConsultations: GeneralConsultation[] | undefined;
   selectedGeneralConsultation: GeneralConsultation | undefined;
   setSelectedGeneralConsultation: (
@@ -36,6 +31,66 @@ function SidebarConsultation({
   ) => void;
 }) {
   const [activeTab, setActiveTab] = useState("ceremony-consultation");
+  const [isFetchingIndicator, setIsFetchingIndicator] =
+    useState<boolean>(false);
+  const [tabOptions, setTabOptions] = useState([
+    { name: "Upacara Agama", value: "ceremony-consultation", isNew: false },
+    { name: "Umum", value: "general-consultation", isNew: false },
+  ]);
+
+  const isMounted = useRef(true);
+
+  const fetchIndicator = useCallback(async () => {
+    if (isFetchingIndicator) return;
+    setIsFetchingIndicator(true);
+
+    try {
+      const [ceremonyResponse, generalResponse] = await Promise.all([
+        supabase
+          .from(StorageKey.CEREMONY_CONSULTATION_INDICATOR)
+          .select()
+          .eq("id", 1)
+          .single(),
+        supabase
+          .from(StorageKey.GENERAL_CONSULTATION_INDICATOR)
+          .select()
+          .eq("id", 1)
+          .single(),
+      ]);
+
+      if (isMounted.current) {
+        setTabOptions([
+          {
+            name: "Upacara Agama",
+            value: "ceremony-consultation",
+            isNew: ceremonyResponse.data?.isNew ?? false,
+          },
+          {
+            name: "Umum",
+            value: "general-consultation",
+            isNew: generalResponse.data?.isNew ?? false,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching indicators:", error);
+    } finally {
+      setIsFetchingIndicator(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchIndicator();
+    return () => {
+      isMounted.current = false;
+    };
+  }, [fetchIndicator]);
+
+  useEffect(() => {
+    const pollInterval = setInterval(fetchIndicator, 3000);
+    return () => clearInterval(pollInterval);
+  }, [fetchIndicator]);
+
   const renderContent = () => {
     switch (activeTab) {
       case "ceremony-consultation":
@@ -54,9 +109,17 @@ function SidebarConsultation({
             setSelectedGeneralConsultation={setSelectedGeneralConsultation}
           />
         );
-
       default:
-        return <div></div>;
+        return null;
+    }
+  };
+
+  const handleTabClick = (tabValue: string) => {
+    setActiveTab(tabValue);
+    if (tabValue === "general-consultation") {
+      setSelectedConsultation(undefined);
+    } else if (tabValue === "ceremony-consultation") {
+      setSelectedGeneralConsultation(undefined);
     }
   };
 
@@ -65,7 +128,7 @@ function SidebarConsultation({
       <div className="p-[1.12rem]">
         <PrimaryInput
           onChange={(e) => {}}
-          value={""}
+          value=""
           placeholder="Cari chat"
           className=""
           trailing={
@@ -84,26 +147,19 @@ function SidebarConsultation({
               {tabOptions.map((tab) => (
                 <a
                   key={tab.value}
-                  onClick={() => {
-                    setActiveTab(tab.value);
-
-                    if (tab.value === "general-consultation") {
-                      setSelectedConsultation(undefined);
-                    }
-
-                    if (tab.value === "ceremony-consultation") {
-                      setSelectedGeneralConsultation(undefined);
-                    }
-                  }}
+                  onClick={() => handleTabClick(tab.value)}
                   aria-current={activeTab === tab.value ? "page" : undefined}
                   className={classNames(
                     activeTab === tab.value
                       ? "border-primary1 text-primary1"
                       : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-                    "whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium cursor-pointer w-full text-center"
+                    "whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium cursor-pointer w-full text-center relative"
                   )}
                 >
-                  {tab.name}
+                  <p>{tab.name}</p>
+                  {tab.isNew && (
+                    <div className="absolute top-0 right-0 h-2 w-2 bg-rose-500 rounded-full"></div>
+                  )}
                 </a>
               ))}
             </nav>
