@@ -95,11 +95,14 @@ export class AuthService implements IAuthService {
   }
 
   private clearToken(): void {
-    setCookie(CookieKey.ACCESS_TOKEN, "");
+    const cookieOptions = {
+      domain: appBaseUrl(),
+      expires: new Date(0), // Set expiration date in the past to clear
+    };
 
-    setCookie(CookieKey.IS_LOGGED_IN, false);
-    setCookie(CookieKey.EMAIL_VERIFIED, 0);
-
+    setCookie(CookieKey.ACCESS_TOKEN, "", cookieOptions);
+    setCookie(CookieKey.IS_LOGGED_IN, "", cookieOptions);
+    setCookie(CookieKey.EMAIL_VERIFIED, "", cookieOptions);
     LocalStorage.remove(StorageKey.ACCOUNT);
 
     window.location.reload();
