@@ -17,10 +17,10 @@ export default function SettingTabs({
   const { account } = useAuth();
 
   const tabOptions = [
-    {
-      name: "Profile Griya",
-      value: "profile-griya",
-    },
+    // {
+    //   name: "Profile Griya",
+    //   value: "profile-griya",
+    // },
     // { name: "Social Media Griya", value: "social-media-griya" },
     { name: "Profile Admin", value: "profile-admin" },
   ];

@@ -294,17 +294,19 @@ export default function SettingPage({
   params: { lang: Locale };
 }) {
   const t = getDictionary(lang);
-  const [activeTab, setActiveTab] = useState("profile-griya");
+  // const [activeTab, setActiveTab] = useState("profile-griya");
+  const [activeTab, setActiveTab] = useState("profile-admin");
   const renderContent = () => {
     switch (activeTab) {
-      case "profile-griya":
-        return <ProfileSettingsContent />;
+      // case "profile-griya":
+      //   return <ProfileSettingsContent />;
       // case "social-media-griya":
       //   return <SocialMediaSettingContent />;
       case "profile-admin":
         return <AdminProfileSettingContent />;
       default:
-        return <ProfileSettingsContent />;
+        // return <ProfileSettingsContent />;
+        return <AdminProfileSettingContent />;
     }
   };
   return (
