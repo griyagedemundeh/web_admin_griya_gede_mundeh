@@ -10,6 +10,7 @@ import {
   editAdmin as editAdminBridge,
   resendEmailVerification as resendEmailVerificationBridge,
   useGetAllAdminQuery,
+  useAllAdminFromAdminQuery,
 } from "./admin_bridge";
 import { useCentralStore } from "@/store";
 import { useEffect } from "react";
@@ -63,6 +64,11 @@ interface IUseAdmin {
   isLoadingResendEmailVerification: boolean;
   isResendEmailVerificationSuccess: boolean;
   isResendEmailVerificationError: boolean;
+
+  // Admin From Admin
+  allAdminFromAdmin: ApiResponse<Admin[]> | undefined;
+  isAllAdminFromAdminLoading: boolean;
+  isAllAdminFromAdminError: boolean;
 }
 
 export const useAdmin = (): IUseAdmin => {
@@ -75,6 +81,14 @@ export const useAdmin = (): IUseAdmin => {
     error: errorAllAdmin,
     refetch: refecthAllAdmin,
   } = useGetAllAdminQuery({ limit: 100, page: 1 });
+
+  const {
+    data: allAdminFromAdmin,
+    isLoading: isAllAdminFromAdminLoading,
+    isError: isAllAdminFromAdminError,
+    error: errorAllAdminFromAdmin,
+    refetch: refecthAllAdminFromAdmin,
+  } = useAllAdminFromAdminQuery({ limit: 100, page: 1 });
 
   // ADD
   const {
@@ -199,12 +213,12 @@ export const useAdmin = (): IUseAdmin => {
         showToast({ status: "error", message: `${message}` });
       });
     }
-    if (isAllAdminError) {
-      (errorAllAdmin as any).forEach((message: any) => {
+    if (isAllAdminFromAdminError) {
+      (errorAllAdminFromAdmin as any).forEach((message: any) => {
         showToast({ status: "error", message: `${message}` });
       });
     }
-  }, [isAllAdminLoading, isAllAdminError]);
+  }, [isAllAdminLoading, isAllAdminError, isAllAdminFromAdminError]);
 
   return {
     addAdmin,
@@ -225,5 +239,10 @@ export const useAdmin = (): IUseAdmin => {
     isLoadingResendEmailVerification,
     isResendEmailVerificationError,
     isResendEmailVerificationSuccess,
+
+    // Admin From Admin
+    allAdminFromAdmin,
+    isAllAdminFromAdminError,
+    isAllAdminFromAdminLoading,
   };
 };

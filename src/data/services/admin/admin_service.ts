@@ -86,6 +86,25 @@ export class AdminService implements IAdminService {
     }
   }
 
+  async getAllAdminFromAdmin(
+    request: ListDataRequest
+  ): Promise<ApiResponse<Admin[]>> {
+    const uri = "admin/invoice/get-admin-list";
+
+    try {
+      const response: AxiosResponse<ApiResponse<Admin[]>> = await api.get(uri, {
+        params: request,
+      });
+
+      return response.data;
+    } catch (error: AxiosError<ApiResponse<Admin[]>> | any) {
+      console.error("====================================");
+      console.error("ERROR ADD ADMIN --> ", error.response.data.message);
+      console.error("====================================");
+      throw error.response.data.message;
+    }
+  }
+
   async resendEmailVerification({
     id,
     request,

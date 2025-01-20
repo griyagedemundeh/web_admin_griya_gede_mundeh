@@ -115,3 +115,26 @@ export const useGetAllAdminQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<Admin[]>, unknown> =>
   useQuery("allAdmin", () => getAllAdmin(request));
+
+export const getAllAdminFromAdmin = async (
+  request: ListDataRequest
+): Promise<ApiResponse<Admin[]>> => {
+  const response = await authService
+    .getAllAdminFromAdmin(request)
+    .then(async (value) => {
+      return value;
+    })
+    .catch((error: AxiosError<ApiResponse<Admin[]>> | unknown) => {
+      console.error("====================================");
+      console.error(`${TAG_ERROR} GET ALL ADMIN `, error);
+      console.error("====================================");
+      throw error;
+    });
+
+  return response;
+};
+
+export const useAllAdminFromAdminQuery = (
+  request: ListDataRequest
+): UseQueryResult<ApiResponse<Admin[]>, unknown> =>
+  useQuery("allAdminFromAdmin", () => getAllAdminFromAdmin(request));

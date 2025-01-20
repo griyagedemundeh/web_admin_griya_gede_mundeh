@@ -43,7 +43,7 @@ const TransactionModal = ({
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openAddAddress, setOpenAddAddress] = useState<boolean>(false);
 
-  const { allAdmin } = useAdmin();
+  const { allAdminFromAdmin } = useAdmin();
 
   const {
     createInvoice,
@@ -130,9 +130,9 @@ const TransactionModal = ({
         }))
       );
     }
-    if (allAdmin?.data) {
+    if (allAdminFromAdmin?.data) {
       setAdmins(
-        allAdmin.data.map((admin) => ({
+        allAdminFromAdmin.data.map((admin) => ({
           id: admin?.id,
           title: `${admin?.user?.fullName} - ${admin?.user?.phoneNumber}`,
         }))
@@ -159,7 +159,7 @@ const TransactionModal = ({
     }
   }, [
     allCeremony?.data,
-    allAdmin?.data,
+    allAdminFromAdmin?.data,
     allCeremonyPackageByCeremonyServiceId?.data,
     allMember?.data,
     selectedCeremony,
