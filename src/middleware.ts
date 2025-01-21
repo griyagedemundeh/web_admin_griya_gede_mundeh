@@ -28,6 +28,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (pathname.startsWith("/favicon")) {
+    return NextResponse.next();
+  }
+
   // Extract the locale from the pathname if it exists
   const pathnameLocale = locales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
