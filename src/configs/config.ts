@@ -3,8 +3,8 @@ import { NextPageContext } from "next";
 
 export type AppBaseUrl =
   | "localhost"
-  | "ggm-admin-dev.gatenzteam.com"
-  | "ggm-admin.gatenzteam.com";
+  | "dash.meyadnya.com"
+  | "dash.meyadnya.com";
 export type AppEnv = "local" | "development" | "production";
 
 export const newConfig = {
@@ -30,10 +30,10 @@ export function appBaseUrl(): AppBaseUrl {
     case "local":
       return "localhost";
     case "development":
-      return "ggm-admin-dev.gatenzteam.com";
+      return "dash.meyadnya.com";
     default:
     case "production":
-      return "ggm-admin.gatenzteam.com";
+      return "dash.meyadnya.com";
   }
 }
 
