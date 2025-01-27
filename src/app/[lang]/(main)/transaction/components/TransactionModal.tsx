@@ -16,7 +16,6 @@ import { useAdmin } from "@/hooks/admin/use_admin";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { useMember } from "@/hooks/member/use_member";
-import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 import invoiceValidation from "../validation/invoice_validation";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import InvoiceRequest from "@/data/models/transaction/request/invoice_request";
@@ -55,27 +54,25 @@ const TransactionModal = ({
     isLoadingUpdateStatusInvoice,
   } = useTransaction();
 
-  const [selectedCeremony, setSelectedCeremony] =
-    useState<DropdownFilterItemProps>();
-  const [selectedAdmin, setSelectedAdmin] = useState<DropdownFilterItemProps>();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<DropdownFilterItemProps>();
-  const [selectedMember, setSelectedMember] =
-    useState<DropdownFilterItemProps>();
-  const [selectedPackage, setSelectedPackage] =
-    useState<DropdownFilterItemProps>();
-  const [selectedPackageFull, setSelectedPackageFull] =
-    useState<CeremonyPackage>();
-  const [selectedAddress, setSelectedAddress] =
-    useState<DropdownFilterItemProps>();
-
   const {
     allCeremonyPackageByCeremonyServiceId,
     allCeremony,
     refetchCeremonyPackageByCeremonyServiceId,
-  } = useCeremony({
-    ceremonyServiceId: ceremonyServiceId ?? selectedCeremony?.id,
-  });
+    selectedAdmin,
+    selectedCeremony,
+    selectedMember,
+    selectedPackage,
+    selectedPackageFull,
+    selectedPaymentMethod,
+    selectedAddress,
+    setSelectedAdmin,
+    setSelectedCeremony,
+    setSelectedMember,
+    setSelectedPackage,
+    setSelectedPackageFull,
+    setSelectedAddress,
+    setSelectedPaymentMethod,
+  } = useCeremony();
 
   const [ceremonies, setCeremonies] = useState<DropdownFilterItemProps[]>([]);
   const [admins, setAdmins] = useState<DropdownFilterItemProps[]>([]);
@@ -230,6 +227,18 @@ const TransactionModal = ({
     }
   }, [isCreateMemberAddressSuccess, allAddress?.data, selectedMember]);
 
+  useEffect(() => {
+    if (isCreateInvoiceSuccess) {
+      setSelectedAddress(undefined);
+      setSelectedAdmin(undefined);
+      setSelectedCeremony(undefined);
+      setSelectedMember(undefined);
+      setSelectedPackage(undefined);
+      setSelectedPackageFull(undefined);
+      setSelectedPaymentMethod(undefined);
+    }
+  }, [isCreateInvoiceSuccess]);
+
   return (
     <div>
       <Modal title={title} isOpen={open} setIsOpen={setOpen}>
@@ -248,7 +257,8 @@ const TransactionModal = ({
             setValues,
           }) => (
             <Form
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
                 handleAddInvoice(values);
               }}
             >
@@ -444,10 +454,7 @@ const TransactionModal = ({
                   <PrimaryWithIconButton
                     label="Buat Invoice"
                     loading={isLoadingCreateInvoice}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSubmit();
-                    }}
+                    type="submit"
                     icon={DocumentCheckIcon}
                   />
                 </div>
@@ -510,17 +517,11 @@ const TransactionModal = ({
             validationSchema={memberAddressValidation}
             suppressHydrationWarning={true}
           >
-            {({
-              errors,
-              handleChange,
-              handleSubmit,
-              values,
-
-              setValues,
-            }) => (
+            {({ errors, handleChange, handleSubmit, values, setValues }) => (
               <Form
-                onSubmit={() => {
-                  handleCreateMemberAddress(values);
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
                 }}
               >
                 <div className="flex flex-col items-center w-full px-8 py-6 space-y-4">
@@ -553,10 +554,7 @@ const TransactionModal = ({
                     <PrimaryWithIconButton
                       label="Simpan"
                       loading={isLoadingCreateMemberAddress}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                      }}
+                      type="submit"
                       icon={CheckCircleIcon}
                     />
                   </div>

@@ -21,7 +21,7 @@ import {
   useGetCeremonyPackageByCeremonyServiceIdQuery,
 } from "./ceremony_bridge";
 import { useCentralStore } from "@/store";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import CeremonyRequest from "@/data/models/ceremony/request/ceremony_request";
 import { statusMessage } from "@/utils";
 import CeremonyDocumentationRequest from "@/data/models/ceremony/request/ceremony_documentation_request";
@@ -32,6 +32,7 @@ import {
   Ceremony,
   CeremonyInList,
 } from "@/data/models/ceremony/response/ceremony";
+import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 
 interface IUseCeremony {
   addCeremony: UseMutateFunction<
@@ -130,16 +131,54 @@ interface IUseCeremony {
   refetchCeremonyPackageByCeremonyServiceId: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<ApiResponse<CeremonyPackage[]>, unknown>>;
+
+  // selected state
+  selectedCeremony: DropdownFilterItemProps | undefined;
+  setSelectedCeremony: Dispatch<
+    SetStateAction<DropdownFilterItemProps | undefined>
+  >;
+  selectedAdmin: DropdownFilterItemProps | undefined;
+  setSelectedAdmin: Dispatch<
+    SetStateAction<DropdownFilterItemProps | undefined>
+  >;
+  selectedPaymentMethod: DropdownFilterItemProps | undefined;
+  setSelectedPaymentMethod: Dispatch<
+    SetStateAction<DropdownFilterItemProps | undefined>
+  >;
+  selectedMember: DropdownFilterItemProps | undefined;
+  setSelectedMember: Dispatch<
+    SetStateAction<DropdownFilterItemProps | undefined>
+  >;
+  selectedPackage: DropdownFilterItemProps | undefined;
+  setSelectedPackage: Dispatch<
+    SetStateAction<DropdownFilterItemProps | undefined>
+  >;
+  selectedPackageFull: CeremonyPackage | undefined;
+  setSelectedPackageFull: Dispatch<SetStateAction<CeremonyPackage | undefined>>;
+  selectedAddress: DropdownFilterItemProps | undefined;
+  setSelectedAddress: Dispatch<
+    SetStateAction<DropdownFilterItemProps | undefined>
+  >;
 }
 
-export const useCeremony = ({
-  ceremonyServiceId,
-}: {
-  ceremonyServiceId?: number | string;
-}): IUseCeremony => {
+export const useCeremony = (): IUseCeremony => {
   const { setIsLoading } = useCentralStore();
 
   const [ceremony, setCeremony] = useState<Ceremony>();
+
+  const [selectedCeremony, setSelectedCeremony] =
+    useState<DropdownFilterItemProps>();
+  const [selectedAdmin, setSelectedAdmin] = useState<DropdownFilterItemProps>();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<DropdownFilterItemProps>();
+  const [selectedMember, setSelectedMember] =
+    useState<DropdownFilterItemProps>();
+  const [selectedPackage, setSelectedPackage] =
+    useState<DropdownFilterItemProps>();
+  const [selectedPackageFull, setSelectedPackageFull] =
+    useState<CeremonyPackage>();
+  const [selectedAddress, setSelectedAddress] =
+    useState<DropdownFilterItemProps>();
 
   const {
     data: allCeremony,
@@ -155,7 +194,7 @@ export const useCeremony = ({
     isError: isCeremonyPackageByCeremonyServiceIdError,
     refetch: refetchCeremonyPackageByCeremonyServiceId,
   } = useGetCeremonyPackageByCeremonyServiceIdQuery({
-    ceremonyServiceId: ceremonyServiceId ?? 0,
+    ceremonyServiceId: selectedCeremony?.id ?? 0,
   });
 
   // CEREMONY
@@ -320,13 +359,6 @@ export const useCeremony = ({
 
   useEffect(() => {
     setIsLoading(isCeremonyPackageByCeremonyServiceIdLoading);
-
-    // if (isCeremonyPackageByCeremonyServiceIdError) {
-    //   statusMessage({
-    //     message: errorCeremonyPackageByCeremonyServiceId,
-    //     status: "error",
-    //   });
-    // }
   }, [
     isCeremonyPackageByCeremonyServiceIdLoading,
     isCeremonyPackageByCeremonyServiceIdError,
@@ -376,5 +408,21 @@ export const useCeremony = ({
     // package by ceremonyId
     allCeremonyPackageByCeremonyServiceId,
     refetchCeremonyPackageByCeremonyServiceId,
+
+    // selected state
+    selectedAdmin,
+    selectedCeremony,
+    selectedMember,
+    selectedPackage,
+    selectedPackageFull,
+    selectedPaymentMethod,
+    selectedAddress,
+    setSelectedAdmin,
+    setSelectedCeremony,
+    setSelectedMember,
+    setSelectedPackage,
+    setSelectedPackageFull,
+    setSelectedPaymentMethod,
+    setSelectedAddress,
   };
 };

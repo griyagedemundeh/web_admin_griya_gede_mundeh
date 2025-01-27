@@ -27,7 +27,6 @@ import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import PrimaryCurrencyInput from "@/components/input/PrimaryCurrencyInput";
 import PrimaryTextEditor from "@/components/input/PrimaryTextEditor";
 import PrimaryTextArea from "@/components/input/PrimaryTextArea";
-import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
 import { useCentralStore } from "@/store";
 import Consultation from "@/data/models/consultation/response/consultation";
 
@@ -54,27 +53,25 @@ function InvoiceSection({
     isCreateInvoiceSuccess,
   } = useTransaction();
 
-  const [selectedCeremony, setSelectedCeremony] =
-    useState<DropdownFilterItemProps>();
-  const [selectedAdmin, setSelectedAdmin] = useState<DropdownFilterItemProps>();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<DropdownFilterItemProps>();
-  const [selectedMember, setSelectedMember] =
-    useState<DropdownFilterItemProps>();
-  const [selectedPackage, setSelectedPackage] =
-    useState<DropdownFilterItemProps>();
-  const [selectedPackageFull, setSelectedPackageFull] =
-    useState<CeremonyPackage>();
-  const [selectedAddress, setSelectedAddress] =
-    useState<DropdownFilterItemProps>();
-
   const {
     allCeremonyPackageByCeremonyServiceId,
     allCeremony,
     refetchCeremonyPackageByCeremonyServiceId,
-  } = useCeremony({
-    ceremonyServiceId: ceremonyServiceId ?? selectedCeremony?.id,
-  });
+    selectedAdmin,
+    selectedCeremony,
+    selectedMember,
+    selectedPackage,
+    selectedPackageFull,
+    selectedPaymentMethod,
+    selectedAddress,
+    setSelectedAdmin,
+    setSelectedCeremony,
+    setSelectedMember,
+    setSelectedPackage,
+    setSelectedPackageFull,
+    setSelectedAddress,
+    setSelectedPaymentMethod,
+  } = useCeremony();
 
   const [ceremonies, setCeremonies] = useState<DropdownFilterItemProps[]>([]);
   const [admins, setAdmins] = useState<DropdownFilterItemProps[]>([]);
@@ -124,7 +121,7 @@ function InvoiceSection({
   useEffect(() => {
     if (allCeremony?.data) {
       setCeremonies(
-        allCeremony.data.map((ceremony) => ({
+        allCeremony?.data?.map((ceremony) => ({
           id: ceremony?.id,
           title: `${ceremony?.title}`,
         }))
@@ -132,7 +129,7 @@ function InvoiceSection({
     }
     if (allAdmin?.data) {
       setAdmins(
-        allAdmin.data.map((admin) => ({
+        allAdmin?.data?.map((admin) => ({
           id: admin?.id,
           title: `${admin?.user?.fullName} - ${admin?.user?.phoneNumber}`,
         }))
@@ -154,7 +151,7 @@ function InvoiceSection({
     }
     if (allMember?.data) {
       setMembers(
-        allMember.data.map((member) => ({
+        allMember?.data?.map((member) => ({
           id: member?.id,
           title: `${member?.user?.fullName}`,
         }))
@@ -169,22 +166,24 @@ function InvoiceSection({
   ]);
 
   useEffect(() => {
-    refecthAllAddress();
-    if (allAddress?.data) {
-      setAddresses(
-        allAddress.data.map((address, index) => ({
-          id: address.id,
-          title:
-            `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
-            `- ${address.address}`,
-        }))
-      );
-    }
+    if (selectedMember?.id) {
+      refecthAllAddress();
+      if (allAddress?.data) {
+        setAddresses(
+          allAddress?.data?.map((address, index) => ({
+            id: address?.id,
+            title:
+              `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
+              `- ${address?.address}`,
+          }))
+        );
+      }
 
-    setMemberAddressRequest({
-      ...memberAddressRequest,
-      userId: selectedMember?.id as number,
-    });
+      setMemberAddressRequest({
+        ...memberAddressRequest,
+        userId: selectedMember?.id as number,
+      });
+    }
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
@@ -209,19 +208,23 @@ function InvoiceSection({
 
   // Refresh Member Address Dropdown with new data right after add some
   useEffect(() => {
-    if (isCreateMemberAddressSuccess && allAddress?.data) {
+    if (
+      isCreateMemberAddressSuccess &&
+      allAddress?.data &&
+      selectedMember?.id
+    ) {
       refecthAllAddress();
       setOpenAddAddress(false);
       setAddresses(
-        allAddress.data.map((address, index) => ({
-          id: address.id,
+        allAddress?.data?.map((address, index) => ({
+          id: address?.id,
           title:
             `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
-            `- ${address.address}`,
+            `- ${address?.address}`,
         }))
       );
     }
-  }, [isCreateMemberAddressSuccess, allAddress?.data]);
+  }, [isCreateMemberAddressSuccess, allAddress]);
 
   // Send the Invoice to Chat Section
   useEffect(() => {
@@ -231,6 +234,18 @@ function InvoiceSection({
       setOpenAddAddress(false);
     }
   }, [payment, isCreateInvoiceSuccess, invoice]);
+
+  useEffect(() => {
+    if (isCreateInvoiceSuccess) {
+      setSelectedAddress(undefined);
+      setSelectedAdmin(undefined);
+      setSelectedCeremony(undefined);
+      setSelectedMember(undefined);
+      setSelectedPackage(undefined);
+      setSelectedPackageFull(undefined);
+      setSelectedPaymentMethod(undefined);
+    }
+  }, [isCreateInvoiceSuccess]);
 
   if (!openCreate && !openAddAddress) {
     return (
@@ -536,8 +551,9 @@ function InvoiceSection({
             setValues,
           }) => (
             <Form
-              onSubmit={() => {
-                handleCreateMemberAddress(values);
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
               }}
             >
               <div className="flex flex-col items-center px-8 py-6 space-y-4 border-l-[1.5px] border-gray-300 w-full">
@@ -584,10 +600,7 @@ function InvoiceSection({
                   <PrimaryWithIconButton
                     label="Simpan"
                     loading={isLoadingCreateMemberAddress}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSubmit();
-                    }}
+                    type="submit"
                     icon={CheckCircleIcon}
                   />
                 </div>
