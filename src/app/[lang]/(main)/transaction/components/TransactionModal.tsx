@@ -26,6 +26,7 @@ import MemberAddressRequest from "@/data/models/member/request/member_address_re
 import IconBackgroundButton from "@/components/button/IconBackgroundButton";
 import Image from "next/image";
 import Images from "@/constants/images";
+import { log } from "node:console";
 
 interface TransactionModalProps {
   open: boolean;
@@ -124,7 +125,7 @@ const TransactionModal = ({
   useEffect(() => {
     if (allCeremony?.data) {
       setCeremonies(
-        allCeremony.data.map((ceremony) => ({
+        allCeremony?.data?.map((ceremony) => ({
           id: ceremony?.id,
           title: `${ceremony?.title}`,
         }))
@@ -132,7 +133,7 @@ const TransactionModal = ({
     }
     if (allAdminFromAdmin?.data) {
       setAdmins(
-        allAdminFromAdmin.data.map((admin) => ({
+        allAdminFromAdmin?.data?.map((admin) => ({
           id: admin?.id,
           title: `${admin?.user?.fullName} - ${admin?.user?.phoneNumber}`,
         }))
@@ -151,7 +152,7 @@ const TransactionModal = ({
     }
     if (allMember?.data) {
       setMembers(
-        allMember.data.map((member) => ({
+        allMember?.data?.map((member) => ({
           id: member?.id,
           title: `${member?.user?.fullName}`,
         }))
@@ -166,22 +167,23 @@ const TransactionModal = ({
   ]);
 
   useEffect(() => {
-    refecthAllAddress();
-    if (allAddress?.data) {
-      setAddresses(
-        allAddress.data.map((address, index) => ({
-          id: address.id,
-          title:
-            `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
-            `- ${address.address}`,
-        }))
-      );
+    if (selectedMember?.id) {
+      refecthAllAddress();
+      if (allAddress?.data) {
+        setAddresses(
+          allAddress?.data?.map((address, index) => ({
+            id: address.id,
+            title:
+              `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
+              `- ${address?.address}`,
+          }))
+        );
+      }
+      setMemberAddressRequest({
+        ...memberAddressRequest,
+        userId: selectedMember?.id as number,
+      });
     }
-
-    setMemberAddressRequest({
-      ...memberAddressRequest,
-      userId: selectedMember?.id as number,
-    });
   }, [selectedMember, allAddress]);
 
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
@@ -210,19 +212,23 @@ const TransactionModal = ({
   }, [isCreateInvoiceSuccess, invoiceRequest.isCash]);
 
   useEffect(() => {
-    if (isCreateMemberAddressSuccess && allAddress?.data) {
+    if (
+      isCreateMemberAddressSuccess &&
+      allAddress?.data &&
+      selectedMember?.id
+    ) {
       refecthAllAddress();
       setOpenAddAddress(false);
       setAddresses(
-        allAddress.data.map((address, index) => ({
+        allAddress?.data?.map((address, index) => ({
           id: address.id,
           title:
             `${address?.addressAlias ?? `Rumah ${index + 1}`}` +
-            `- ${address.address}`,
+            `- ${address?.address}`,
         }))
       );
     }
-  }, [isCreateMemberAddressSuccess, allAddress?.data]);
+  }, [isCreateMemberAddressSuccess, allAddress?.data, selectedMember]);
 
   return (
     <div>
