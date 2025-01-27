@@ -11,7 +11,7 @@ interface DeleteCeremonyModalProps {
 
 const DeleteCeremonyModal = ({ data }: DeleteCeremonyModalProps) => {
   const { setIsLoading } = useCentralStore();
-  const { deleteCeremony } = useCeremony({});
+  const { deleteCeremony } = useCeremony();
 
   const [openDelete, setOpenDelete] = useState(false);
 
