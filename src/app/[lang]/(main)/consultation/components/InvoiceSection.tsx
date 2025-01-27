@@ -44,7 +44,7 @@ function InvoiceSection({
 
   const { setInvoice, invoice } = useCentralStore();
 
-  const { allAdminFromAdmin } = useAdmin();
+  const { allAdminFromAdmin, refecthAllAdminFromAdmin } = useAdmin();
 
   const {
     createInvoice,
@@ -127,6 +127,7 @@ function InvoiceSection({
         }))
       );
     }
+    refecthAllAdminFromAdmin();
     if (allAdminFromAdmin?.data) {
       setAdmins(
         allAdminFromAdmin?.data?.map((admin) => ({

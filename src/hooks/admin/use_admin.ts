@@ -1,4 +1,10 @@
-import { UseMutateFunction, useMutation } from "react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  UseMutateFunction,
+  useMutation,
+} from "react-query";
 import ApiResponse from "@/data/models/base/api-base-response";
 import { showToast } from "@/utils";
 import { AxiosError } from "axios";
@@ -41,6 +47,10 @@ interface IUseAdmin {
     unknown
   >;
   allAdmin: ApiResponse<Admin[]> | undefined;
+  refecthAllAdmin: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<Admin[]>, unknown>>;
+
   isLoadingAddAdmin: boolean;
   isAddAdminSuccess: boolean;
   isAddAdminError: boolean;
@@ -69,6 +79,9 @@ interface IUseAdmin {
   allAdminFromAdmin: ApiResponse<Admin[]> | undefined;
   isAllAdminFromAdminLoading: boolean;
   isAllAdminFromAdminError: boolean;
+  refecthAllAdminFromAdmin: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<Admin[]>, unknown>>;
 }
 
 export const useAdmin = (): IUseAdmin => {
@@ -223,6 +236,7 @@ export const useAdmin = (): IUseAdmin => {
   return {
     addAdmin,
     allAdmin,
+    refecthAllAdmin,
     isLoadingAddAdmin,
     isAddAdminSuccess,
     isAddAdminError,
@@ -244,5 +258,6 @@ export const useAdmin = (): IUseAdmin => {
     allAdminFromAdmin,
     isAllAdminFromAdminError,
     isAllAdminFromAdminLoading,
+    refecthAllAdminFromAdmin,
   };
 };

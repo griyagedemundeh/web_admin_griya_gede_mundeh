@@ -34,7 +34,7 @@ export default function ManagerPage({
   const [selectedStatusItem, setSelectedStatusItem] =
     useState<DropdownFilterItemProps>();
 
-  const { allAdmin } = useAdmin();
+  const { allAdmin, refecthAllAdmin } = useAdmin();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
@@ -53,6 +53,10 @@ export default function ManagerPage({
   useEffect(() => {
     setCurrentPage(allAdmin?.meta?.currentPage ?? 1);
   }, [allAdmin]);
+
+  useEffect(() => {
+    refecthAllAdmin();
+  }, []);
 
   const columns = useMemo<ColumnDef<Admin>[]>(
     () => [

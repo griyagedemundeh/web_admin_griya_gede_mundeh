@@ -114,7 +114,7 @@ export const getAllAdmin = async (
 export const useGetAllAdminQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<Admin[]>, unknown> =>
-  useQuery("allAdmin", () => getAllAdmin(request));
+  useQuery("allAdmin", () => getAllAdmin(request), { enabled: false });
 
 export const getAllAdminFromAdmin = async (
   request: ListDataRequest
@@ -137,4 +137,6 @@ export const getAllAdminFromAdmin = async (
 export const useAllAdminFromAdminQuery = (
   request: ListDataRequest
 ): UseQueryResult<ApiResponse<Admin[]>, unknown> =>
-  useQuery("allAdminFromAdmin", () => getAllAdminFromAdmin(request));
+  useQuery("allAdminFromAdmin", () => getAllAdminFromAdmin(request), {
+    enabled: false,
+  });

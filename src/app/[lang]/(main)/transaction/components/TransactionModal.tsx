@@ -43,7 +43,7 @@ const TransactionModal = ({
   const [openPayment, setOpenPayment] = useState<boolean>(false);
   const [openAddAddress, setOpenAddAddress] = useState<boolean>(false);
 
-  const { allAdminFromAdmin } = useAdmin();
+  const { allAdminFromAdmin, refecthAllAdminFromAdmin } = useAdmin();
 
   const {
     createInvoice,
@@ -128,6 +128,8 @@ const TransactionModal = ({
         }))
       );
     }
+
+    refecthAllAdminFromAdmin();
     if (allAdminFromAdmin?.data) {
       setAdmins(
         allAdminFromAdmin?.data?.map((admin) => ({
