@@ -66,15 +66,15 @@ export default function ManagerPage({
           <div className="py-4 sm:pl-8 pr-3 text-sm font-medium text-gray-900">
             <div className="flex flex-row space-x-4 items-center">
               <Image
-                alt={info.row.original.user.fullName}
-                src={info.row.original.user.avatarUrl ?? Images.dummyProfile}
+                alt={info.row.original?.user?.fullName}
+                src={info.row.original?.user?.avatarUrl ?? Images.dummyProfile}
                 className="h-10 w-10 rounded-full bg-gray-50 object-cover"
                 height={40}
                 width={40}
                 objectFit="cover"
               />
               <p className="font-bold">
-                {info.row.original.user.fullName ?? "-"}
+                {info.row.original?.user?.fullName ?? "-"}
               </p>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function ManagerPage({
         header: "Email",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.user.email ?? "-"}
+            {info.row.original?.user?.email ?? "-"}
           </div>
         ),
       },
@@ -92,7 +92,7 @@ export default function ManagerPage({
         header: "No.Hp",
         cell: (info) => (
           <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {info.row.original.user.phoneNumber ?? "-"}
+            {info.row.original?.user?.phoneNumber ?? "-"}
           </div>
         ),
       },
@@ -101,13 +101,13 @@ export default function ManagerPage({
       //   cell: (info) => (
       //     <SwitchInput
       //       label={
-      //         info.row.original.user.isActive ? (
+      //         info.row.original?.user?.isActive ? (
       //           <span className="font-medium text-gray-900">Aktif</span>
       //         ) : (
       //           <span className="font-medium text-gray-400">Non-Aktif</span>
       //         )
       //       }
-      //       value={info.row.original.user.isActive === 1}
+      //       value={info.row.original?.user?.isActive === 1}
       //       onChange={(e) => {}}
       //     />
       //   ),
@@ -119,20 +119,20 @@ export default function ManagerPage({
             <div className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
               <div className="flex flex-row space-x-2">
                 <DetailManagerModal
-                  id={info.row.original.id}
+                  id={info.row.original?.id}
                   data={{
-                    userId: info.row.original.user.id,
-                    fullName: info.row.original.user.fullName,
-                    phoneNumber: info.row.original.user.phoneNumber,
+                    userId: info.row.original?.user?.id,
+                    fullName: info.row.original?.user?.fullName,
+                    phoneNumber: info.row.original?.user?.phoneNumber,
                     password: "",
                     passwordConfirm: "",
-                    email: info.row.original.user.email,
-                    emailVerified: info.row.original.user.emailVerified,
+                    email: info.row.original?.user?.email,
+                    emailVerified: info.row.original?.user?.emailVerified,
                   }}
                 />
                 <DeleteManagerModal
                   data={{
-                    fullName: info.row.original.user.fullName,
+                    fullName: info.row.original?.user?.fullName,
                     id: info.row.original.id,
                   }}
                 />

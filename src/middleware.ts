@@ -12,6 +12,13 @@ const PUBLIC_PATHS = [
   "/email-verification",
 ];
 
+const RESTRICTED_PATHS = [
+  "/manager",
+  "/ceremony-category",
+  "/ceremony",
+  "/article-category",
+];
+
 function getLocale(request: NextRequest) {
   const acceptLang = request.headers.get("Accept-Language");
   if (!acceptLang) return defaultLocale;
@@ -52,6 +59,9 @@ export function middleware(request: NextRequest) {
   const emailVerified =
     request.cookies.get(CookieKey.EMAIL_VERIFIED)?.value === "1";
 
+  const superAdmin =
+    request.cookies.get(CookieKey.ADMIN_ROLE)?.value === "superAdmin";
+
   // Handle root path
   if (pathname === "/") {
     let redirectPath;
@@ -69,6 +79,9 @@ export function middleware(request: NextRequest) {
 
   // Check if the current path (without locale) is public
   const isPublicPath = PUBLIC_PATHS.some((path) => pathWithoutLocale === path);
+  const isRestrictedPath = RESTRICTED_PATHS.some(
+    (path) => pathWithoutLocale === path
+  );
 
   // Restrict access based on email verification status
   if (isLoggedIn && !emailVerified && !isPublicPath) {
@@ -76,6 +89,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(
       new URL(`/${locale}/email-verification`, request.url)
     );
+  }
+
+  if (isLoggedIn && isRestrictedPath && !superAdmin) {
+    return NextResponse.redirect(new URL(`/${locale}/forbidden`, request.url));
   }
 
   // Redirect unauthenticated users trying to access protected routes

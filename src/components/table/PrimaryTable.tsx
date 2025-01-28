@@ -110,7 +110,7 @@ const PrimaryTable = ({
       <div className="px-8 py-6 flex flex-row justify-between w-full items-center border-b border-gray-300">
         <h2 className="font-bold text-primary1">{title}</h2>
         {actions}
-        {mainActionOnClick ? (
+        {mainActionTitle !== undefined ? (
           <PrimaryWithIconButton
             label={mainActionTitle ?? ""}
             onClick={(e) => {

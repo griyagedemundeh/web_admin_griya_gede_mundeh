@@ -115,7 +115,7 @@ export default function UserPage({
                   emailVerified: info.row.original.user.emailVerified ?? 0,
                 }}
               />
-              {account?.role !== "admin" ? (
+              {account?.role === "superAdmin" ? (
                 <DeleteMemberModal
                   data={{
                     // sesuaikan dengan member
