@@ -134,11 +134,11 @@ export default function UserPage({
 
   return (
     <>
-      <h1 className="font-bold text-xl mb-8">Pengguna</h1>
+      <h1 className="font-bold text-xl mb-8">Anggota</h1>
       <PrimaryTable
-        title="Daftar Pengguna"
+        title="Daftar Anggota"
         mainActionTitle={
-          account?.role === "superAdmin" ? "Tambah Pengguna" : undefined
+          account?.role === "superAdmin" ? "Tambah Anggota" : undefined
         }
         // onFilterReset={() => {}}
         // filters={
@@ -154,7 +154,7 @@ export default function UserPage({
         //     <PrimaryInput
         //       onChange={(e) => {}}
         //       value={""}
-        //       placeholder="Cari Pengguna"
+        //       placeholder="Cari Anggota"
         //       className="w-full"
         //       trailing={
         //         <IconButton

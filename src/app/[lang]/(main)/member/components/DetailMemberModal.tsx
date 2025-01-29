@@ -95,7 +95,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
         }}
       />
       <Modal
-        title="Detail Member"
+        title="Detail Anggota"
         isOpen={openDetail}
         setIsOpen={setOpenDetail}
       >
@@ -122,7 +122,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Nama Lengkap"
                     value={values.fullName}
-                    placeholder="Masukkan nama lengkap member"
+                    placeholder="Masukkan nama lengkap anggota"
                     error={errors.fullName ?? undefined}
                     onChange={handleChange("fullName")}
                     disabled={account?.role == "admin"}
@@ -131,7 +131,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Email"
                     value={values.email}
-                    placeholder="Masukkan email member"
+                    placeholder="Masukkan email anggota"
                     error={errors.email ?? undefined}
                     onChange={handleChange("email")}
                     disabled={account?.role == "admin"}
@@ -141,7 +141,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="No.Handphone"
                     value={values.phoneNumber}
-                    placeholder="Masukkan no hp member"
+                    placeholder="Masukkan no hp anggota"
                     error={errors.phoneNumber ?? undefined}
                     onChange={handleChange("phoneNumber")}
                     disabled={account?.role == "admin"}
@@ -151,7 +151,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                     <PrimaryInput
                       label="Alamat Utama"
                       onChange={handleChange("address")}
-                      placeholder="Masukkan alamat member"
+                      placeholder="Masukkan alamat anggota"
                       error={errors.address ?? undefined}
                       value={values.address}
                       disabled={account?.role == "admin"}
@@ -171,7 +171,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Password"
                     value={values.password}
-                    placeholder="Masukkan password member"
+                    placeholder="Masukkan password anggota"
                     error={errors.password ?? undefined}
                     onChange={handleChange("password")}
                     disabled={account?.role == "admin"}
@@ -181,7 +181,7 @@ const DetailMemberModal = ({ data, id }: DetailMemberModalProps) => {
                   <PrimaryInput
                     label="Konfirmasi Password"
                     value={values.passwordConfirm}
-                    placeholder="Masukkan konfirmasi password member"
+                    placeholder="Masukkan konfirmasi password anggota"
                     error={errors.passwordConfirm ?? undefined}
                     onChange={handleChange("passwordConfirm")}
                     disabled={account?.role == "admin"}
