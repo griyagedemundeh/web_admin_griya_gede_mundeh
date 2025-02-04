@@ -1,7 +1,13 @@
 import ApiResponse from "@/data/models/base/api-base-response";
 import Member from "@/data/models/member/response/member";
 import { useCentralStore } from "@/store";
-import { UseMutateFunction, useMutation } from "react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  UseMutateFunction,
+  useMutation,
+} from "react-query";
 import {
   createInvoice as createInvoiceBridge,
   updateStatusInvoice as updateInvoiceBridge,
@@ -31,6 +37,9 @@ interface IUseTransaction {
   // Invoice
   invoices: ApiResponse<Invoice[]> | undefined;
   isLoadingGetAllInvoice: boolean;
+  refetchInvoices: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<Invoice[]>, unknown>>;
 
   // Detail Invoice
   invoice: ApiResponse<Invoice> | undefined;
@@ -48,6 +57,9 @@ interface IUseTransaction {
   isLoadingUpdateStatusInvoice: boolean;
   isUpdateStatusInvoiceSuccess: boolean;
   isUpdateStatusInvoiceError: boolean;
+
+  filter: ListDataRequest;
+  setFilter: Dispatch<SetStateAction<ListDataRequest>>;
 }
 
 export const useTransaction = (): IUseTransaction => {
@@ -60,6 +72,7 @@ export const useTransaction = (): IUseTransaction => {
   const [filter, setFilter] = useState<ListDataRequest>({
     page: 1,
     limit: 1000,
+    search: "",
   });
 
   const {
@@ -67,6 +80,7 @@ export const useTransaction = (): IUseTransaction => {
     isLoading: isLoadingGetAllInvoice,
     isError: isErrorGetAllInvoice,
     error: errorGetAllInvoice,
+    refetch: refetchInvoices,
   } = useGetAllInvoiceQuery(filter);
 
   const {
@@ -150,6 +164,7 @@ export const useTransaction = (): IUseTransaction => {
     // Detail Invoice
     invoice,
     setIdInvoice,
+    refetchInvoices,
 
     isErrorGetDetailInvoice,
     isLoadingGetDetailInvoice,
@@ -159,5 +174,9 @@ export const useTransaction = (): IUseTransaction => {
     isLoadingUpdateStatusInvoice,
     isUpdateStatusInvoiceError,
     isUpdateStatusInvoiceSuccess,
+
+    // filter
+    filter,
+    setFilter,
   };
 };

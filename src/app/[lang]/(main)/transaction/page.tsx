@@ -1,7 +1,7 @@
 "use client";
 
 import { getDictionary, Locale } from "../../dictionaries";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import TransactionModal from "./components/TransactionModal";
@@ -9,6 +9,9 @@ import { useTransaction } from "@/hooks/transaction/use_transaction";
 import Invoice from "@/data/models/transaction/response/invoice";
 import { formatDateIndonesia, formatRupiah } from "@/utils";
 import DetailTransactionModal from "./components/DetailTransactionModal";
+import PrimaryInput from "@/components/input/PrimaryInput";
+import IconButton from "@/components/button/IconButton";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const StatusBadge = ({ status }: { status: string }): React.ReactElement => {
   let bgColor = "";
@@ -54,9 +57,15 @@ export default function TransactionPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const { invoices } = useTransaction();
+  const { invoices, filter, setFilter, refetchInvoices } = useTransaction();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  useEffect(() => {
+    setTimeout(() => {
+      refetchInvoices();
+    }, 1000);
+  }, [filter.search]);
 
   const columns = useMemo<ColumnDef<Invoice>[]>(
     () => [
@@ -133,44 +142,46 @@ export default function TransactionPage({
         title="Riwayat Transaksi"
         mainActionTitle="Tambah Transaksi"
         // onFilterReset={() => {}}
-        // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
-        //     <PrimaryDatePicker
-        //       setValue={(value) => {}}
-        //       value={[new Date(), new Date()]}
-        //     />
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            {/* <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-        //     <DropdownFilter
-        //       label="Status"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CheckCircleIcon}
-        //       items={status}
-        //     />
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CheckCircleIcon}
+              items={status}
+            />
 
-        //     <DropdownFilter
-        //       label="Tipe Pembayaran"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CreditCardIcon}
-        //       items={status}
-        //     />
+            <DropdownFilter
+              label="Tipe Pembayaran"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CreditCardIcon}
+              items={status}
+            /> */}
 
-        //     <PrimaryInput
-        //       onChange={(e) => {}}
-        //       value={""}
-        //       placeholder="Cari transaksi"
-        //       className=""
-        //       trailing={
-        //         <IconButton
-        //           icon={MagnifyingGlassIcon}
-        //           onClick={() => {}}
-        //           className="absolute top-1 right-1"
-        //         />
-        //       }
-        //     />
-        //   </div>
-        // }
+            <PrimaryInput
+              onChange={(e) => {
+                setFilter({ ...filter, search: e.target.value });
+              }}
+              value={filter.search ?? ""}
+              placeholder="Cari transaksi"
+              className=""
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
         mainActionOnClick={() => {
           setOpen(true);
         }}
