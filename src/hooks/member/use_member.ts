@@ -20,11 +20,12 @@ import {
 } from "./member_bridge";
 import { showToast } from "@/utils";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import User from "@/data/models/user/response/user";
 import MemberAddress from "@/data/models/user/response/address";
 import Address from "@/data/models/member/response/address";
 import MemberAddressRequest from "@/data/models/member/request/member_address_request";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 interface IUseMember {
   addMember: UseMutateFunction<
@@ -52,6 +53,10 @@ interface IUseMember {
     unknown
   >;
   allMember: ApiResponse<Member[]> | undefined;
+  isAllMemberLoading: boolean;
+  refetchAllMember: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<Member[]>, unknown>>;
   allAddress: ApiResponse<Address[]> | undefined;
   refecthAllAddress: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
@@ -90,6 +95,9 @@ interface IUseMember {
   isLoadingResendEmailVerification: boolean;
   isResendEmailVerificationSuccess: boolean;
   isResendEmailVerificationError: boolean;
+
+  filter: ListDataRequest;
+  setFilter: Dispatch<SetStateAction<ListDataRequest>>;
 }
 
 export const useMember = ({
@@ -99,14 +107,20 @@ export const useMember = ({
 }): IUseMember => {
   const { setIsLoading } = useCentralStore();
 
+  const [filter, setFilter] = useState<ListDataRequest>({
+    page: 1,
+    limit: 10,
+    search: "",
+  });
+
   //get all list member
   const {
     data: allMember,
     isLoading: isAllMemberLoading,
     isError: isAllMemberError,
     error: errorAllMember,
-    refetch: refecthAllMember,
-  } = useGetAllMemberQuery({ limit: 100, page: 1 });
+    refetch: refetchAllMember,
+  } = useGetAllMemberQuery(filter);
 
   const {
     data: allAddress,
@@ -204,7 +218,7 @@ export const useMember = ({
     isError: isDeleteMemberError,
   } = useMutation(deleteMemberBridge, {
     onSuccess: async (value) => {
-      refecthAllMember();
+      refetchAllMember();
 
       if (value instanceof Array) {
         value.forEach((message) => {
@@ -269,6 +283,8 @@ export const useMember = ({
   return {
     addMember,
     allMember,
+    isAllMemberLoading,
+    refetchAllMember,
     allAddress,
     refecthAllAddress,
     isLoadingAddMember,
@@ -292,5 +308,8 @@ export const useMember = ({
     isLoadingResendEmailVerification,
     isResendEmailVerificationError,
     isResendEmailVerificationSuccess,
+
+    filter,
+    setFilter,
   };
 };

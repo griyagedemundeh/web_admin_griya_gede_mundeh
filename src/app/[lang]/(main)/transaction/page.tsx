@@ -57,9 +57,14 @@ export default function TransactionPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const { invoices, filter, setFilter, refetchInvoices } = useTransaction();
+  const {
+    invoices,
+    filter,
+    setFilter,
+    refetchInvoices,
+    isLoadingGetAllInvoice,
+  } = useTransaction();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [active, setActive] = useState<number>(1);
@@ -83,11 +88,9 @@ export default function TransactionPage({
   };
 
   useEffect(() => {
-    setLoading(true);
     setTimeout(() => {
       refetchInvoices();
     }, 1000);
-    setLoading(false);
   }, [filter]);
 
   const columns = useMemo<ColumnDef<Invoice>[]>(
@@ -210,7 +213,7 @@ export default function TransactionPage({
         }}
         columns={columns}
         data={invoices?.data ?? []}
-        isLoading={loading}
+        isLoading={isLoadingGetAllInvoice}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={invoices?.meta?.total}

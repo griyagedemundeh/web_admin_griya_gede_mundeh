@@ -170,9 +170,9 @@ const PrimaryTable = ({
                   </thead>
                   {isLoading ? (
                     <tbody>
-                      {Array.from({ length: 10 }).map((item) => (
+                      {Array.from({ length: 10 }).map((item, index) => (
                         <tr
-                          key={item as any}
+                          key={`${Math.random()}`}
                           className="border border-1 border-zinc-300 border-x-0"
                         >
                           <td className="px-5 py-2  text-[16px] font-medium leading-normal">
@@ -280,7 +280,7 @@ const PrimaryTable = ({
                             </a>
                             {Array.from({ length: last ?? 0 }, (_, index) => (
                               <a
-                                key={index + 1}
+                                key={`${Math.random()}`}
                                 aria-current="page"
                                 {...getItemProps(index + 1)}
                               >

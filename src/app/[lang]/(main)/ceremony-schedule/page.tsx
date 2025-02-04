@@ -68,10 +68,14 @@ export default function CeremonyHistoryPage({
 }) {
   const t = getDictionary(lang);
 
-  const { allCeremonyHistory, filter, setFilter, refetchAllCeremonyHistory } =
-    useCeremonyHistory();
+  const {
+    allCeremonyHistory,
+    filter,
+    setFilter,
+    refetchAllCeremonyHistory,
+    isAllCeremonyHistoryLoading,
+  } = useCeremonyHistory();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [active, setActive] = useState<number>(1);
@@ -95,11 +99,9 @@ export default function CeremonyHistoryPage({
   };
 
   useEffect(() => {
-    setLoading(true);
     setTimeout(() => {
       refetchAllCeremonyHistory();
     }, 1000);
-    setLoading(false);
   }, [filter]);
 
   const columns = useMemo<ColumnDef<CeremonyHistory>[]>(
@@ -211,7 +213,7 @@ export default function CeremonyHistoryPage({
         }
         columns={columns}
         data={allCeremonyHistory?.data ?? []}
-        isLoading={loading}
+        isLoading={isAllCeremonyHistoryLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={allCeremonyHistory?.meta?.total}
