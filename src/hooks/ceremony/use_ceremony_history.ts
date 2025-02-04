@@ -5,15 +5,26 @@ import {
   updateStatusCeremonyHistory as updateStatusCeremonyHistoryBridge,
 } from "./ceremony_history_bridge";
 import type CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useCentralStore } from "@/store";
 import { showToast, statusMessage } from "@/utils";
-import { type UseMutateFunction, useMutation } from "react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  type UseMutateFunction,
+  useMutation,
+} from "react-query";
 import type { AxiosError } from "axios";
 import type CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 interface IUseCeremonyHistory {
   allCeremonyHistory: ApiResponse<CeremonyHistory[]> | undefined;
+  refetchAllCeremonyHistory: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<CeremonyHistory[]>, unknown>>;
+
   isAllCeremonyHistoryLoading: boolean;
   isAllCeremonyHistoryError: boolean;
   updateStatusCeremonyHistory: UseMutateFunction<
@@ -29,17 +40,27 @@ interface IUseCeremonyHistory {
   allCeremonyHistoryOnProgress: ApiResponse<CeremonyHistory[]> | undefined;
   isAllCeremonyHistoryOnProgressLoading: boolean;
   isAllCeremonyHistoryOnProgressError: boolean;
+
+  filter: ListDataRequest;
+  setFilter: Dispatch<SetStateAction<ListDataRequest>>;
 }
 
 export const useCeremonyHistory = (): IUseCeremonyHistory => {
   const { setIsLoading } = useCentralStore();
+
+  const [filter, setFilter] = useState<ListDataRequest>({
+    page: 1,
+    limit: 10,
+    search: "",
+  });
 
   const {
     data: allCeremonyHistory,
     isLoading: isAllCeremonyHistoryLoading,
     isError: isAllCeremonyHistoryError,
     error: errorAllCeremonyHistory,
-  } = useGetAllCeremonyHistoryQuery({ page: 1, limit: 1000 });
+    refetch: refetchAllCeremonyHistory,
+  } = useGetAllCeremonyHistoryQuery(filter);
 
   const {
     data: allCeremonyHistoryOnProgress,
@@ -94,6 +115,7 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
 
   return {
     allCeremonyHistory,
+    refetchAllCeremonyHistory,
     isAllCeremonyHistoryError,
     isAllCeremonyHistoryLoading,
     updateStatusCeremonyHistory,
@@ -104,5 +126,8 @@ export const useCeremonyHistory = (): IUseCeremonyHistory => {
     allCeremonyHistoryOnProgress,
     isAllCeremonyHistoryOnProgressError,
     isAllCeremonyHistoryOnProgressLoading,
+
+    filter,
+    setFilter,
   };
 };

@@ -4,7 +4,7 @@ import { getDictionary, Locale } from "../../dictionaries";
 
 import Image from "next/image";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import PrimaryTable from "@/components/table/PrimaryTable";
@@ -16,6 +16,9 @@ import MemberRequest from "@/data/models/member/request/member_request";
 import Member from "@/data/models/member/response/member";
 import { useMember } from "@/hooks/member/use_member";
 import { useAuth } from "@/hooks/auth/use_auth";
+import PrimaryInput from "@/components/input/PrimaryInput";
+import IconButton from "@/components/button/IconButton";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function UserPage({
   params: { lang },
@@ -25,10 +28,37 @@ export default function UserPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const { allMember } = useMember({});
+  const { allMember, filter, setFilter, refetchAllMember, isAllMemberLoading } =
+    useMember({});
   const { account } = useAuth();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [active, setActive] = useState<number>(1);
+
+  const numberClick = (index: number) => {
+    setActive(index);
+    setFilter({ ...filter, page: index });
+  };
+  const nextClick = () => {
+    if (active === allMember?.meta?.lastPage) return;
+    setActive(active + 1);
+
+    setFilter({ ...filter, page: active + 1 });
+  };
+
+  const prevClick = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setFilter({ ...filter, page: active - 1 });
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      refetchAllMember();
+    }, 1000);
+  }, [filter, account?.role]);
 
   // Tolong sesuaikan dengan MemberRequest
   const [memberRequest, setMemberRequest] = useState<MemberRequest>({
@@ -111,15 +141,15 @@ export default function UserPage({
                   password: "",
                   passwordConfirm: "",
                   email: info.row.original.user.email,
-                  address: info.row.original.memberAddress[0].address,
+                  address: info.row.original?.memberAddress[0]?.address ?? "",
                   emailVerified: info.row.original.user.emailVerified ?? 0,
                 }}
               />
-              {account?.role === "superAdmin" ? (
+              {account?.role !== "admin" ? (
                 <DeleteMemberModal
                   data={{
                     // sesuaikan dengan member
-                    fullName: info.row.original.user.fullName,
+                    fullName: info.row.original?.user?.fullName,
                     id: info.row.original.id,
                   }}
                 />
@@ -141,31 +171,46 @@ export default function UserPage({
           account?.role === "superAdmin" ? "Tambah Anggota" : undefined
         }
         // onFilterReset={() => {}}
-        // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-        //     <DropdownFilter
-        //       label="Status"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CheckCircleIcon}
-        //       items={status}
-        //     />
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            {/* <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-        //     <PrimaryInput
-        //       onChange={(e) => {}}
-        //       value={""}
-        //       placeholder="Cari Anggota"
-        //       className="w-full"
-        //       trailing={
-        //         <IconButton
-        //           icon={MagnifyingGlassIcon}
-        //           onClick={() => {}}
-        //           className="absolute top-1 right-1"
-        //         />
-        //       }
-        //     />
-        //   </div>
-        // }
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedCeremonyCategory}
+              setSelectedItem={setSelectedCeremonyCategory}
+              icon={TagIcon}
+              items={categories}
+            />
+
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CheckCircleIcon}
+              items={status}
+            /> */}
+
+            <PrimaryInput
+              onChange={(e) => {
+                setFilter({ ...filter, search: e.target.value });
+              }}
+              value={filter.search ?? ""}
+              placeholder="Cari Anggota/Pengguna"
+              className=""
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
         mainActionOnClick={() => {
           if (account?.role === "superAdmin") {
             setOpen(true);
@@ -173,12 +218,15 @@ export default function UserPage({
         }}
         columns={columns}
         data={allMember?.data ?? []}
-        isLoading={false}
+        isLoading={isAllMemberLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={10}
-        isCommon={true}
+        totalPage={allMember?.meta?.total}
+        last={allMember?.meta?.lastPage}
+        onNumberClick={numberClick}
+        onNext={nextClick}
+        onPrev={prevClick}
+        active={active}
       />
 
       {/* Dialog Add Member*/}

@@ -2,7 +2,6 @@
 
 import { getDictionary, Locale } from "../../dictionaries";
 import Image from "next/image";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import AddCeremonyModal from "./components/AddCeremonyModal";
@@ -11,9 +10,11 @@ import { useCeremony } from "@/hooks/ceremony/use_ceremony";
 import { CeremonyInList } from "@/data/models/ceremony/response/ceremony";
 import Images from "@/constants/images";
 import DeleteCeremonyModal from "./components/DeleteCeremonyModal";
-import ListDataRequest from "@/data/models/base/list_data_request";
 import DetailCeremonyModal from "./components/DetailCeremonyModal";
 import { CeremonyPackage } from "@/data/models/ceremony/response/ceremony_package";
+import PrimaryInput from "@/components/input/PrimaryInput";
+import IconButton from "@/components/button/IconButton";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function CeremonyPage({
   params: { lang },
@@ -23,15 +24,41 @@ export default function CeremonyPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
-    limit: 100,
-    page: 1,
-  });
-  const { allCeremony } = useCeremony();
+  const {
+    allCeremony,
+    isAllCeremonyLoading,
+    filter,
+    setFilter,
+    refecthAllCeremony,
+  } = useCeremony();
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [active, setActive] = useState<number>(1);
+
+  const numberClick = (index: number) => {
+    setActive(index);
+    setFilter({ ...filter, page: index });
+  };
+  const nextClick = () => {
+    if (active === allCeremony?.meta?.lastPage) return;
+    setActive(active + 1);
+
+    setFilter({ ...filter, page: active + 1 });
+  };
+
+  const prevClick = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setFilter({ ...filter, page: active - 1 });
+  };
 
   useEffect(() => {
-    setCurrentPage(allCeremony?.meta?.currentPage ?? 1);
-  }, [allCeremony]);
+    setTimeout(() => {
+      refecthAllCeremony();
+    }, 1000);
+  }, [filter]);
 
   const columns = useMemo<ColumnDef<CeremonyInList>[]>(
     () => [
@@ -142,8 +169,6 @@ export default function CeremonyPage({
     []
   );
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
   return (
     <>
       <h1 className="font-bold text-xl mb-8">Upacara Agama</h1>
@@ -151,48 +176,60 @@ export default function CeremonyPage({
         title="Upacara Agama"
         mainActionTitle="Tambah Upacara Agama"
         // onFilterReset={() => {}}
-        // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-        //     <DropdownFilter
-        //       label="Kategori"
-        //       selectedItem={selectedCeremonyCategory}
-        //       setSelectedItem={setSelectedCeremonyCategory}
-        //       icon={TagIcon}
-        //       items={categories}
-        //     />
-        //     <DropdownFilter
-        //       label="Status"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CheckCircleIcon}
-        //       items={status}
-        //     />
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            {/* <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-        //     <PrimaryInput
-        //       onChange={(e) => {}}
-        //       value={""}
-        //       placeholder="Cari Upacara"
-        //       className="w-full"
-        //       trailing={
-        //         <IconButton
-        //           icon={MagnifyingGlassIcon}
-        //           onClick={() => {}}
-        //           className="absolute top-1 right-1"
-        //         />
-        //       }
-        //     />
-        //   </div>
-        // }
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedCeremonyCategory}
+              setSelectedItem={setSelectedCeremonyCategory}
+              icon={TagIcon}
+              items={categories}
+            />
+
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CheckCircleIcon}
+              items={status}
+            /> */}
+
+            <PrimaryInput
+              onChange={(e) => {
+                setFilter({ ...filter, search: e.target.value });
+              }}
+              value={filter.search ?? ""}
+              placeholder="Cari Upacara Agama"
+              className=""
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
         mainActionOnClick={() => {
           setOpen(true);
         }}
         columns={columns}
         data={allCeremony?.data ?? []}
-        isLoading={false}
+        isLoading={isAllCeremonyLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={allCeremony?.meta?.total}
-        limitPage={listDataRequest.limit}
+        last={allCeremony?.meta?.lastPage}
+        onNumberClick={numberClick}
+        onNext={nextClick}
+        onPrev={prevClick}
+        active={active}
       />
 
       {/* Dialog Add Ceremony*/}

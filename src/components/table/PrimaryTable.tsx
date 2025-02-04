@@ -11,7 +11,6 @@ import React, {
   MouseEventHandler,
   ReactElement,
   SetStateAction,
-  useState,
 } from "react";
 import PrimaryWithIconButton from "../button/PrimaryWithIconButton";
 import {
@@ -40,13 +39,16 @@ interface PrimaryTableProps {
   isLoading?: boolean;
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
   currentPage?: number;
-  limitPage?: number;
   totalPage?: number;
   className?: string;
   last?: number;
   from?: number;
   listDataRequest?: ListDataRequest;
   setListDataRequest?: (value: ListDataRequest) => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  active?: number;
+  onNumberClick?: (value: number) => void;
 }
 
 const PrimaryTable = ({
@@ -58,21 +60,18 @@ const PrimaryTable = ({
   onFilterReset,
   columns,
   data,
-  isCommon,
   setCurrentPage,
   setPageLimit,
   currentPage,
   totalPage,
-  limitPage,
   isLoading,
-  setIsLoading,
   className,
-  from,
   last,
-  listDataRequest,
-  setListDataRequest,
+  onPrev,
+  onNext,
+  active,
+  onNumberClick,
 }: PrimaryTableProps) => {
-  const [active, setActive] = useState<number>(1);
   const table = useReactTable({
     columns,
     data,
@@ -88,19 +87,17 @@ const PrimaryTable = ({
     },
   });
 
-  // const next = () => {
-  //   if (active === last) return;
-  //   setActive(active + 1);
-
-  //   setListDataRequest({ ...listDataRequest, page: active + 1 });
-  // };
-
-  // const prev = () => {
-  //   if (active === 1) return;
-  //   setActive(active - 1);
-
-  //   setListDataRequest({ ...listDataRequest, page: active - 1 });
-  // };
+  const getItemProps = (index: number) => ({
+    className:
+      active === index
+        ? "relative z-10 flex items-center bg-primary1 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary1 cursor-pointer"
+        : "relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold text-black focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary1 cursor-pointer",
+    onClick: () => {
+      if (onNumberClick) {
+        onNumberClick(index);
+      }
+    },
+  });
 
   return (
     <div
@@ -173,9 +170,9 @@ const PrimaryTable = ({
                   </thead>
                   {isLoading ? (
                     <tbody>
-                      {Array.from({ length: 10 }).map((item) => (
+                      {Array.from({ length: 10 }).map((item, index) => (
                         <tr
-                          key={item as any}
+                          key={`${Math.random()}`}
                           className="border border-1 border-zinc-300 border-x-0"
                         >
                           <td className="px-5 py-2  text-[16px] font-medium leading-normal">
@@ -213,7 +210,6 @@ const PrimaryTable = ({
                     </tbody>
                   )}
                 </table>
-
                 {isLoading === false && data.length === 0 && (
                   <div className="grid w-full h-full place-items-center">
                     <p className=" text-center py-6 ">Data not found!</p>
@@ -261,94 +257,49 @@ const PrimaryTable = ({
                     </button>
                   </div>
                   <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-end">
-                    {/* <div>
-                      <p className="text-sm text-gray-400">
-                        Showing{" "}
-                        <span className="font-medium">{currentPage}</span> to
-                                              <span className="font-medium">{}</span> of
-                        <span className="font-medium">97</span> results
-                      </p>
-                    </div> */}
                     <div>
                       <nav
                         aria-label="Pagination"
                         className="isolate inline-flex -space-x-px rounded-md shadow-sm"
                       >
-                        <button
-                          onClick={() => {
-                            if (currentPage && currentPage !== 1) {
-                              if (setCurrentPage) {
-                                setCurrentPage(currentPage - 1);
-                                table.previousPage();
-                              }
-                            }
-                          }}
-                          disabled={currentPage === 1}
-                          className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                        >
-                          <span className="sr-only">Previous</span>
-                          <ChevronLeftIcon
-                            aria-hidden="true"
-                            className="h-5 w-5"
-                          />
-                        </button>
-                        {/*{Array.from({ length: totalPage as number }).map(
-                          (item, index) => (
-                            <button
-                              key={`${index}+${new Date()}`}
-                              onClick={() => {
-                                if (
-                                  currentPage &&
-                                  totalPage !== undefined &&
-                                  setCurrentPage
-                                ) {
-                                  if (index > currentPage) {
-                                    setCurrentPage(currentPage + 1);
-                                    table.nextPage();
-                                  } else {
-                                    setCurrentPage(currentPage - 1);
-                                    table.previousPage();
-                                  }
-                                }
-                              }}
-                              aria-current="page"
-                              className={
-                                currentPage === index + 1
-                                  ? "bg-primary1 focus-visible:outline-primary2 text-white relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                                  : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 relative z-10 inline-flex items-center  px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                              }
+                        {/* Pagination Controls */}
+                        <div className="w-full p-4">
+                          <nav
+                            className="isolate inline-flex -space-x-px rounded-md shadow-sm w-full"
+                            aria-label="Pagination"
+                          >
+                            <a
+                              onClick={onPrev}
+                              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 cursor-pointer"
                             >
-                              {`${index + 1}`}
-                            </button>
-                          )
-                        )}*/}
+                              <span className="sr-only">Previous</span>
+                              <ChevronLeftIcon
+                                aria-hidden="true"
+                                className="h-5 w-5"
+                              />
+                            </a>
+                            {Array.from({ length: last ?? 0 }, (_, index) => (
+                              <a
+                                key={`${Math.random()}`}
+                                aria-current="page"
+                                {...getItemProps(index + 1)}
+                              >
+                                {index + 1}
+                              </a>
+                            ))}
 
-                        <button
-                          onClick={() => {
-                            if (
-                              currentPage &&
-                              totalPage !== undefined &&
-                              currentPage < totalPage
-                            ) {
-                              if (setCurrentPage) {
-                                setCurrentPage(currentPage + 1);
-                                table.nextPage();
-                              }
-                            }
-                          }}
-                          disabled={
-                            (currentPage &&
-                              totalPage !== undefined &&
-                              currentPage >= totalPage) as boolean
-                          }
-                          className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                        >
-                          <span className="sr-only">Next</span>
-                          <ChevronRightIcon
-                            aria-hidden="true"
-                            className="h-5 w-5"
-                          />
-                        </button>
+                            <a
+                              onClick={onNext}
+                              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 cursor-pointer"
+                            >
+                              <span className="sr-only">Next</span>
+                              <ChevronRightIcon
+                                aria-hidden="true"
+                                className="h-5 w-5"
+                              />
+                            </a>
+                          </nav>
+                        </div>
                       </nav>
                     </div>
                   </div>

@@ -9,6 +9,9 @@ import CeremonyHistory from "@/data/models/ceremony/response/ceremony_history";
 import { getCountdown } from "@/utils";
 import CeremonyScheduleModal from "./components/CeremonyScheduleModal";
 import CeremonyHistoryUpdateStatusRequest from "@/data/models/ceremony/request/ceremony_history_update_request";
+import PrimaryInput from "@/components/input/PrimaryInput";
+import IconButton from "@/components/button/IconButton";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 type ValuePiece = Date | null;
 
@@ -65,9 +68,41 @@ export default function CeremonyHistoryPage({
 }) {
   const t = getDictionary(lang);
 
+  const {
+    allCeremonyHistory,
+    filter,
+    setFilter,
+    refetchAllCeremonyHistory,
+    isAllCeremonyHistoryLoading,
+  } = useCeremonyHistory();
+
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { allCeremonyHistory } = useCeremonyHistory();
+  const [active, setActive] = useState<number>(1);
+
+  const numberClick = (index: number) => {
+    setActive(index);
+    setFilter({ ...filter, page: index });
+  };
+  const nextClick = () => {
+    if (active === allCeremonyHistory?.meta?.lastPage) return;
+    setActive(active + 1);
+
+    setFilter({ ...filter, page: active + 1 });
+  };
+
+  const prevClick = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setFilter({ ...filter, page: active - 1 });
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      refetchAllCeremonyHistory();
+    }, 1000);
+  }, [filter]);
 
   const columns = useMemo<ColumnDef<CeremonyHistory>[]>(
     () => [
@@ -136,52 +171,57 @@ export default function CeremonyHistoryPage({
       <PrimaryTable
         title="Daftar Jadwal Upacara"
         // onFilterReset={() => {}}
-        // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
-        //     <PrimaryDatePicker
-        //       setValue={(value) => {}}
-        //       value={[new Date(), new Date()]}
-        //     />
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            {/* <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-        //     <DropdownFilter
-        //       label="Kategori"
-        //       selectedItem={selectedCeremonyCategory}
-        //       setSelectedItem={setSelectedCeremonyCategory}
-        //       icon={TagIcon}
-        //       items={categories}
-        //     />
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedCeremonyCategory}
+              setSelectedItem={setSelectedCeremonyCategory}
+              icon={TagIcon}
+              items={categories}
+            />
 
-        //     <DropdownFilter
-        //       label="Status"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CheckCircleIcon}
-        //       items={status}
-        //     />
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CheckCircleIcon}
+              items={status}
+            /> */}
 
-        //     <PrimaryInput
-        //       onChange={(e) => {}}
-        //       value={""}
-        //       placeholder="Cari upacara"
-        //       className=""
-        //       trailing={
-        //         <IconButton
-        //           icon={MagnifyingGlassIcon}
-        //           onClick={() => {}}
-        //           className="absolute top-1 right-1"
-        //         />
-        //       }
-        //     />
-        //   </div>
-        // }
+            <PrimaryInput
+              onChange={(e) => {
+                setFilter({ ...filter, search: e.target.value });
+              }}
+              value={filter.search ?? ""}
+              placeholder="Cari Jadwal Upacara"
+              className=""
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
         columns={columns}
         data={allCeremonyHistory?.data ?? []}
-        isLoading={false}
+        isLoading={isAllCeremonyHistoryLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={10}
-        isCommon={true}
+        totalPage={allCeremonyHistory?.meta?.total}
+        last={allCeremonyHistory?.meta?.lastPage}
+        onNumberClick={numberClick}
+        onNext={nextClick}
+        onPrev={prevClick}
+        active={active}
       />
     </>
   );

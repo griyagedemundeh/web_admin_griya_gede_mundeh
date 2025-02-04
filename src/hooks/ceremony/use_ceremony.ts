@@ -33,6 +33,7 @@ import {
   CeremonyInList,
 } from "@/data/models/ceremony/response/ceremony";
 import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 interface IUseCeremony {
   addCeremony: UseMutateFunction<
@@ -42,6 +43,7 @@ interface IUseCeremony {
     unknown
   >;
   allCeremony: ApiResponse<CeremonyInList[]> | undefined;
+  isAllCeremonyLoading: boolean;
   isLoadingAddCeremony: boolean;
   isAddCeremonySuccess: boolean;
   isAddCeremonyError: boolean;
@@ -159,12 +161,25 @@ interface IUseCeremony {
   setSelectedAddress: Dispatch<
     SetStateAction<DropdownFilterItemProps | undefined>
   >;
+
+  refecthAllCeremony: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<CeremonyInList[]>, unknown>>;
+
+  filter: ListDataRequest;
+  setFilter: Dispatch<SetStateAction<ListDataRequest>>;
 }
 
 export const useCeremony = (): IUseCeremony => {
   const { setIsLoading } = useCentralStore();
 
   const [ceremony, setCeremony] = useState<Ceremony>();
+
+  const [filter, setFilter] = useState<ListDataRequest>({
+    page: 1,
+    limit: 10,
+    search: "",
+  });
 
   const [selectedCeremony, setSelectedCeremony] =
     useState<DropdownFilterItemProps>();
@@ -186,7 +201,7 @@ export const useCeremony = (): IUseCeremony => {
     isError: isAllCeremonyError,
     error: errorAllCeremony,
     refetch: refecthAllCeremony,
-  } = useGetAllCeremonyQuery({ limit: 100, page: 1 });
+  } = useGetAllCeremonyQuery(filter);
 
   const {
     data: allCeremonyPackageByCeremonyServiceId,
@@ -368,6 +383,8 @@ export const useCeremony = (): IUseCeremony => {
     // CEREMONY
     addCeremony,
     allCeremony,
+    isAllCeremonyLoading,
+    refecthAllCeremony,
     isLoadingAddCeremony,
     isAddCeremonySuccess,
     isAddCeremonyError,
@@ -424,5 +441,8 @@ export const useCeremony = (): IUseCeremony => {
     setSelectedPackageFull,
     setSelectedPaymentMethod,
     setSelectedAddress,
+
+    filter,
+    setFilter,
   };
 };

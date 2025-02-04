@@ -15,6 +15,9 @@ import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import Images from "@/constants/images";
 import DetailArticleModal from "./components/DetailArticleModal";
 import { Article } from "@/data/models/article/response/article";
+import PrimaryInput from "@/components/input/PrimaryInput";
+import IconButton from "@/components/button/IconButton";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function ArticlePage({
   params: { lang },
@@ -23,8 +26,6 @@ export default function ArticlePage({
 }) {
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [articleRequest, setArticleRequest] = useState<ArticleRequest>({
     articleCategoryId: "",
@@ -37,16 +38,41 @@ export default function ArticlePage({
   const [selectedArticleCategory, setSelectedArticleCategory] =
     useState<DropdownFilterItemProps>();
 
-  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
-    limit: 100,
-    page: 1,
-  });
+  const {
+    allArticle,
+    isAllArticleLoading,
+    refetchAllArticle,
+    filter,
+    setFilter,
+  } = useArticle();
 
-  const { allArticle } = useArticle();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [active, setActive] = useState<number>(1);
+
+  const numberClick = (index: number) => {
+    setActive(index);
+    setFilter({ ...filter, page: index });
+  };
+  const nextClick = () => {
+    if (active === allArticle?.meta?.lastPage) return;
+    setActive(active + 1);
+
+    setFilter({ ...filter, page: active + 1 });
+  };
+
+  const prevClick = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setFilter({ ...filter, page: active - 1 });
+  };
 
   useEffect(() => {
-    setCurrentPage(allArticle?.meta?.currentPage ?? 1);
-  }, [allArticle]);
+    setTimeout(() => {
+      refetchAllArticle();
+    }, 1000);
+  }, [filter]);
 
   const columns = useMemo<ColumnDef<Article>[]>(
     () => [
@@ -156,55 +182,60 @@ export default function ArticlePage({
         title="Artikel"
         mainActionTitle="Tambah Artikel"
         // onFilterReset={() => {}}
-        // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center  w-full">
-        //     <PrimaryDatePicker
-        //       setValue={(value) => {}}
-        //       value={[new Date(), new Date()]}
-        //     />
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            {/* <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-        //     <DropdownFilter
-        //       label="Status"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CheckCircleIcon}
-        //       items={status}
-        //     />
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CheckCircleIcon}
+              items={status}
+            />
 
-        //     <DropdownFilter
-        //       label="Kategori"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={TagIcon}
-        //       items={status}
-        //     />
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={TagIcon}
+              items={status}
+            /> */}
 
-        //     <PrimaryInput
-        //       onChange={(e) => {}}
-        //       value={""}
-        //       placeholder="Cari artikel"
-        //       className="w-full"
-        //       trailing={
-        //         <IconButton
-        //           icon={MagnifyingGlassIcon}
-        //           onClick={() => {}}
-        //           className="absolute top-1 right-1"
-        //         />
-        //       }
-        //     />
-        //   </div>
-        // }
+            <PrimaryInput
+              onChange={(e) => {
+                setFilter({ ...filter, search: e.target.value });
+              }}
+              value={filter.search ?? ""}
+              placeholder="Cari Artikel"
+              className=""
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
         mainActionOnClick={() => {
           setOpen(true);
         }}
         columns={columns}
         data={allArticle?.data ?? []}
-        isLoading={false}
+        isLoading={isAllArticleLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={allArticle?.meta?.total}
-        limitPage={listDataRequest.limit}
-        isCommon={true}
+        last={allArticle?.meta?.lastPage}
+        onNumberClick={numberClick}
+        onNext={nextClick}
+        onPrev={prevClick}
+        active={active}
       />
 
       <AddArticleModal
