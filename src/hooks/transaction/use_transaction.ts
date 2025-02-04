@@ -71,7 +71,7 @@ export const useTransaction = (): IUseTransaction => {
 
   const [filter, setFilter] = useState<ListDataRequest>({
     page: 1,
-    limit: 1000,
+    limit: 10,
     search: "",
   });
 

@@ -59,13 +59,36 @@ export default function TransactionPage({
 
   const { invoices, filter, setFilter, refetchInvoices } = useTransaction();
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
+  const [active, setActive] = useState<number>(1);
+
+  const numberClick = (index: number) => {
+    setActive(index);
+    setFilter({ ...filter, page: index });
+  };
+  const nextClick = () => {
+    if (active === invoices?.meta?.lastPage) return;
+    setActive(active + 1);
+
+    setFilter({ ...filter, page: active + 1 });
+  };
+
+  const prevClick = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setFilter({ ...filter, page: active - 1 });
+  };
+
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
       refetchInvoices();
     }, 1000);
-  }, [filter.search]);
+    setLoading(false);
+  }, [filter]);
 
   const columns = useMemo<ColumnDef<Invoice>[]>(
     () => [
@@ -187,12 +210,15 @@ export default function TransactionPage({
         }}
         columns={columns}
         data={invoices?.data ?? []}
-        isLoading={false}
+        isLoading={loading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalPage={5}
-        limitPage={1000}
-        isCommon={true}
+        totalPage={invoices?.meta?.total}
+        last={invoices?.meta?.lastPage}
+        onNumberClick={numberClick}
+        onNext={nextClick}
+        onPrev={prevClick}
+        active={active}
       />
 
       {/* Dialog Add Transaction*/}
