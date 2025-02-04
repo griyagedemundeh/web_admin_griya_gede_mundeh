@@ -1,8 +1,14 @@
 import ArticleRequest from "@/data/models/article/request/article_request";
 import ApiResponse from "@/data/models/base/api-base-response";
 import { useCentralStore } from "@/store";
-import { useEffect, useState } from "react";
-import { UseMutateFunction, useMutation } from "react-query";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  UseMutateFunction,
+  useMutation,
+} from "react-query";
 import {
   addArticle as addArticleBridge,
   deleteArticle as deleteArticleBridge,
@@ -12,6 +18,7 @@ import {
 import { statusMessage } from "@/utils";
 import { AxiosError } from "axios";
 import { Article } from "@/data/models/article/response/article";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 interface IUseArticle {
   addArticle: UseMutateFunction<
@@ -21,6 +28,10 @@ interface IUseArticle {
     unknown
   >;
   allArticle: ApiResponse<Article[]> | undefined;
+  refetchAllArticle: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<ApiResponse<Article[]>, unknown>>;
+  isAllArticleLoading: boolean;
   isLoadingAddArticle: boolean;
   isAddArticleSuccess: boolean;
   isAddArticleError: boolean;
@@ -52,6 +63,9 @@ interface IUseArticle {
   isLoadingEditArticle: boolean;
   isEditArticleSuccess: boolean;
   isEditArticleError: boolean;
+
+  filter: ListDataRequest;
+  setFilter: Dispatch<SetStateAction<ListDataRequest>>;
 }
 
 export const useArticle = (): IUseArticle => {
@@ -59,14 +73,20 @@ export const useArticle = (): IUseArticle => {
 
   const [article, setArticle] = useState<Article>();
 
+  const [filter, setFilter] = useState<ListDataRequest>({
+    page: 1,
+    limit: 10,
+    search: "",
+  });
+
   //GET ALL ARTICLE
   const {
     data: allArticle,
     isLoading: isAllArticleLoading,
     isError: isAllArticleError,
     error: errorAllArticle,
-    refetch: refecthAllArticle,
-  } = useGetAllArticleQuery({ limit: 100, page: 1 });
+    refetch: refetchAllArticle,
+  } = useGetAllArticleQuery(filter);
 
   //ADD
   const {
@@ -95,7 +115,7 @@ export const useArticle = (): IUseArticle => {
     isError: isDeleteArticleError,
   } = useMutation(deleteArticleBridge, {
     onSuccess: async (value) => {
-      refecthAllArticle();
+      refetchAllArticle();
 
       statusMessage({ message: value.message, status: "success" });
       setIsLoading(false);
@@ -115,7 +135,7 @@ export const useArticle = (): IUseArticle => {
     isError: isEditArticleError,
   } = useMutation(editArticleBridge, {
     onSuccess: async (value) => {
-      refecthAllArticle();
+      refetchAllArticle();
       statusMessage({ message: value.message, status: "success" });
       setIsLoading(false);
       window.location.reload();
@@ -137,6 +157,8 @@ export const useArticle = (): IUseArticle => {
     // ADD
     addArticle,
     allArticle,
+    isAllArticleLoading,
+    refetchAllArticle,
     isLoadingAddArticle,
     isAddArticleSuccess,
     isAddArticleError,
@@ -151,5 +173,8 @@ export const useArticle = (): IUseArticle => {
     isLoadingEditArticle,
     isEditArticleError,
     isEditArticleSuccess,
+
+    filter,
+    setFilter,
   };
 };
