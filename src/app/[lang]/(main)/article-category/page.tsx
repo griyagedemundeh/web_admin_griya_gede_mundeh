@@ -132,7 +132,6 @@ export default function ArticleCategoryPage({
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={5}
-        limitPage={10}
         isCommon={true}
       />
 

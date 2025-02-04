@@ -140,7 +140,6 @@ export default function CeremonyCategoryPage({
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={5}
-        limitPage={10}
         isCommon={true}
       />
 
