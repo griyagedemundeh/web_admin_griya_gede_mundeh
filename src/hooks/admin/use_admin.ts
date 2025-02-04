@@ -19,8 +19,9 @@ import {
   useAllAdminFromAdminQuery,
 } from "./admin_bridge";
 import { useCentralStore } from "@/store";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import User from "@/data/models/user/response/user";
+import ListDataRequest from "@/data/models/base/list_data_request";
 
 interface IUseAdmin {
   addAdmin: UseMutateFunction<
@@ -50,7 +51,7 @@ interface IUseAdmin {
   refecthAllAdmin: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<ApiResponse<Admin[]>, unknown>>;
-
+  isAllAdminLoading: boolean;
   isLoadingAddAdmin: boolean;
   isAddAdminSuccess: boolean;
   isAddAdminError: boolean;
@@ -82,10 +83,19 @@ interface IUseAdmin {
   refecthAllAdminFromAdmin: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<ApiResponse<Admin[]>, unknown>>;
+
+  filter: ListDataRequest;
+  setFilter: Dispatch<SetStateAction<ListDataRequest>>;
 }
 
 export const useAdmin = (): IUseAdmin => {
   const { setIsLoading } = useCentralStore();
+
+  const [filter, setFilter] = useState<ListDataRequest>({
+    page: 1,
+    limit: 10,
+    search: "",
+  });
 
   const {
     data: allAdmin,
@@ -93,7 +103,7 @@ export const useAdmin = (): IUseAdmin => {
     isError: isAllAdminError,
     error: errorAllAdmin,
     refetch: refecthAllAdmin,
-  } = useGetAllAdminQuery({ limit: 100, page: 1 });
+  } = useGetAllAdminQuery(filter);
 
   const {
     data: allAdminFromAdmin,
@@ -237,6 +247,7 @@ export const useAdmin = (): IUseAdmin => {
     addAdmin,
     allAdmin,
     refecthAllAdmin,
+    isAllAdminLoading,
     isLoadingAddAdmin,
     isAddAdminSuccess,
     isAddAdminError,
@@ -259,5 +270,8 @@ export const useAdmin = (): IUseAdmin => {
     isAllAdminFromAdminError,
     isAllAdminFromAdminLoading,
     refecthAllAdminFromAdmin,
+
+    filter,
+    setFilter,
   };
 };

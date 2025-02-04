@@ -1,18 +1,12 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { getDictionary, Locale } from "../../dictionaries";
 import PrimaryInput from "@/components/input/PrimaryInput";
 import Image from "next/image";
-import DropdownFilter from "@/components/dropdown/DropdownFilter";
-import DropdownFilterItemProps from "@/interfaces/DropdownFilterItem";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import IconButton from "@/components/button/IconButton";
-import { status } from "@/utils/dummyData";
 import PrimaryTable from "@/components/table/PrimaryTable";
 import { useAdmin } from "@/hooks/admin/use_admin";
 import Admin from "@/data/models/admin/response/admin";
@@ -20,8 +14,8 @@ import DetailManagerModal from "./components/DetailManagerModal";
 import AddManagerModal from "./components/AddManagerModal";
 import AdminRequest from "@/data/models/admin/request/admin_request";
 import Images from "@/constants/images";
-import ListDataRequest from "@/data/models/base/list_data_request";
 import DeleteManagerModal from "./components/DeleteManagerModal";
+import { useAuth } from "@/hooks/auth/use_auth";
 
 export default function ManagerPage({
   params: { lang },
@@ -31,16 +25,10 @@ export default function ManagerPage({
   const t = getDictionary(lang);
   const [open, setOpen] = useState(false);
 
-  const [selectedStatusItem, setSelectedStatusItem] =
-    useState<DropdownFilterItemProps>();
+  const { allAdmin, refecthAllAdmin, filter, setFilter, isAllAdminLoading } =
+    useAdmin();
+  const { account } = useAuth();
 
-  const { allAdmin, refecthAllAdmin } = useAdmin();
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [listDataRequest, setListDataRequest] = useState<ListDataRequest>({
-    limit: 100,
-    page: 1,
-  });
   const [adminRequest, setAdminRequest] = useState<AdminRequest>({
     email: "",
     fullName: "",
@@ -50,13 +38,33 @@ export default function ManagerPage({
     userId: 0,
   });
 
-  useEffect(() => {
-    setCurrentPage(allAdmin?.meta?.currentPage ?? 1);
-  }, [allAdmin]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [active, setActive] = useState<number>(1);
+
+  const numberClick = (index: number) => {
+    setActive(index);
+    setFilter({ ...filter, page: index });
+  };
+  const nextClick = () => {
+    if (active === allAdmin?.meta?.lastPage) return;
+    setActive(active + 1);
+
+    setFilter({ ...filter, page: active + 1 });
+  };
+
+  const prevClick = () => {
+    if (active === 1) return;
+    setActive(active - 1);
+
+    setFilter({ ...filter, page: active - 1 });
+  };
 
   useEffect(() => {
-    refecthAllAdmin();
-  }, []);
+    setTimeout(() => {
+      refecthAllAdmin();
+    }, 1000);
+  }, [filter, account?.role]);
 
   const columns = useMemo<ColumnDef<Admin>[]>(
     () => [
@@ -130,12 +138,14 @@ export default function ManagerPage({
                     emailVerified: info.row.original?.user?.emailVerified,
                   }}
                 />
-                <DeleteManagerModal
-                  data={{
-                    fullName: info.row.original?.user?.fullName,
-                    id: info.row.original.id,
-                  }}
-                />
+                {account?.role !== "admin" && (
+                  <DeleteManagerModal
+                    data={{
+                      fullName: info.row.original?.user?.fullName,
+                      id: info.row.original.id,
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -152,42 +162,60 @@ export default function ManagerPage({
         title="Daftar Pengelola"
         mainActionTitle="Tambah Pengelola"
         // onFilterReset={() => {}}
-        // filters={
-        //   <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center lg:w-8/12 w-full">
-        //     <DropdownFilter
-        //       label="Status"
-        //       selectedItem={selectedStatusItem}
-        //       setSelectedItem={setSelectedStatusItem}
-        //       icon={CheckCircleIcon}
-        //       items={status}
-        //     />
+        filters={
+          <div className="mt-4 sm:mt-0 sm:flex-none flex flex-row space-x-2 items-center flex-1 relative">
+            {/* <PrimaryDatePicker
+              setValue={(value) => {}}
+              value={[new Date(), new Date()]}
+            />
 
-        //     <PrimaryInput
-        //       onChange={(e) => {}}
-        //       value={""}
-        //       placeholder="Cari Pengelola"
-        //       className="w-full"
-        //       trailing={
-        //         <IconButton
-        //           icon={MagnifyingGlassIcon}
-        //           onClick={() => {}}
-        //           className="absolute top-1 right-1"
-        //         />
-        //       }
-        //     />
-        //   </div>
-        // }
+            <DropdownFilter
+              label="Kategori"
+              selectedItem={selectedCeremonyCategory}
+              setSelectedItem={setSelectedCeremonyCategory}
+              icon={TagIcon}
+              items={categories}
+            />
+
+            <DropdownFilter
+              label="Status"
+              selectedItem={selectedStatusItem}
+              setSelectedItem={setSelectedStatusItem}
+              icon={CheckCircleIcon}
+              items={status}
+            /> */}
+
+            <PrimaryInput
+              onChange={(e) => {
+                setFilter({ ...filter, search: e.target.value });
+              }}
+              value={filter.search ?? ""}
+              placeholder="Cari Pengelola"
+              className=""
+              trailing={
+                <IconButton
+                  icon={MagnifyingGlassIcon}
+                  onClick={() => {}}
+                  className="absolute top-1 right-1"
+                />
+              }
+            />
+          </div>
+        }
         mainActionOnClick={() => {
           setOpen(true);
         }}
         columns={columns}
         data={allAdmin?.data ?? []}
-        isLoading={false}
+        isLoading={isAllAdminLoading}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={allAdmin?.meta?.total}
-        limitPage={listDataRequest.limit}
-        isCommon={true}
+        last={allAdmin?.meta?.lastPage}
+        onNumberClick={numberClick}
+        onNext={nextClick}
+        onPrev={prevClick}
+        active={active}
       />
 
       {/* Dialog Add Manager*/}
