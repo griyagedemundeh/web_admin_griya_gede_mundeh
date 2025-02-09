@@ -225,7 +225,7 @@ export class CeremonyService implements ICeremonyService {
     ceremonyServiceId: number | string;
   }): Promise<ApiResponse<CeremonyPackage[]>> {
     //  const uri = `${this.BASE_ENDPOINT}/package/${id}`;
-    const uri = `/member/ceremony/package/${ceremonyServiceId}`;
+    const uri = `${this.BASE_ENDPOINT}/package/${ceremonyServiceId}`;
 
     try {
       const response: AxiosResponse<ApiResponse<CeremonyPackage[]>> =
