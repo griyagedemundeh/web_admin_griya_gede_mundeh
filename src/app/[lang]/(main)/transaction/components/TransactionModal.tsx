@@ -188,8 +188,10 @@ const TransactionModal = ({
   const handleAddInvoice = (invoiceRequest: InvoiceRequest) => {
     const ceremonyDate = new Date(invoiceRequest.ceremonyDate);
 
+    const month = ceremonyDate.toLocaleDateString().split("/")[0];
+
     const date = `${ceremonyDate.getFullYear()}-${
-      ceremonyDate.toLocaleDateString().split("/")[0]
+      parseInt(month) < 10 ? "0" + month : month
     }-${ceremonyDate.getDate()} ${ceremonyDate.toTimeString().split(" ")[0]}`;
 
     createInvoice({
