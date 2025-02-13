@@ -42,7 +42,7 @@ const BigFileInput = ({ onChange, src, label, name }: BigFileInputProps) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size / (1024 * 1024) > 2) {
+    if (file.size / (1024 * 1024) > 5) {
       setError(true);
       return;
     }
