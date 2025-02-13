@@ -352,7 +352,7 @@ const TransactionModal = ({
                 />
                 <DropdownInput
                   items={paymentMethods ?? []}
-                  label="Tipe Pembayaran"
+                  label="Tipe Pembayaran (Opsional) - (Default: Online)"
                   placeholder="Pilih metode pembayaran"
                   selectedItem={selectedPaymentMethod}
                   error={errors.isCash}

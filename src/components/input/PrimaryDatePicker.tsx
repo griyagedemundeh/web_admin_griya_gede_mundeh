@@ -41,7 +41,9 @@ const PrimaryDatePicker = ({
           selected={value}
           onChange={(date) => setValue(date as Date)}
           showTimeSelect
-          minDate={value}
+          minDate={new Date()}
+          date={new Date()}
+          startDate={new Date()}
           // minTime={new Date()}
           // maxTime={new Date(value.setHours(23, 59, 59, 59))}
           timeFormat="HH:mm"
